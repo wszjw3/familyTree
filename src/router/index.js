@@ -171,6 +171,17 @@ export const demoRouter = {
         requiresAuth: true,
         resourceCode: ['user']
       }
+    },
+    {
+      name: '家谱demo',
+      path: '/tree',
+      view: '/demo/tree',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/demo/tree.vue'),
+      meta: {
+        requiresAuth: true,
+        resourceCode: ['user']
+      }
     }
   ]
 }
