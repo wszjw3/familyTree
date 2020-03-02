@@ -57,11 +57,11 @@
 
 <style lang="less">
   .el-header {
-    background-color: #262a36;
+    background-color: #fff;
   }
 
   .el-aside {
-    background-color: #324157;
+    background-color: #eee;
   }
 
   .cur-pointer {
@@ -69,7 +69,7 @@
   }
 
   .toolbar {
-    background: #f2f2f2;
+    // background: #f2f2f2;
     padding: 10px;
     margin: 10px 0;
   }

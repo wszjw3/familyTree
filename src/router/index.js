@@ -16,10 +16,21 @@ export default new Router({
       requiresAuth: false
     }
   }, {
-    name: 'forgetPwd',
-    path: '/account/forgetPwd',
+    name: 'register',
+    path: '/register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
     component: () =>
-      import( /* webpackChunkName: "login" */ '@/views/account/forgetPwd.vue'),
+      import( /* webpackChunkName: "login" */ '@/views/register.vue'),
+    meta: {
+      requiresAuth: false
+    }
+  }, {
+    name: 'forgetPwd',
+    path: '/resetPassWord',
+    component: () =>
+      import( /* webpackChunkName: "login" */ '@/views/resetPassWord.vue'),
     meta: {
       requiresAuth: false
     }
@@ -173,13 +184,35 @@ export const demoRouter = {
       }
     },
     {
+      name: '个人信息',
+      path: '/account/accountInfo',
+      view: '/account/accountInfo',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/account/accountInfo.vue'),
+      meta: {
+        requiresAuth: false,
+        resourceCode: ['user']
+      }
+    },
+    {
       name: '家谱demo',
       path: '/tree',
       view: '/demo/tree',
       component: () =>
         import( /* webpackChunkName: "main" */ '@/views/demo/tree.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
+        resourceCode: ['user']
+      }
+    },
+    {
+      name: '平台管理',
+      path: '/manage',
+      view: '/demo/platformManage',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/demo/platformManage.vue'),
+      meta: {
+        requiresAuth: false,
         resourceCode: ['user']
       }
     }

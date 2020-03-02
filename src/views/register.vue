@@ -4,37 +4,56 @@
   <div class="login-container clearfix">
     <div class="login-left"><img src="../assets/imgs/family.png" alt=""></div>
     <div class="loginForm-container">
-      <div class="loginForm-top">登录</div>
+      <div class="loginForm-top">注册</div>
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-width="100px" label-position="left" hide-required-asterisk="true">
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <el-form-item prop="userNo" label="用户名:">
-          <el-input v-model="loginForm.userNo" placeholder="请输入用户名" name="userNo" type="text" auto-complete="on" />
+        <el-form-item prop="userNo" label="用户名：">
+          <el-input v-model="loginForm.userNo" placeholder="用户名为4-16为数字，字母，拼音组合" name="userNo" type="text"  />
         </el-form-item>
 
-        <el-form-item prop="password" label="密码:">
-          <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
+        <el-form-item label="真实姓名：">
+          <el-col :span="11">
+            <el-form-item prop="userFan">
+              <el-input v-model="loginForm.userFan" placeholder="姓" name="userFan" type="text" auto-complete="on" />
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">&nbsp;&nbsp; </el-col>
+          
+          <el-col :span="11">
+            <el-form-item prop="userFull">
+              <el-input v-model="loginForm.userFull" placeholder="名" name="userFull" type="text" auto-complete="on" />
+            </el-form-item>
+          </el-col>
         </el-form-item>
 
-        <el-form-item prop="graphLoginCode" label="验证码">
-          <el-input v-model="loginForm.graphLoginCode" placeholder="请输入图形验证码">
-            <template slot="append">
-              <el-tooltip class="item" effect="dark" content="点击刷新" placement="bottom">
-                <img style="width:5rem;" @click="getGraph()" :src='loginForm.graphUrl' />
-              </el-tooltip>
-            </template>
-          </el-input>
+         <el-form-item prop="sex" label="性别：">
+          <el-radio-group v-model="loginForm.sex">
+            <el-radio label="男"></el-radio>
+            <el-radio label="女"></el-radio>
+          </el-radio-group>
         </el-form-item>
+
+        <el-form-item prop="password" label="密码：">
+          <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" />
+        </el-form-item>
+
+        <el-form-item prop="phone" label="手机号：">
+          <el-input :type="tel" v-model="loginForm.phone" placeholder="请输入手机号" name="phone" auto-complete="on" />
+        </el-form-item>
+
+        <el-form-item prop="verification" label="验证码：">
+          <el-input :type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on"/>
+        </el-form-item>
+
+       
         <div class="errorMsgBox">
           {{resultMessage}}
         </div>
-        <el-form-item>
-          <el-checkbox v-model="checked">记住用户名</el-checkbox>
-          <router-link class="forgetPwd" :to="{ path: '/account/forgetPwd' }">忘记密码？</router-link>
-        </el-form-item>
-        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;">登&nbsp;&nbsp;录</el-button>
-        <router-link class="forgetPwd" :to="{ path: '/register' }">没有账号？立即注册</router-link>
+
+        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;background-color:#FF0000;">注&nbsp;&nbsp;册</el-button>
+        
       </el-form>
     </div>
   </div>
@@ -50,6 +69,13 @@ var md5 = require('md5')
 export default {
   name: 'Login',
   data() {
+    const validateUserNo = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else {
+        callback()
+      }
+    }
     const validateUsername = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入用户名'))
@@ -57,6 +83,7 @@ export default {
         callback()
       }
     }
+    
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -67,28 +94,41 @@ export default {
     return {
       loginForm: {
         userNo: '',
+        userFan: '', //姓 
+        userFull: '', //名
+        sex: '',
         password: '',
-        graphLoginCode: '',
-        graphId: '',
-        graphUrl: '',
-        checked: false
+        phone: '',
+        verification: ''
       },
       loginRules: {
-        userNo: [{
-          required: true,
-          trigger: 'blur',
-          validator: validateUsername
-        }],
+        userNo: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
+        ],
+        userFan: [
+          { required: true, message: '请输入姓', trigger: 'blur' }
+        ],
+        userFull: [
+          { required: true, message: '请输入名', trigger: 'blur' }
+        ],
+         sex: [
+            { required: true, message: '请选择性别', trigger: 'change' }
+          ],
         password: [{
           required: true,
           trigger: 'blur',
           validator: validatePassword
         }],
-        graphLoginCode: [{
-          required: true,
-          trigger: 'blur',
-          message: '请输入图形验证码'
-        }]
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        verification: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ]
+
+
+        
       },
       passwordType: 'password',
       loading: false,
@@ -196,7 +236,7 @@ a {
         .loginForm-top {
           text-align: center;
           font-size: 28px;
-          color: #1890FF;
+          color: #FF0000;
         }
         .errorMsgBox {
             color: rgb(245, 108, 108);

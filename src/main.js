@@ -6,6 +6,8 @@ import ElementUI from 'element-ui'
 import NProgress from 'nprogress'
 import 'babel-polyfill'
 
+import 'vue-area-linkage/dist/index.css' // v2 or higher
+import VueAreaLinkage from 'vue-area-linkage'
 import './assets/icon/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
@@ -18,6 +20,7 @@ import {
 } from './router'
 
 Vue.use(ElementUI)
+Vue.use(VueAreaLinkage)
 
 NProgress.configure({
   showSpinner: false
