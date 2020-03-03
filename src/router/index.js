@@ -34,7 +34,28 @@ export default new Router({
     meta: {
       requiresAuth: false
     }
-  }]
+  },
+{
+  name: '家谱demo',
+  path: '/familytree',
+  view: '/demo/tree',
+  component: () =>
+    import( /* webpackChunkName: "main" */ '@/views/demo/tree.vue'),
+  meta: {
+    requiresAuth: false,
+    resourceCode: ['user']
+  }
+}, {
+  name: '平台管理',
+  path: '/familymanage',
+  view: '/demo/platformManage',
+  component: () =>
+    import( /* webpackChunkName: "main" */ '@/views/demo/platformManage.vue'),
+  meta: {
+    requiresAuth: false,
+    resourceCode: ['user']
+  }
+}]
 })
 //非登录路由列表，
 export const blankRouter = ['/forgetPwd']
@@ -45,7 +66,7 @@ export const asynRouter = [{
     component: () =>
       import( /* webpackChunkName: "main" */ '@/views/order/accOrder.vue'),
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       resourceCode: ['user']
     }
   },

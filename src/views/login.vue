@@ -5,19 +5,19 @@
     <div class="login-left"><img src="../assets/imgs/family.png" alt=""></div>
     <div class="loginForm-container">
       <div class="loginForm-top">登录</div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-width="100px" label-position="left" hide-required-asterisk="true">
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-width="100px" label-position="left">
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <el-form-item prop="userNo" label="用户名:">
-          <el-input v-model="loginForm.userNo" placeholder="请输入用户名" name="userNo" type="text" auto-complete="on" />
+        <el-form-item prop="nickname" label="用户名:">
+          <el-input v-model="loginForm.nickname" placeholder="请输入用户名" name="nickname" type="text" auto-complete="on" />
         </el-form-item>
 
         <el-form-item prop="password" label="密码:">
           <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
         </el-form-item>
 
-        <el-form-item prop="graphLoginCode" label="验证码">
+        <el-form-item prop="graphLoginCode" label="验证码: ">
           <el-input v-model="loginForm.graphLoginCode" placeholder="请输入图形验证码">
             <template slot="append">
               <el-tooltip class="item" effect="dark" content="点击刷新" placement="bottom">
@@ -30,7 +30,7 @@
           {{resultMessage}}
         </div>
         <el-form-item>
-          <el-checkbox v-model="checked">记住用户名</el-checkbox>
+          <el-checkbox v-model="loginForm.checked">记住用户名</el-checkbox>
           <router-link class="forgetPwd" :to="{ path: '/account/forgetPwd' }">忘记密码？</router-link>
         </el-form-item>
         <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;">登&nbsp;&nbsp;录</el-button>
@@ -43,9 +43,8 @@
 
 <script>
 import {
-  Account
+  Family
 } from '@/api'
-var md5 = require('md5')
 
 export default {
   name: 'Login',
@@ -66,7 +65,7 @@ export default {
     }
     return {
       loginForm: {
-        userNo: '',
+        nickname: '',
         password: '',
         graphLoginCode: '',
         graphId: '',
@@ -74,7 +73,7 @@ export default {
         checked: false
       },
       loginRules: {
-        userNo: [{
+        nickname: [{
           required: true,
           trigger: 'blur',
           validator: validateUsername
@@ -113,12 +112,9 @@ export default {
     },
     //获取图片验证码
     getGraph() {
-      Account.getGraph().then((content) => {
-        console.log(content)
-        console.log(Account.showgraph(content.graphId))
-        this.loginForm.graphId = content.graphId
-        this.$set(this.loginForm,'graphUrl',Account.showgraph(content.graphId))
-      })
+      
+      this.$set(this.loginForm,'graphUrl',Family.showgraph())
+      
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -131,20 +127,25 @@ export default {
           // this.loading = false
           // })
           const params = {
-            userNo: this.loginForm.userNo,
-            password: md5(this.loginForm.password),
-            appid: process.env.VUE_APP_BASE_APPID,
-            graphId: this.loginForm.graphId,
-            graphLoginCode: this.loginForm.graphLoginCode
+            nickname: this.loginForm.nickname,
+            passwd: this.loginForm.password,
+            check_code: this.loginForm.graphLoginCode
           }
 
-          Account.login(params).then((res) => {
+          Family.login(params).then((res) => {
             console.log(res)
-            if (res.result === '0') {
-              this.$store.dispatch('setToken', res.token)
-              this.$router.push('/')
+            if (res.code === '000000') {
+              debugger
+              this.resultMessage = ''
+              this.$store.dispatch('setToken', res.data)
+              if(res.data.user_type === '3') {
+                this.$router.push('/familymanage')
+              }else {
+                this.$router.push({path: '/tree'})
+              }
+              
             } else {
-              this.resultMessage = res.resultMessage
+              this.resultMessage = res.message
               this.getGraph()
             }
           })

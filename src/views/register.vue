@@ -3,48 +3,50 @@
  
   <div class="login-container clearfix">
     <div class="login-left"><img src="../assets/imgs/family.png" alt=""></div>
-    <div class="loginForm-container">
-      <div class="loginForm-top">注册</div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-width="100px" label-position="left" hide-required-asterisk="true">
+    <div class="registerForm-container">
+      <div class="registerForm-top">注册</div>
+      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-width="100px" label-position="left" >
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <el-form-item prop="userNo" label="用户名：">
-          <el-input v-model="loginForm.userNo" placeholder="用户名为4-16为数字，字母，拼音组合" name="userNo" type="text"  />
+        <el-form-item prop="nickname" label="用户名：">
+          <el-input v-model="registerForm.nickname" placeholder="用户名为4-16为数字，字母，拼音组合" name="nickname" type="text"  />
         </el-form-item>
 
         <el-form-item label="真实姓名：">
           <el-col :span="11">
-            <el-form-item prop="userFan">
-              <el-input v-model="loginForm.userFan" placeholder="姓" name="userFan" type="text" auto-complete="on" />
+            <el-form-item prop="surname">
+              <el-input v-model="registerForm.surname" placeholder="姓" name="surname" type="text" auto-complete="on" />
             </el-form-item>
           </el-col>
           <el-col class="line" :span="2">&nbsp;&nbsp; </el-col>
           
           <el-col :span="11">
-            <el-form-item prop="userFull">
-              <el-input v-model="loginForm.userFull" placeholder="名" name="userFull" type="text" auto-complete="on" />
+            <el-form-item prop="name">
+              <el-input v-model="registerForm.name" placeholder="名" name="name" type="text" auto-complete="on" />
             </el-form-item>
           </el-col>
         </el-form-item>
 
          <el-form-item prop="sex" label="性别：">
-          <el-radio-group v-model="loginForm.sex">
-            <el-radio label="男"></el-radio>
-            <el-radio label="女"></el-radio>
+          <el-radio-group v-model="registerForm.sex">
+            <el-radio label="1">男</el-radio>
+            <el-radio label="2">女</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item prop="password" label="密码：">
-          <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" />
+          <el-input :type="passwordType" v-model="registerForm.password" placeholder="请输入密码" name="password" auto-complete="on" />
         </el-form-item>
 
         <el-form-item prop="phone" label="手机号：">
-          <el-input :type="tel" v-model="loginForm.phone" placeholder="请输入手机号" name="phone" auto-complete="on" />
+          <el-input  v-model="registerForm.phone" placeholder="请输入手机号" name="phone" auto-complete="on" />
         </el-form-item>
 
         <el-form-item prop="verification" label="验证码：">
-          <el-input :type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on"/>
+          <el-input v-model="registerForm.verification" auto-complete="on">
+            <el-button size="mini" @click="sendCode()" slot="append" :disabled="registerForm.disabled">{{registerForm.disabled?`${registerForm.time}s重新发送`:'发送验证码'}}</el-button>
+          </el-input>
         </el-form-item>
 
        
@@ -52,7 +54,7 @@
           {{resultMessage}}
         </div>
 
-        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;background-color:#FF0000;">注&nbsp;&nbsp;册</el-button>
+        <el-button class="submit-register" :loading="loading" type="primary"  @click.native.prevent="handleRegister" style="font-size:20px;background-color:#FF0000;">注&nbsp;&nbsp;册</el-button>
         
       </el-form>
     </div>
@@ -62,27 +64,26 @@
 
 <script>
 import {
-  Account
+  Family
 } from '@/api'
-var md5 = require('md5')
 
 export default {
   name: 'Login',
   data() {
-    const validateUserNo = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
-      } else {
-        callback()
-      }
-    }
-    const validateUsername = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
-      } else {
-        callback()
-      }
-    }
+    // const validateUserNo = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入用户名'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    // const validateUsername = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入用户名'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
@@ -92,29 +93,33 @@ export default {
       }
     }
     return {
-      loginForm: {
-        userNo: '',
-        userFan: '', //姓 
-        userFull: '', //名
+      registerForm: {
+        nickname: '',
+        surname: '', //姓 
+        name: '', //名
         sex: '',
         password: '',
         phone: '',
-        verification: ''
+        verification: '',
+        time: 0,
+        disabled: false,
+        isSendCode: false,
+        sendCodeFlag: false
       },
-      loginRules: {
-        userNo: [
+      registerRules: {
+        nickname: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
         ],
-        userFan: [
+        surname: [
           { required: true, message: '请输入姓', trigger: 'blur' }
         ],
-        userFull: [
+        name: [
           { required: true, message: '请输入名', trigger: 'blur' }
         ],
-         sex: [
-            { required: true, message: '请选择性别', trigger: 'change' }
-          ],
+        sex: [
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
         password: [{
           required: true,
           trigger: 'blur',
@@ -130,6 +135,7 @@ export default {
 
         
       },
+      intervalid:null,
       passwordType: 'password',
       loading: false,
       showDialog: false,
@@ -141,51 +147,69 @@ export default {
     this.$np.done()
   },
   created() {
-    this.getGraph()
   },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
+    //发送验证码
+    sendCode() {
+      // var a=this.$refs.form2.validateField("validateGraphForm2")
+      // console.log(a)
+      if (this.registerForm.sendCodeFlag) {
+        return
       }
-    },
-    //获取图片验证码
-    getGraph() {
-      Account.getGraph().then((content) => {
+      var params = {
+        phone: this.registerForm.phone
+      }
+      Family.sendVerifyCode(params).then((content) => {
         console.log(content)
-        console.log(Account.showgraph(content.graphId))
-        this.loginForm.graphId = content.graphId
-        this.$set(this.loginForm,'graphUrl',Account.showgraph(content.graphId))
+        if (content.result && content.result == '0') {
+          this.registerForm.disabled = true
+          this.registerForm.time = 60
+          this.registerForm.isSendCode = true
+          this.registerForm.sendCodeFlag = true
+          this.intervalid = setInterval(() => {
+            if (this.registerForm.time > 0) {
+              this.registerForm.time--
+            } else {
+              this.registerForm.disabled = false
+              this.registerForm.sendCodeFlag = false
+              clearInterval(this.intervalid)
+            }
+          }, 1000)
+          
+          this.$message({
+            type: 'success',
+            message: '验证码发送成功'
+          })
+        } else {
+          this.$message.error('' == content.resultMessage ? '验证码发送失败' : content.resultMessage)
+          this.form2.disabled = false
+          this.form2.time = 0
+        }
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+    
+    
+    handleRegister() {
+
+      this.$refs.registerForm.validate(valid => {
+
         if (valid) {
-          // this.loading = true
-          // this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-          // this.loading = false
-          // this.$router.push('/')
-          // }).catch(() => {
-          // this.loading = false
-          // })
           const params = {
-            userNo: this.loginForm.userNo,
-            password: md5(this.loginForm.password),
-            appid: process.env.VUE_APP_BASE_APPID,
-            graphId: this.loginForm.graphId,
-            graphLoginCode: this.loginForm.graphLoginCode
+            nickname: this.registerForm.nickname,
+            surname: this.registerForm.surname,
+            name: this.registerForm.name,
+            sex: this.registerForm.sex,
+            passwd: this.registerForm.password,
+            phone: this.registerForm.phone,
+            verification: this.registerForm.verification
           }
 
-          Account.login(params).then((res) => {
+          Family.register(params).then((res) => {
             console.log(res)
-            if (res.result === '0') {
-              this.$store.dispatch('setToken', res.token)
-              this.$router.push('/')
+            if (res.code === '000000') {
+              this.$router.push('/login')
             } else {
-              this.resultMessage = res.resultMessage
-              this.getGraph()
+              
             }
           })
         } else {
@@ -223,7 +247,7 @@ a {
         width: 100%;
       }
     }
-    .loginForm-container {
+    .registerForm-container {
         width: 30%;
         margin-right: 8%;
         float: right;
@@ -233,7 +257,7 @@ a {
         background-color: white;
         padding-top: 1rem;
         padding-bottom: 1rem;
-        .loginForm-top {
+        .registerForm-top {
           text-align: center;
           font-size: 28px;
           color: #FF0000;
@@ -247,7 +271,7 @@ a {
             width: 85%;
             overflow: hidden;
             margin: 1rem auto 0;
-            .el-button {
+            .submit-register {
                 margin-bottom: 25px;
                 width: 100%;
                 height: 51px;

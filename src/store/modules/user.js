@@ -1,7 +1,6 @@
-import Cookies from 'js-cookie'
 
 const state = {
-  token: Cookies.get('token')
+  token: {}
 }
 
 // getters
@@ -12,11 +11,9 @@ const getters = {
 // actions
 const actions = {
   setToken({ commit }, token) {
-    Cookies.set('token', token)
     commit('SET_TOKEN', { token })
   },
   removeToken({ commit }) {
-    Cookies.remove('token')
     commit('REMOVE_TOKEN')
   }
 }
