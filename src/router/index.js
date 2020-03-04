@@ -171,6 +171,28 @@ export const demoRouter = {
         requiresAuth: true,
         resourceCode: ['user']
       }
+    },
+    {
+      name: '搜索页',
+      path: '/search',
+      view: '/search',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/search/index.vue'),
+      meta: {
+        requiresAuth: true,
+        resourceCode: ['user']
+      }
+    },
+    {
+      name: '家谱详情页',
+      path: '/detail',
+      view: '/detail',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/detail/index.vue'),
+      meta: {
+        requiresAuth: true,
+        resourceCode: ['user']
+      }
     }
   ]
 }
