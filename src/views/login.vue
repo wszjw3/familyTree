@@ -31,7 +31,7 @@
         </div>
         <el-form-item>
           <el-checkbox v-model="loginForm.checked">记住用户名</el-checkbox>
-          <router-link class="forgetPwd" :to="{ path: '/account/forgetPwd' }">忘记密码？</router-link>
+          <router-link class="forgetPwd" :to="{ path: '/resetPassWord' }">忘记密码？</router-link>
         </el-form-item>
         <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;">登&nbsp;&nbsp;录</el-button>
         <router-link class="forgetPwd" :to="{ path: '/register' }">没有账号？立即注册</router-link>
@@ -135,7 +135,6 @@ export default {
           Family.login(params).then((res) => {
             console.log(res)
             if (res.code === '000000') {
-              debugger
               this.resultMessage = ''
               this.$store.dispatch('setToken', res.data)
               if(res.data.user_type === '3') {

@@ -61,7 +61,7 @@ router.beforeEach((to, from, next) => {
   //   }
   // } else {
     if (!store.getters.isLoadRoutes)  initRouterAndMenuBefore()
-    if (to.matched.length == 0 || to.meta.requiresAuth || to.path === '/') {
+    if (to.matched.length == 0 || to.meta.requiresAuth ) {
       next('/login')
       NProgress.done()
     } else {

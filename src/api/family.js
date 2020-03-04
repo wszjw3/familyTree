@@ -8,6 +8,12 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 
 
 export default {
+
+  resetPasswd(params) {
+    console.log(params)
+    return http.post(URL + '/resetPasswd', params)
+  },
+
   register(params) {
     console.log(params)
     return http.post(URL + '/familyRegister', params)

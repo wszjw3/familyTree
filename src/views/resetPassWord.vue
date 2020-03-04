@@ -13,7 +13,9 @@
           <el-input :type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
         </el-form-item>
         <el-form-item prop="verification" >
-          <el-input :type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on"/>
+          <el-input :type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on">
+            <el-button size="mini" @click="sendCode()" slot="append" :disabled="loginForm.disabled">{{loginForm.disabled?`${loginForm.time}s重新发送`:'发送验证码'}}</el-button>
+          </el-input>
         </el-form-item>
 
         
@@ -30,8 +32,8 @@
         </el-form-item>
 
         
-        <el-form-item>
-          <el-checkbox v-model="checked">我已阅读并同意 家谱服务协议 </el-checkbox>
+        <el-form-item prop="checkpro">
+          <el-checkbox v-model="loginForm.checked">我已阅读并同意 家谱服务协议 </el-checkbox>
         </el-form-item>
         
 
@@ -40,7 +42,7 @@
           {{resultMessage}}
         </div>
 
-        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;background-color:#FF0000;">完&nbsp;&nbsp;成</el-button>
+        <el-button class="submit-buttom" :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;background-color:#FF0000;">完&nbsp;&nbsp;成</el-button>
         
       </el-form>
     </div>
@@ -50,31 +52,27 @@
 
 <script>
 import {
-  Account
+  Family
 } from '@/api'
 var md5 = require('md5')
 
 export default {
-  name: 'Login',
+  name: 'resetPasswd',
   data() {
-    const validateUserNo = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
-      } else {
-        callback()
-      }
-    }
-    const validateUsername = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入用户名'))
-      } else {
-        callback()
-      }
-    }
     
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
+      } else {
+        callback()
+      }
+    }
+
+    var validateCheckNewPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入新密码'))
+      } else if (value !== this.loginForm.password) {
+        callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
       }
@@ -84,38 +82,35 @@ export default {
         password: '',
         checkPass: '',
         phone: '',
+        checked: false,
         verification: '',
-        checked: false
+        time: 0,
+        disabled: false,
+        isSendCode: false,
+        sendCodeFlag: false
       },
       loginRules: {
-        userNo: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
-        ],
-        userFan: [
-          { required: true, message: '请输入姓', trigger: 'blur' }
-        ],
-        userFull: [
-          { required: true, message: '请输入名', trigger: 'blur' }
-        ],
-         sex: [
-            { required: true, message: '请选择性别', trigger: 'change' }
-          ],
-        password: [{
+        checkPass: [{
           required: true,
           trigger: 'blur',
           validator: validatePassword
+        }],
+        password: [{
+          required: true,
+          trigger: 'blur',
+          validator: validateCheckNewPass
         }],
         phone: [
           { required: true, message: '请输入手机号', trigger: 'blur' }
         ],
         verification: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
+        ],
+        checkpro:[
+          { required: true, message: '请阅读并同意', trigger: 'change' }
         ]
-
-
-        
       },
+      intervalid:null,
       passwordType: 'password',
       loading: false,
       showDialog: false,
@@ -127,7 +122,6 @@ export default {
     this.$np.done()
   },
   created() {
-    this.getGraph()
   },
   methods: {
     showPwd() {
@@ -137,13 +131,42 @@ export default {
         this.passwordType = 'password'
       }
     },
-    //获取图片验证码
-    getGraph() {
-      Account.getGraph().then((content) => {
+    //发送验证码
+    sendCode() {
+      // var a=this.$refs.form2.validateField("validateGraphForm2")
+      // console.log(a)
+      if (this.registerForm.sendCodeFlag) {
+        return
+      }
+      var params = {
+        phone: this.registerForm.phone
+      }
+      Family.sendVerifyCode(params).then((content) => {
         console.log(content)
-        console.log(Account.showgraph(content.graphId))
-        this.loginForm.graphId = content.graphId
-        this.$set(this.loginForm,'graphUrl',Account.showgraph(content.graphId))
+        if (content.code && content.code == '000000') {
+          this.loginForm.disabled = true
+          this.loginForm.time = 60
+          this.loginForm.isSendCode = true
+          this.loginForm.sendCodeFlag = true
+          this.intervalid = setInterval(() => {
+            if (this.loginForm.time > 0) {
+              this.loginForm.time--
+            } else {
+              this.loginForm.disabled = false
+              this.loginForm.sendCodeFlag = false
+              clearInterval(this.intervalid)
+            }
+          }, 1000)
+          
+          this.$message({
+            type: 'success',
+            message: '验证码发送成功'
+          })
+        } else {
+          this.$message.error('' == content.message ? '验证码发送失败' : content.message)
+          this.loginForm.disabled = false
+          this.loginForm.time = 0
+        }
       })
     },
     handleLogin() {
@@ -157,21 +180,20 @@ export default {
           // this.loading = false
           // })
           const params = {
-            userNo: this.loginForm.userNo,
-            password: md5(this.loginForm.password),
-            appid: process.env.VUE_APP_BASE_APPID,
-            graphId: this.loginForm.graphId,
-            graphLoginCode: this.loginForm.graphLoginCode
+            phone: this.loginForm.phone,
+            newpasswd: this.loginForm.password,
+            verification: this.loginForm.verification
           }
 
-          Account.login(params).then((res) => {
+          Family.resetPasswd(params).then((res) => {
             console.log(res)
-            if (res.result === '0') {
-              this.$store.dispatch('setToken', res.token)
-              this.$router.push('/')
+            if (res.code === '000000') {
+              this.$message({
+                type: 'success',
+                message: '密码修改成功'
+              })
             } else {
-              this.resultMessage = res.resultMessage
-              this.getGraph()
+              this.$message.error(res.message);
             }
           })
         } else {
@@ -233,7 +255,7 @@ a {
             width: 85%;
             overflow: hidden;
             margin: 1rem auto 0;
-            .el-button {
+            .submit-buttom {
                 margin-bottom: 25px;
                 width: 100%;
                 height: 51px;

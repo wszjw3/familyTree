@@ -66,7 +66,7 @@
 import {
   Family
 } from '@/api'
-
+import { MessageBox } from 'element-ui'
 export default {
   name: 'Login',
   data() {
@@ -131,8 +131,6 @@ export default {
         verification: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
-
-
         
       },
       intervalid:null,
@@ -161,7 +159,7 @@ export default {
       }
       Family.sendVerifyCode(params).then((content) => {
         console.log(content)
-        if (content.result && content.result == '0') {
+        if (content.code && content.code == '000000') {
           this.registerForm.disabled = true
           this.registerForm.time = 60
           this.registerForm.isSendCode = true
@@ -181,9 +179,9 @@ export default {
             message: '验证码发送成功'
           })
         } else {
-          this.$message.error('' == content.resultMessage ? '验证码发送失败' : content.resultMessage)
-          this.form2.disabled = false
-          this.form2.time = 0
+          this.$message.error('' == content.message ? '验证码发送失败' : content.message)
+          this.registerForm.disabled = false
+          this.registerForm.time = 0
         }
       })
     },
@@ -209,7 +207,9 @@ export default {
             if (res.code === '000000') {
               this.$router.push('/login')
             } else {
-              
+              MessageBox.alert( res.message, '', {
+                confirmButtonText: '确定',
+              })
             }
           })
         } else {

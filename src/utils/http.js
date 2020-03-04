@@ -1,6 +1,5 @@
 import axios from 'axios'
-import store from '../store'
-import { Message, MessageBox } from 'element-ui'
+import { MessageBox } from 'element-ui'
 
 axios.defaults.timeout = 10000
 axios.defaults.baseURL = process.env.VUE_APP_API_ROOT
