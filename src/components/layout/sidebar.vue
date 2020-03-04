@@ -4,7 +4,7 @@
       <i v-show="!collapsed" class="el-icon-d-arrow-left"></i>
       <i v-show="collapsed" class="el-icon-d-arrow-right"></i>
     </div>
-    <el-menu :default-active="$route.path" background-color="#304156" text-color="#fefefe" active-text-color="#409EFF"
+    <el-menu :default-active="$route.path" background-color="#eee" text-color="#4a4a4a" active-text-color="#409EFF"
       :collapse="collapsed" router class="page-menu">
       <template v-for="(menu, index) in menus">
         <el-submenu v-if="menu.children" :index="!menu.path ? 'sub' + index : menu.path" :key="index">
@@ -55,7 +55,7 @@
     display: table-cell;
     vertical-align: top;
     width: 200px;
-    background-color: #304156;
+    background-color: #eeeeee;
     height: 100%;
     transition: width .3s ease-out;
 
@@ -64,13 +64,13 @@
       padding: 15px;
       color: #bfcbd9;
       text-align: center;
-      border-bottom: 1px solid rgb(67, 80, 96);
+      border-bottom: 1px solid #aaa5a5;
     }
 
     .page-menu {
       border-right: 0px;
       .iconfont{
-        color: #e6e6e6;
+        color: #000;
       }
       .iconfont:hover{
         color: #ffffff;

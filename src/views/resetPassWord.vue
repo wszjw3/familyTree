@@ -4,37 +4,44 @@
   <div class="login-container clearfix">
     <div class="login-left"><img src="../assets/imgs/family.png" alt=""></div>
     <div class="loginForm-container">
-      <div class="loginForm-top">登录</div>
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-width="100px" label-position="left">
+      <div class="loginForm-top">重新设置密码</div>
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"  hide-required-asterisk="true">
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <el-form-item prop="nickname" label="用户名:">
-          <el-input v-model="loginForm.nickname" placeholder="请输入用户名" name="nickname" type="text" auto-complete="on" />
+        <el-form-item prop="phone" >
+          <el-input :type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
+        </el-form-item>
+        <el-form-item prop="verification" >
+          <el-input :type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on"/>
         </el-form-item>
 
-        <el-form-item prop="password" label="密码:">
-          <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin" />
+        
+
+
+        <el-form-item prop="password">
+          <el-input :type="passwordType" v-model="loginForm.password" placeholder="
+  请设置不少于6位的新密码" name="password" auto-complete="on" />
         </el-form-item>
 
-        <el-form-item prop="graphLoginCode" label="验证码: ">
-          <el-input v-model="loginForm.graphLoginCode" placeholder="请输入图形验证码">
-            <template slot="append">
-              <el-tooltip class="item" effect="dark" content="点击刷新" placement="bottom">
-                <img style="width:5rem;" @click="getGraph()" :src='loginForm.graphUrl' />
-              </el-tooltip>
-            </template>
-          </el-input>
+        <el-form-item prop="checkPass" >
+          <el-input :type="passwordType" v-model="loginForm.checkPass" placeholder="
+  请再次输入新密码" name="password" auto-complete="on" />
         </el-form-item>
+
+        
+        <el-form-item>
+          <el-checkbox v-model="checked">我已阅读并同意 家谱服务协议 </el-checkbox>
+        </el-form-item>
+        
+
+       
         <div class="errorMsgBox">
           {{resultMessage}}
         </div>
-        <el-form-item>
-          <el-checkbox v-model="loginForm.checked">记住用户名</el-checkbox>
-          <router-link class="forgetPwd" :to="{ path: '/account/forgetPwd' }">忘记密码？</router-link>
-        </el-form-item>
-        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;">登&nbsp;&nbsp;录</el-button>
-        <router-link class="forgetPwd" :to="{ path: '/register' }">没有账号？立即注册</router-link>
+
+        <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;background-color:#FF0000;">完&nbsp;&nbsp;成</el-button>
+        
       </el-form>
     </div>
   </div>
@@ -43,12 +50,20 @@
 
 <script>
 import {
-  Family
+  Account
 } from '@/api'
+var md5 = require('md5')
 
 export default {
   name: 'Login',
   data() {
+    const validateUserNo = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else {
+        callback()
+      }
+    }
     const validateUsername = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入用户名'))
@@ -56,6 +71,7 @@ export default {
         callback()
       }
     }
+    
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -65,29 +81,40 @@ export default {
     }
     return {
       loginForm: {
-        nickname: '',
         password: '',
-        graphLoginCode: '',
-        graphId: '',
-        graphUrl: '',
+        checkPass: '',
+        phone: '',
+        verification: '',
         checked: false
       },
       loginRules: {
-        nickname: [{
-          required: true,
-          trigger: 'blur',
-          validator: validateUsername
-        }],
+        userNo: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
+        ],
+        userFan: [
+          { required: true, message: '请输入姓', trigger: 'blur' }
+        ],
+        userFull: [
+          { required: true, message: '请输入名', trigger: 'blur' }
+        ],
+         sex: [
+            { required: true, message: '请选择性别', trigger: 'change' }
+          ],
         password: [{
           required: true,
           trigger: 'blur',
           validator: validatePassword
         }],
-        graphLoginCode: [{
-          required: true,
-          trigger: 'blur',
-          message: '请输入图形验证码'
-        }]
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        verification: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
+        ]
+
+
+        
       },
       passwordType: 'password',
       loading: false,
@@ -112,9 +139,12 @@ export default {
     },
     //获取图片验证码
     getGraph() {
-      
-      this.$set(this.loginForm,'graphUrl',Family.showgraph())
-      
+      Account.getGraph().then((content) => {
+        console.log(content)
+        console.log(Account.showgraph(content.graphId))
+        this.loginForm.graphId = content.graphId
+        this.$set(this.loginForm,'graphUrl',Account.showgraph(content.graphId))
+      })
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -127,25 +157,20 @@ export default {
           // this.loading = false
           // })
           const params = {
-            nickname: this.loginForm.nickname,
-            passwd: this.loginForm.password,
-            check_code: this.loginForm.graphLoginCode
+            userNo: this.loginForm.userNo,
+            password: md5(this.loginForm.password),
+            appid: process.env.VUE_APP_BASE_APPID,
+            graphId: this.loginForm.graphId,
+            graphLoginCode: this.loginForm.graphLoginCode
           }
 
-          Family.login(params).then((res) => {
+          Account.login(params).then((res) => {
             console.log(res)
-            if (res.code === '000000') {
-              debugger
-              this.resultMessage = ''
-              this.$store.dispatch('setToken', res.data)
-              if(res.data.user_type === '3') {
-                this.$router.push('/familymanage')
-              }else {
-                this.$router.push({path: '/tree'})
-              }
-              
+            if (res.result === '0') {
+              this.$store.dispatch('setToken', res.token)
+              this.$router.push('/')
             } else {
-              this.resultMessage = res.message
+              this.resultMessage = res.resultMessage
               this.getGraph()
             }
           })
@@ -197,7 +222,7 @@ a {
         .loginForm-top {
           text-align: center;
           font-size: 28px;
-          color: #1890FF;
+          color: #6B6B6B;
         }
         .errorMsgBox {
             color: rgb(245, 108, 108);

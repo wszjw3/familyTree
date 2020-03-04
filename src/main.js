@@ -6,6 +6,8 @@ import ElementUI from 'element-ui'
 import NProgress from 'nprogress'
 import 'babel-polyfill'
 
+import 'vue-area-linkage/dist/index.css' // v2 or higher
+import VueAreaLinkage from 'vue-area-linkage'
 import './assets/icon/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
@@ -18,6 +20,7 @@ import {
 } from './router'
 
 Vue.use(ElementUI)
+Vue.use(VueAreaLinkage)
 
 NProgress.configure({
   showSpinner: false
@@ -31,31 +34,32 @@ if ('true' === process.env.VUE_APP_USE_MOCK) {
 import Account from './api/account'
 if (!store.getters.isLoadRoutes) initRouterAndMenuBefore()
 router.beforeEach((to, from, next) => {
+  debugger
   NProgress.start()
   console.log(from)
   console.log(to)
   // store.dispatch('initMenus', [].push(demoRouter))
-  if (store.getters.getToken) {
+  // if (store.getters.getToken) {
 
-    if (to.path === '/login' || to.path === '/forgetPwd' ||
-      blankRouter.filter(item => to.path.indexOf(item) > -1).length > 0) {
-      next('/')
-      NProgress.done()
-    } else {
-      Account.checkLogin(store.getters.getToken).then(res => {
-        if (res.token) {
-          // 初始化菜单
-          if (!store.getters.loadLoginRoutes) initRouterAndMenu()
-          next()
-        } else {
-          //token失效，清除toke n，跳转登录页面
-          store.dispatch('removeToken')
-          next('/login')
-          NProgress.done()
-        }
-      })
-    }
-  } else {
+  //   if (to.path === '/login' || to.path === '/forgetPwd' ||
+  //     blankRouter.filter(item => to.path.indexOf(item) > -1).length > 0) {
+  //     next('/')
+  //     NProgress.done()
+  //   } else {
+  //     Account.checkLogin(store.getters.getToken).then(res => {
+  //       if (res.token) {
+  //         // 初始化菜单
+  //         if (!store.getters.loadLoginRoutes) initRouterAndMenu()
+  //         next()
+  //       } else {
+  //         //token失效，清除toke n，跳转登录页面
+  //         store.dispatch('removeToken')
+  //         next('/login')
+  //         NProgress.done()
+  //       }
+  //     })
+  //   }
+  // } else {
     if (!store.getters.isLoadRoutes)  initRouterAndMenuBefore()
     if (to.matched.length == 0 || to.meta.requiresAuth || to.path === '/') {
       next('/login')
@@ -63,7 +67,7 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
-  }
+  // }
 })
 
 router.afterEach(() => {

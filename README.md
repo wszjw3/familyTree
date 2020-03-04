@@ -1,4 +1,4 @@
-# gh-eportal-template
+# familyTree
 
 ## Project setup
 ```

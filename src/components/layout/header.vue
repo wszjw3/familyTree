@@ -1,27 +1,39 @@
 <template>
 <div class="page-header clearfix">
   <div class="page-logo">
-    <!-- <img src="../../assets/imgs/guohua_logo.png" class="logo">国华人寿经代机构管理平台 -->
+    <img src="../../assets/imgs/family-logo.png" class="logo">根深叶茂
   </div>
   <div class="page-nav">
 
   </div>
   <div class="fr">
     <ul class="nav-bar">
-      <li class="nav-bar-item">
-        <el-dropdown @command="handleCommand">
+      <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
+        <el-button type="primary">主要按钮</el-button>
+     
+        <div class="nav-desc">
+          <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
+          <span>张三</span>
+          
+        </div>
+        <div>
+          <span>[推出]</span>
+        </div>
+        
+
+        
+        
+        <!-- <el-dropdown @command="handleCommand">
           <a class="nav-bar-item-link">我的账户</a>
           <el-dropdown-menu slot="dropdown" style="margin-top: -2px;transform-origin: center top 0px;">
             <el-dropdown-item command="accountInfo">查看账户信息</el-dropdown-item>
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
       </li>
     </ul>
   </div>
-  <div style="float: right;color:#fff">
-    <span>您好：{{userInfo.userName}}({{userInfo.companyName}})</span>
-  </div>
+  
 </div>
 </template>
 
@@ -58,20 +70,22 @@ export default {
 
 <style lang="less" scoped>
 .page-header {
-  background-color: #262a36;
+  background-color: #fff;
   height: 60px;
   line-height: 60px;
   width: 100%;
   z-index: 10;
+  border-bottom: 1px solid rgba(204, 204, 204, 1);
 }
 
 .page-header .page-logo {
   float: left;
-  color: #fff;
+  font-weight: 650;
+  font-style: normal;
+  font-size: 28px;
   padding-left: 20px;
-  font-size: 18px;
   .logo {
-    width: 1.5rem;
+    width: 3.5rem;
     vertical-align: middle;
     margin-right: 0.6rem;
   }
@@ -94,10 +108,20 @@ export default {
 .page-header .nav-bar .nav-bar-item {
   display: inline-block;
   margin-right: 30px !important;
+  .nav-desc {
+    width: 143px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 30px;
+  }
+   .userIcon {
+     color:#409EFF;
+     font-size: 30px;
+   }
 }
 
 .page-header .nav-bar .nav-bar-item .nav-bar-item-link {
-  color: rgb(255, 255, 255);
   display: block;
   padding: 0 20px;
   height: 60px;
