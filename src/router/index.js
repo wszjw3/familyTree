@@ -161,6 +161,17 @@ export const demoRouter = {
   name: '组件示例',
   icon: 'el-icon-message',
   children: [{
+        name: '首页',
+        path: '/',
+        view: '/',
+        component: () =>
+          import( /* webpackChunkName: "main" */ '@/views/search/index.vue'),
+        meta: {
+          requiresAuth: false,
+          resourceCode: ['user']
+        }
+      },
+      {
       name: '列表页面',
       path: '/table',
       view: '/demo/table',

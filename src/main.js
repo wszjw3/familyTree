@@ -14,8 +14,7 @@ import 'nprogress/nprogress.css'
 import Mock from './mock'
 
 import {
-  asynRouter,
-  blankRouter,
+  // asynRouter,
   demoRouter
 } from './router'
 
@@ -31,10 +30,9 @@ if ('true' === process.env.VUE_APP_USE_MOCK) {
   Mock.bootstrap()
 }
 
-import Account from './api/account'
+// import Account from './api/account'
 if (!store.getters.isLoadRoutes) initRouterAndMenuBefore()
 router.beforeEach((to, from, next) => {
-  debugger
   NProgress.start()
   console.log(from)
   console.log(to)
@@ -93,48 +91,48 @@ function initRouterAndMenuBefore() {
   store.dispatch('loadRoutes')
 }
 
-function initRouterAndMenu() {
-  console.log(asynRouter)
-  console.log('initRouterAndMenu')
-  Account.getMenus().then(res => {
-    if (res.menusList && res.viewCodes) {
-      res.menusList.push(demoRouter) //添加demo菜单正式上线请删除相关代码
-      store.dispatch('initMenus', res.menusList)
-      const homeRouter = [{
-        path: '/',
-        component: () => import( /* webpackChunkName: "layout" */ '@/components/layout/layout.vue'),
-        children: menuToRoutes(res.viewCodes, demoRouter.children.concat(asynRouter))
-      }]
-      console.log(homeRouter)
-      router.addRoutes(homeRouter)
-      router.addRoutes([{
-        path: '*',
-        component: () => import( /* webpackChunkName: "404" */ '@/views/404.vue')
-      }])
-      store.dispatch('loadLoginRoutes')
-    }
-  })
-}
+// function initRouterAndMenu() {
+//   console.log(asynRouter)
+//   console.log('initRouterAndMenu')
+//   Account.getMenus().then(res => {
+//     if (res.menusList && res.viewCodes) {
+//       res.menusList.push(demoRouter) //添加demo菜单正式上线请删除相关代码
+//       store.dispatch('initMenus', res.menusList)
+//       const homeRouter = [{
+//         path: '/',
+//         component: () => import( /* webpackChunkName: "layout" */ '@/components/layout/layout.vue'),
+//         children: menuToRoutes(res.viewCodes, demoRouter.children.concat(asynRouter))
+//       }]
+//       console.log(homeRouter)
+//       router.addRoutes(homeRouter)
+//       router.addRoutes([{
+//         path: '*',
+//         component: () => import( /* webpackChunkName: "404" */ '@/views/404.vue')
+//       }])
+//       store.dispatch('loadLoginRoutes')
+//     }
+//   })
+// }
 
-function menuToRoutes(codes = [], menus = [], routes = []) {
-  //添加子路由
-  for (let i = 0; i < menus.length; i++) {
-    const item = menus[i]
-    let flag = false
-    if (item.meta.resourceCode) {
-      let resourceCode = item.meta.resourceCode
-      if (codes.filter(item => resourceCode.indexOf(item) > -1).length > 0) {
-        flag = true
-      }
-    }
-    if (flag) {
-      //if (item.view) item.component = () => import( /* webpackChunkName: "main" */ '@/views' + item.view + '.vue')
-      if (item.path && item.component) routes.push(item)
-      menuToRoutes(codes, item.children, routes)
-    }
-  }
-  return routes
-}
+// function menuToRoutes(codes = [], menus = [], routes = []) {
+//   //添加子路由
+//   for (let i = 0; i < menus.length; i++) {
+//     const item = menus[i]
+//     let flag = false
+//     if (item.meta.resourceCode) {
+//       let resourceCode = item.meta.resourceCode
+//       if (codes.filter(item => resourceCode.indexOf(item) > -1).length > 0) {
+//         flag = true
+//       }
+//     }
+//     if (flag) {
+//       //if (item.view) item.component = () => import( /* webpackChunkName: "main" */ '@/views' + item.view + '.vue')
+//       if (item.path && item.component) routes.push(item)
+//       menuToRoutes(codes, item.children, routes)
+//     }
+//   }
+//   return routes
+// }
 
 new Vue({
   router,
