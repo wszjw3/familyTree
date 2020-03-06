@@ -9,29 +9,34 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 
 export default {
 
+  familyquery(params) {
+    console.log(params)
+    return http.post(URL + '/tree/query', params)
+  },
+
   resetPasswd(params) {
     console.log(params)
-    return http.post(URL + '/resetPasswd', params)
+    return http.post(URL + '/currency/resetPasswd', params)
   },
 
   register(params) {
     console.log(params)
-    return http.post(URL + '/familyRegister', params)
+    return http.post(URL + '/currency/familyRegister', params)
   },
 
   login(params) {
     console.log(params)
-    return http.post(URL + '/familyLogin', params)
+    return http.post(URL + '/currency/familyLogin', params)
   },
 
   // 发送验证码
   sendVerifyCode(params) {
     console.log(params)
-    return http.post(URL + '/phoneShortInfo', params)
+    return http.post(URL + '/currency/phoneShortInfo', params)
   },
   // 展示图形验证码
   showgraph() {
-    return URL + '/createCheckCodeImg?aa=' + Math.random()
+    return URL + '/currency/createCheckCodeImg?aa=' + Math.random()
   },
   
 }
