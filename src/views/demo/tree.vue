@@ -15,7 +15,7 @@ export default {
     FamilyTree
   },
   mounted() {
-      Family.familyquery({"user_id":"2"}).then(res => {
+      Family.familyquery({user_id: '2'}).then(res => {
         console.log(res.data)
       })
   },
