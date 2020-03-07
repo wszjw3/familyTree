@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import json from './example.json'
+// import json from './example.json'
 export default {
   name: 'FamilyTree',
   props: {

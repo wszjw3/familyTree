@@ -243,7 +243,7 @@ export const demoRouter = {
       component: () =>
         import( /* webpackChunkName: "main" */ '@/views/detail/index.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
       }
     },
     {

@@ -6,12 +6,12 @@
         "id": 1,
         "current": [
           {
-            "name": "孔至郎",
-            "male": 0
+            "user_name": "孔至郎",
+            "sex": "0"
           },
           {
-            "name": "章娇娇",
-            "male": 1
+            "user_name": "章娇娇",
+            "sex": "1"
           }
         ]
       },
@@ -19,9 +19,9 @@
         "id": 2,
         "current": [
           {
-            "name": "赵雪",
-            "male": 1,
-            "dead": true
+            "user_name": "赵雪",
+            "sex": "1",
+            "be_alive": "2"
           }
         ]
       }
@@ -35,12 +35,12 @@
         "id": 3,
         "current": [
           {
-            "name": "孔繁兴",
-            "male": 0
+            "user_name": "孔繁兴",
+            "sex": "0"
           },
           {
-            "name": "章笑笑",
-            "male": 1
+            "user_name": "章笑笑",
+            "sex": "1"
           }
         ]
       },
@@ -49,8 +49,8 @@
         "id": 4,
         "current": [
           {
-            "name": "孔繁娇",
-            "male": 1
+            "user_name": "孔繁娇",
+            "sex": "1"
           }
         ]
       },
@@ -59,12 +59,12 @@
         "id": 5,
         "current": [
           {
-            "name": "孔繁明",
-            "male": 0
+            "user_name": "孔繁明",
+            "sex": "0"
           },
           {
-            "name": "张敏",
-            "male": 1
+            "user_name": "张敏",
+            "sex": "1"
           }
         ]
       },
@@ -73,12 +73,12 @@
         "id": 6,
         "current": [
           {
-            "name": "孔繁水",
-            "male": 0
+            "user_name": "孔繁水",
+            "sex": "0"
           },
           {
-            "name": "陈梦婷",
-            "male": 1
+            "user_name": "陈梦婷",
+            "sex": "1"
           }
         ]
       }
@@ -92,12 +92,12 @@
         "id": 7,
         "current": [
           {
-            "name": "孔敏书",
-            "male": 0
+            "user_name": "孔敏书",
+            "sex": "0"
           },
           {
-            "name": "章娇娇",
-            "male": 1
+            "user_name": "章娇娇",
+            "sex": "1"
           }
         ]
       },
@@ -106,8 +106,8 @@
         "id": 8,
         "current": [
           {
-            "name": "孔琳",
-            "male": 1
+            "user_name": "孔琳",
+            "sex": "1"
           }
         ]
       },
@@ -116,12 +116,12 @@
         "id": 9,
         "current": [
           {
-            "name": "孔繁耿",
-            "male": 0
+            "user_name": "孔繁耿",
+            "sex": "0"
           },
           {
-            "name": "孙娇",
-            "male": 1
+            "user_name": "孙娇",
+            "sex": "1"
           }
         ]
       },
@@ -130,8 +130,8 @@
         "id": 10,
         "current": [
           {
-            "name": "孔繁娇",
-            "male": 1
+            "user_name": "孔繁娇",
+            "sex": "1"
           }
         ]
       },
@@ -140,8 +140,8 @@
         "id": 11,
         "current": [
           {
-            "name": "孔敏",
-            "male": 1
+            "user_name": "孔敏",
+            "sex": "1"
           }
         ]
       }
