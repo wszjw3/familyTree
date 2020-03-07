@@ -222,7 +222,7 @@ export const demoRouter = {
       component: () =>
         import( /* webpackChunkName: "main" */ '@/views/search/index.vue'),
       meta: {
-        requiresAuth: true,
+        requiresAuth: false,
       }
     },
     {
