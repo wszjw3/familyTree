@@ -4,12 +4,12 @@
       <layout-header></layout-header>
     </el-header>
     <el-container>
-      <el-aside width="auto" :style="{height: mainHeight}">
+      <!-- <el-aside width="auto" :style="{height: mainHeight}">
         <layout-sidebar></layout-sidebar>
-      </el-aside>
+      </el-aside> -->
       <el-main :style="{height: mainHeight}">
         <!--  style="background: #f0f2f5;" -->
-        <layout-breadcrumb></layout-breadcrumb>
+        <!-- <layout-breadcrumb></layout-breadcrumb> -->
         <transition name="fade" mode="out-in">
           <router-view></router-view>
         </transition>
@@ -20,14 +20,14 @@
 
 <script>
   import LayoutHeader from '@/components/layout/header'
-  import LayoutSidebar from '@/components/layout/sidebar'
-  import LayoutBreadcrumb from '@/components/layout/breadcrumb'
+  // import LayoutSidebar from '@/components/layout/sidebar'
+  // import LayoutBreadcrumb from '@/components/layout/breadcrumb'
 
   export default {
     components: {
       LayoutHeader,
-      LayoutSidebar,
-      LayoutBreadcrumb
+      // LayoutSidebar,
+      // LayoutBreadcrumb
     },
     data() {
       const item = {

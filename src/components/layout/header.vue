@@ -9,7 +9,7 @@
   <div class="fr">
     <ul class="nav-bar">
       <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
-        <el-button type="primary">主要按钮</el-button>
+        <el-button type="success">创建新家谱</el-button>
      
         <div class="nav-desc">
           <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
@@ -17,7 +17,7 @@
           
         </div>
         <div>
-          <span>[推出]</span>
+          <span>[退出]</span>
         </div>
         
 
