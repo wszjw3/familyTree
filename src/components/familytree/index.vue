@@ -20,10 +20,10 @@
           <div
             v-for="(key, kdx) in t"
             :key="kdx"
-            :ref="key.id + '-' + (key.parent ? key.parent : '' )"
+            :data-node="key.id + '-' + (key.parent !== undefined ? key.parent : '' )"
             :class="[
               idx !== 0 ? 'px-sm' : '',
-              key.id + '-' + (key.parent ? key.parent : '' )
+              'tree-node'
             ]"
             :id="key.id.toString()"
           >
@@ -32,13 +32,13 @@
               :key="edx"
               class="leaf"
               :class="[
-                ele.male === 1 && idx !== treeData.length - 1 && findChildWidthId(key.id) ? 'tree-after' : '',
-                (ele.male === 0 && idx !== 0) || (key.parent && key.current.length === 1) || (key.current.length === 1 && idx !== 0) ? 'tree-before' : '',
-                key.current.length === 1 && idx !== 0 ? 'no-border' : '',
-                ele.dead ? 'dashed' : 'solid'
+                ele.sex === '2' && idx !== treeData.length - 1 && findChildWidthId(key.id) ? 'tree-after' : '',
+                (ele.sex === '1' && idx !== 0) || (key.parent !== undefined && key.current.length === 1) || (key.current.length === 1 && idx !== 0) ? 'tree-before' : '',
+                key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? 'no-border' : '',
+                ele.be_alive === '2' ? 'dashed' : 'solid'
               ]"
             >
-              {{ele.name}}{{ele.male === 1 ? '(女)' : ''}}
+              {{ele.user_name}}{{ele.sex === '2' ? '(女)' : ''}}
 
             </div>
           </div>
@@ -64,12 +64,11 @@ export default {
   },
   computed: {
     treeData () {
-      // return json
       let res = []
-      json.forEach(item => {
+      this.data.forEach(item => {
         let parent = []
         item.children.forEach(key => {
-          if (key.parent && parent.indexOf(key.parent) === -1) {
+          if (key.parent !== undefined && parent.indexOf(key.parent) === -1) {
             parent.push(key.parent)
           }
         })
@@ -89,22 +88,17 @@ export default {
         }
         res.push(item)
       })
-      res.forEach(item => {
-        item.test.forEach(t => {
-          t.forEach(t1 => {
-            console.log(t1)
-          })
-        })
-      })
       return res
     }
   },
   mounted () {
-    const _self = this
-    window.onresize = () => {
-      _self.handleDrawConnectLine()
-    }
-    this.handleDrawConnectLine()
+    this.$nextTick(() => {
+
+      window.onresize = () => {
+        this.interval()
+      }
+      this.interval()
+    })
   },
   destroyed () {
     window.onresize = null
@@ -117,13 +111,32 @@ export default {
         document.body.removeChild(item)
       })
     },
+    interval () {
+      const _this = this
+      const fn = setInterval(() => {
+        const node = document.querySelectorAll('.tree-node')
+        if (node.length === 0) {
+          _this.interval()
+        } else {
+          _this.handleDrawConnectLine()
+          clearInterval(fn)
+        }
+      }, 300)
+    },
+
     handleDrawConnectLine () {
       this.clearConnectLine()
       this.$nextTick(() => {
-        for (let i in this.$refs) {
-          if (i.split('-')[1] !== '') {
-            const fromId = i.split('-')[0]
-            const toId = i.split('-')[1]
+        const node = document.querySelectorAll('.tree-node')
+        let dataset = []
+        node.forEach(v => {
+          dataset.push(v.dataset.node)
+        })
+        for (let i in dataset) {
+          const val = dataset[i]
+          if (val.split('-')[1]) {
+            const fromId = val.split('-')[0]
+            const toId = val.split('-')[1]
             const from = document.getElementById(fromId).firstChild
             const fromRect = from.getBoundingClientRect()
             const to = document.getElementById(toId).lastChild
