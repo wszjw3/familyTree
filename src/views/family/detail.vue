@@ -21,9 +21,18 @@
       <el-col :span="8">
         <p>
           捐献记录
-          <el-button type="success" size="small">捐赠</el-button>
-          <el-button type="primary" size="small">导出家谱树</el-button>
-          <el-button type="primary" size="small">分享</el-button>
+          <el-button
+            type="success"
+            size="small"
+          >捐赠</el-button>
+          <el-button
+            type="primary"
+            size="small"
+          >导出家谱树</el-button>
+          <el-button
+            type="primary"
+            size="small"
+          >分享</el-button>
         </p>
         <h2 class="familytree-info-title">
           家谱树信息
@@ -47,69 +56,122 @@
 
 <script>
 import FamilyTree from '@/components/familytree/index'
-import {
-  Family
-} from '@/api'
+import { Family } from '@/api'
 export default {
   name: 'Detail',
   components: {
     FamilyTree
   },
-  data () {
+  data() {
     return {
-      treeData: []
-    }
-  },
-  computed: {
-    title () {
-      return '【孔】回山井塘孔氏'
-    },
-    familytreeInfo () {
-      return [
+      treeData: [],
+      familytreeInfo: [
         {
           label: '家谱名称',
-          name: '[孔]回山井塘孔氏'
+          name: ''
         },
         {
-          label: '家谱名称',
-          name: '[孔]回山井塘孔氏'
+          label: '创建日期',
+          name: ''
         },
         {
-          label: '家谱名称',
-          name: '[孔]回山井塘孔氏'
+          label: '代数',
+          name: ''
         },
         {
-          label: '家谱名称',
-          name: '[孔]回山井塘孔氏'
+          label: '激活人数/总人数',
+          name: ''
         },
         {
-          label: '家谱名称',
-          name: '[孔]回山井塘孔氏'
+          label: '始祖',
+          name: ''
+        },
+        {
+          label: '当前管理员/手机号',
+          name: ''
+        },
+        {
+          label: '历史管理员',
+          name: ''
+        },
+        {
+          label: '剩余修谱金额',
+          name: ''
         }
       ]
     }
   },
-  created () {
+  computed: {
+    title() {
+      return this.familytreeInfo.length > 0 ? this.familytreeInfo[0].name : ''
+    }
+  },
+  created() {
+    this.getFamilyInfo()
     this.getTreeData()
   },
   methods: {
-    getTreeData () {
+    getFamilyInfo() {
+      Family.familyInfo({ user_id: '2' }).then(res => {
+        if (!res.data) {
+          return
+        }
+        this.familytreeInfo = [
+          {
+            label: '家谱名称',
+            name: res.data.family_name
+          },
+          {
+            label: '创建日期',
+            name: res.data.create_time
+          },
+          {
+            label: '代数',
+            name: res.data.level
+          },
+          {
+            label: '激活人数/总人数',
+            name: res.data.claim + '/' + res.data.total
+          },
+          {
+            label: '始祖',
+            name: res.data.ancestor
+          },
+          {
+            label: '当前管理员/手机号',
+            name: res.data.manage_name + '/' + res.data.manage_phone
+          },
+          {
+            label: '历史管理员',
+            name: res.data.his_manage_name
+          },
+          {
+            label: '剩余修谱金额',
+            name: res.data.balance_amt
+          }
+        ]
+      })
+    },
+    getTreeData() {
       let id = 0
-      Family.familyquery({user_id: '2'}).then(res => {
+      Family.familyquery({ user_id: '2' }).then(res => {
+        if (!res.data) {
+          return
+        }
         let result = []
         res.data.forEach(item => {
           let obj = {}
           obj.level = item.character
           obj.children = []
 
-          item.collection.forEach((c) => {
-            if ( c.wife && c.wife.length && c.wife.length > 0 ) {
+          item.collection.forEach(c => {
+            if (c.wife && c.wife.length && c.wife.length > 0) {
               c.wife.forEach((w, wi) => {
                 let childrenObj = {
                   id: id,
                   current: []
                 }
-                if ( wi === 0 ) {
+                if (wi === 0) {
                   if (c.landlord.mother_id) {
                     childrenObj.parent = ''
                   }
@@ -133,7 +195,6 @@ export default {
               obj.children.push(childrenObj)
               id++
             }
-
           })
 
           result.push(obj)
@@ -178,12 +239,12 @@ export default {
 
   .num {
     font-size: 32px;
-    color: #7FBC5D
+    color: #7fbc5d;
   }
 
   .normal {
     font-size: 14px;
-    margin-left: 20px
+    margin-left: 20px;
   }
 }
 .familytree-info-title {

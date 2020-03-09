@@ -38,5 +38,7 @@ export default {
   showgraph() {
     return URL + '/currency/createCheckCodeImg?aa=' + Math.random()
   },
-  
+  familyInfo (params) {
+    return http.post(URL + '/tree/queryTree', params)
+  }
 }

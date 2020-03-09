@@ -238,10 +238,20 @@ export const demoRouter = {
     },
     {
       name: '家谱详情页',
-      path: '/detail',
-      view: '/detail',
+      path: '/family/detail',
+      view: '/family/detail',
       component: () =>
-        import( /* webpackChunkName: "main" */ '@/views/detail/index.vue'),
+        import( /* webpackChunkName: "main" */ '@/views/family/detail.vue'),
+      meta: {
+        requiresAuth: false,
+      }
+    },
+    {
+      name: '创建家谱',
+      path: '/family/create',
+      view: '/family/create',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/family/create.vue'),
       meta: {
         requiresAuth: false,
       }
