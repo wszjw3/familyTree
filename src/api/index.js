@@ -5,6 +5,7 @@ import Fund from './fund'
 import Invoice from './invoice'
 import Esp from './esp'
 import Family from './family'
+import Manage from './manage'
 export {
   User,
   Account,
@@ -12,5 +13,6 @@ export {
   Fund,
   Invoice,
   Esp,
-  Family
+  Family,
+  Manage
 }

@@ -2,22 +2,28 @@
 <section>
   <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
     <el-form inline :model="searchForm">
-      <el-row>
+      <el-row type="flex" class="row-bg" justify="end">
         <el-form-item label="家谱名称：">
           <el-input v-model="searchForm.name" placeholder='请输入' clearable></el-input>
         </el-form-item>
         <el-form-item label="状态：">
           <el-select v-model="searchForm.status" filterable placeholder="请选择" clearable>
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            <el-option v-for="item in searchForm.options" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="选择日期：">
-          <el-date-picker v-model="searchForm.startDate" type="date" placeholder="承保日期起" :picker-options="pickerOptionsStart" format="yyyy-MM-dd" value-format="timestamp">
+          <el-date-picker v-model="searchForm.startDate" type="daterange" range-separator="-"  start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="searchFormSubmit()">查询</el-button>
+          <el-button type="primary"  @click="searchFormSubmit()">搜索</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type=""  @click="searchFormSubmit()">重置</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"  @click="searchFormSubmit()">导出数据</el-button>
         </el-form-item>
         <!-- <el-form-item>
           <el-button @click="resetSearchForm">重置</el-button>
@@ -25,139 +31,35 @@
       </el-row>
     </el-form>
   </el-col>
-  <el-table :data="subAccountList" highlight-current-row :header-cell-style="{background:'#eef1f6',color:'#606266'}" v-loading="loading">
-    <el-table-column property="subUserName" label="账户名称" min-width="150" align="center">
+  <el-table :data="subAccountList" border highlight-current-row :header-cell-style="{background:'#eef1f6',color:'#606266'}" v-loading="loading">
+    <el-table-column property="subUserName" label="时间" min-width="150" align="center">
     </el-table-column>
     <!-- <el-table-column property="appCode" label="应用代码" min-width="80" align="center">
     </el-table-column> -->
-    <el-table-column property="email" label="邮箱" min-width="150" align="center">
+    <el-table-column property="email" label="家谱树名称" min-width="150" align="center">
     </el-table-column>
-    <el-table-column property="mobile" label="手机号" min-width="120" align="center">
+    <el-table-column property="mobile" label="姓名" min-width="120" align="center">
     </el-table-column>
-    <el-table-column property="roleName" label="角色" min-width="120" align="center">
+    <el-table-column property="roleName" label="手机号码" min-width="120" align="center">
     </el-table-column>
-    <el-table-column label="经代机构" min-width="120" align="center">
-      <template slot-scope="scope">
-        <el-popover trigger="hover" placement="right">
-          <el-table :header-cell-style="{background:'#eef1f6',color:'#606266'}" border :data="JSON.parse(scope.row.remark ? scope.row.remark : '[]')">
-            <el-table-column width="120" property="agentCode" label="经代机构编码"></el-table-column>
-            <el-table-column width="120" property="name" label="经代机构"></el-table-column>
-          </el-table>
-          <div slot="reference" class="name-wrapper">
-            <el-tag size="medium">{{ JSON.parse(scope.row.remark ? scope.row.remark : '[]')[0].name +"..."}}</el-tag>
-          </div>
-        </el-popover>
-      </template>
+    <el-table-column label="类型" min-width="120" align="center">
     </el-table-column>
-    <el-table-column label="操作" fixed="right" align="center" min-width="200">
-      <template slot-scope="scope">
-        <el-button size="mini" @click="handleReset(scope.$index, scope.row)">修改</el-button>
-        <el-button size="mini" @click="handleResetPwd(scope.$index, scope.row)">重置密码</el-button>
-        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">停用</el-button>
-      </template>
+    <el-table-column label="支付方式" min-width="120" align="center">
+    </el-table-column>
+    <el-table-column label="金额（元）" min-width="120" align="center">
+    </el-table-column>
+    <el-table-column label="剩余修谱基金（元）" min-width="120" align="center">
+    </el-table-column>
+    <el-table-column label="本次抽成（元）" min-width="120" align="center">
+    </el-table-column>
+    <el-table-column label="平台抽成总额（元）" min-width="120" align="center">
     </el-table-column>
   </el-table>
   <el-col :span="24" class="toolbar">
-    <el-button type="primary" icon="el-icon-plus" @click="addDialogVisible=!addDialogVisible">新增子账户</el-button>
     <el-pagination style="float:right" :pager-count="5" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30,40,100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="records">
     </el-pagination>
   </el-col>
-  <!-- 修改子账户信息弹窗 -->
-  <el-dialog title="修改子账户信息" :visible.sync="reviseFormDialogVisible" :close-on-click-modal="false" custom-class="dialog">
-    <el-form :model="reviseForm" :rules="reviseFormRules" ref="reviseForm" label-width="100px" status-icon>
-      <el-form-item label='登陆账号' prop="subUserName">
-        <el-input v-model="reviseForm.subUserName" placeholder="登陆账号" clearable>
-          <template slot="append">@{{userInfo.userName}}</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label='手机号' prop="mobile">
-        <el-input v-model="reviseForm.mobile" placeholder="手机号" clearable></el-input>
-      </el-form-item>
-      <el-form-item label='邮箱' prop="email">
-        <el-input v-model="reviseForm.email" placeholder="邮箱" clearable></el-input>
-      </el-form-item>
-      <el-form-item label='角色' prop="roleId">
-        <el-select v-model="reviseForm.roleId" placeholder="角色">
-          <el-option v-for="item in subRoleList" :key="item.roleId" :label="item.name" :value="item.roleId">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="经代机构">
-        <el-select v-model="reviseForm.remark" placeholder='经代机构' filterable multiple clearable style="width:100%">
-          <el-option v-for="item in userInfo.remark" :key="item.agentCode" :label="item.name" :value="item.agentCode">
-            <span style="float: left">{{ item.name }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.agentCode }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click.native="reviseFormDialogVisible=false">取消</el-button>
-      <el-button type="primary" @click.native="reviseSubmit">提交</el-button>
-    </div>
-  </el-dialog>
-  <!-- 修改子账户信息弹窗 -->
-  <!-- 修改密码弹窗 -->
-  <el-dialog title="重置密码" :visible.sync="resetPassDialogVisible" custom-class="dialog" center>
-    <el-form :model="resetPass" :rules="resetPassRules" ref="resetPass" label-width="4rem">
-      <el-form-item label="旧密码" prop="oldPassword">
-        <el-input type="password" v-model="resetPass.oldPassword" placeholder="旧密码" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="新密码" prop="pass">
-        <el-input type="password" v-model="resetPass.pass" placeholder="新密码" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="确认新密码" prop="checkPass">
-        <el-input type="password" v-model="resetPass.checkPass" placeholder="确认新密码" clearable></el-input>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click.native="resetPassDialogVisible = false">取消</el-button>
-      <el-button type="primary" @click.native="resetPassSubmit">提交</el-button>
-    </div>
-  </el-dialog>
-  <!-- 修改密码弹窗 -->
-  <!-- 新增子账户 -->
-  <el-dialog title="新增子账户" :visible.sync="addDialogVisible" :close-on-click-modal="false" custom-class="dialog">
-    <el-form :model="addForm" :rules="addAccountRules" ref="addForm" label-width="80px" status-icon>
-      <el-form-item label="登陆账号" prop="name">
-        <el-input v-model="addForm.name" placeholder='登陆账号' clearable>
-          <template slot="append">@{{userInfo.userName}}</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="登陆密码" prop="password">
-        <el-input type="password" v-model="addForm.password" placeholder='登陆密码' clearable></el-input>
-      </el-form-item>
-      <el-form-item label="确认密码" prop="checkPass">
-        <el-input type="password" v-model="addForm.checkPass" placeholder='确认密码' clearable></el-input>
-      </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model.number="addForm.mobile" placeholder='手机号' clearable></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="addForm.email" placeholder='邮箱' clearable></el-input>
-      </el-form-item>
-      <el-form-item label="角色" prop="roleId">
-        <el-select v-model="addForm.roleId" placeholder='角色'>
-          <el-option v-for="item in subRoleList" :key="item.roleId" :label="item.name" :value="item.roleId">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="经代机构">
-        <el-select v-model="addForm.remark" filterable placeholder='经代机构' multiple clearable style="width:100%">
-          <el-option v-for="item in userInfo.remark" :key="item.agentCode" :label="item.name" :value="item.agentCode">
-            <span style="float: left">{{ item.name }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.agentCode }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click.native="addDialogVisible=false">取消</el-button>
-      <el-button type="primary" @click.native="addSubmit">提交</el-button>
-    </div>
-  </el-dialog>
-  <!-- 新增子账户 -->
 </section>
 </template>
 <script>
@@ -249,9 +151,7 @@ export default {
       subRoleList: [],
       userInfo: {},
       searchForm: {
-        mobile: '',
         name: '',
-        email: '',
         status: '',
         options: [{
           value: '选项1',
