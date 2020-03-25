@@ -108,7 +108,7 @@ export default {
         userFan: '',
         userFull: '',
         sex: '',
-        selected: [],
+        selected: ['140000', '140100', '140105'],
         address: ''
       },
       firstRules: {
@@ -180,7 +180,7 @@ export default {
       console.log(tab, event)
     },
     onSubmit() {
-      console.log('submit!')
+      console.log(this.firstForm.selected)
     },
     getAccountInfo() {
       Account.getUserInfo().then((res) =>{
@@ -188,6 +188,7 @@ export default {
       })
     },
     resetForm(formName) {
+      console.log(this.firstForm.selected)
       console.log('11111111111!')
       this.$refs[formName].resetFields()
     }
