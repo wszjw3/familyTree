@@ -40,5 +40,8 @@ export default {
   },
   familyInfo (params) {
     return http.post(URL + '/tree/queryTree', params)
+  },
+  familyCreate (params) {
+    return http.post(URL + '/tree/add', params)
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-cascader v-model="selection" :options="options" @change="handleChange"></el-cascader>
+  <el-cascader v-model="selection" :options="options" @change="handleChange" :placeholder="placeholder"></el-cascader>
 </template>
 
 <script>
@@ -12,6 +12,10 @@ export default {
       default () {
         return []
       }
+    },
+    placeholder: {
+      type: String,
+      default: '请输入'
     }
   },
   data () {

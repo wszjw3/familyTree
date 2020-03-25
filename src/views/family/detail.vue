@@ -213,7 +213,7 @@ export default {
               result.forEach(res => {
                 res.children.forEach(child2 => {
                   child2.current.forEach(cur2 => {
-                    if (cur2.user_id === cur.mother_id) {
+                    if (cur2.user_id === Number(cur.mother_id)) {
                       child.parent = child2.id
                     }
                   })
@@ -222,6 +222,7 @@ export default {
             }
           })
         })
+        console.log(result)
         this.treeData = result
       })
     }

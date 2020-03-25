@@ -14,16 +14,23 @@
     <div class="container">
       <div class="title">
         创建新家谱：
+        <span class="desc">
+          将根据家庭地址自动生成家谱名称，请准确填写至城镇（农业户口填写至村）
+        </span>
         <img class="close-icon" :src="closePng" />
       </div>
       <div class="content">
         <div class="header">
-          <p class="desc">
-            家谱树的创建，从“爸爸”，“妈妈” 和 “孩子” 开始
-          </p>
-          <p class="desc">
-            将根据家庭地址自动生成家谱名称，请准确填写至城镇（农业户口填写至村）
-          </p>
+          <div class="location">
+            <span class="required">*</span>
+            所在地：
+            <city-picker v-model="location" placeholder="请选择省市区"/>
+          </div>
+          <div class="tree-address">
+            <span class="required">*</span>
+            家谱树地址：
+            <el-input class="input" v-model="family_tree_address" placeholder="请输入"/>
+          </div>
         </div>
         <div class="body">
           <el-table
@@ -32,7 +39,7 @@
           >
             <el-table-column
               align="center"
-              prop="relation"
+              prop="relation_desc"
               min-width="50"
             >
             </el-table-column>
@@ -46,12 +53,12 @@
                 姓
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.firstname"></el-input>
+                <el-input v-model="scope.row.surname"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               align="center"
-              prop="lastname"
+              prop="surname"
               min-width="90"
             >
               <template slot="header">
@@ -59,40 +66,30 @@
                 名
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.lastname"></el-input>
+                <el-input v-model="scope.row.fame"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               align="center"
-              prop="character"
+              prop="character_name"
               label="字辈"
               min-width="90"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.character" :disabled="scope.row.relation === '母亲'"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="lastname2"
-              label="名"
-              min-width="90"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.lastname2" :disabled="scope.row.relation === '母亲'"></el-input>
+                <el-input v-model="scope.row.character_name" :disabled="scope.row.relation === '母亲' || scope.row.relation === '祖母'"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               align="center"
               prop="sex"
-              min-width="90"
+              min-width="120"
             >
               <template slot="header">
                 <span class="required">* </span>
                 性别
               </template>
               <template slot-scope="scope">
-                <el-select v-model="scope.row.sex" placeholder="请选择" :disabled="scope.row.relation !== '孩子'" >
+                <el-select v-model="scope.row.sex" placeholder="请选择" :disabled="scope.row.relation_desc !== '孩子'" >
                   <el-option
                     v-for="item in sexOptions"
                     :key="item.value"
@@ -104,16 +101,28 @@
             </el-table-column>
             <el-table-column
               align="center"
-              prop="borndate"
+              prop="born_time"
               min-width="150"
             >
               <template slot="header">
-                <span class="required">* </span>
+                是否在世
+              </template>
+              <template slot-scope="scope">
+                  <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
+                  <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="born_time"
+              min-width="150"
+            >
+              <template slot="header">
                 出生日期
               </template>
               <template slot-scope="scope">
                   <el-date-picker
-                    v-model="scope.row.borndate"
+                    v-model="scope.row.born_time"
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期">
@@ -138,38 +147,24 @@
             <el-table-column
               align="center"
               prop="address"
-              min-width="250"
-            >
-              <template slot="header">
-                <span class="required">* </span>
-                地址
-              </template>
-              <template slot-scope="scope">
-                <city-picker v-model="scope.row.address"/>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="detailAddress"
               min-width="200"
             >
               <template slot="header">
-                <span class="required">* </span>
-                详细地址
+                地址
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.detailAddress"></el-input>
+                <el-input v-model="scope.row.address"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               align="center"
-              prop="weddingDate"
+              prop="marry_time"
               label="结婚时间"
               min-width="150"
             >
               <template slot-scope="scope">
                   <el-date-picker
-                    v-model="scope.row.weddingDate"
+                    v-model="scope.row.marry_time"
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期">
@@ -190,6 +185,8 @@
 <script>
 import closePng from '@/assets/imgs/close.png'
 import CityPicker from '@/components/city-picker/index.vue'
+import { Family } from '@/api'
+
 export default {
   name: 'FamilyCreate',
   components: {
@@ -198,45 +195,78 @@ export default {
   data () {
     return {
       closePng,
+      location: [],
+      family_tree_address: '',
       tableData: [
         {
-          relation: '父亲',
-          firstname: '1',
-          lastname: '',
-          character: '',
-          lastname2: '',
+          relation: 'grandfather',
+          relation_desc: '祖父',
+          surname: '',
+          character_name: '',
+          fame: '',
           sex: '1',
-          borndate: '',
-          deaddata: '',
-          address: [],
-          detailAddress: '',
-          weddingDate: ''
+          be_alive: '',
+          born_time: '',
+          death_time: '',
+          address: '',
+          marry_time: '',
+          family_name: ''
         },
         {
-          relation: '母亲',
-          firstname: '',
-          lastname: '',
-          character: '',
-          lastname2: '',
+          relation: 'grandmother',
+          relation_desc: '祖母',
+          surname: '',
+          character_name: '',
+          fame: '',
           sex: '2',
-          borndate: '',
-          deaddata: '',
-          address: [],
-          detailAddress: '',
-          weddingDate: ''
+          be_alive: '',
+          born_time: '',
+          death_time: '',
+          address: '',
+          marry_time: '',
+          family_name: ''
         },
         {
-          relation: '孩子',
-          firstname: '',
-          lastname: '',
-          character: '',
-          lastname2: '',
+          relation: 'father',
+          relation_desc: '父亲',
+          surname: '',
+          character_name: '',
+          fame: '',
+          sex: '1',
+          be_alive: '',
+          born_time: '',
+          death_time: '',
+          address: '',
+          marry_time: '',
+          family_name: ''
+        },
+        {
+          relation: 'mother',
+          relation_desc: '母亲',
+          surname: '',
+          character_name: '',
+          fame: '',
+          sex: '2',
+          be_alive: '',
+          born_time: '',
+          death_time: '',
+          address: '',
+          marry_time: '',
+          family_name: ''
+        },
+        {
+          relation: 'boy',
+          relation_desc: '孩子',
+          surname: '',
+          character_name: '',
+          fame: '',
           sex: '',
-          borndate: '',
-          deaddata: '',
-          address: [],
-          detailAddress: '',
-          weddingDate: ''
+          be_alive: '',
+          born_time: '',
+          death_time: '',
+          address: '',
+          marry_time: '',
+          family_name: ''
         }
       ]
     }
@@ -257,7 +287,45 @@ export default {
   },
   methods: {
     handleCancel () {},
-    handleSave () {}
+    handleSave () {
+      if (this.validate()) {
+        let params = {}
+        params.user_id = '1'
+        params.create_user = 'admin'
+        params.manage_phone = '13100022001'
+        params.prov_code = this.location[0]
+        params.city_code = this.location[1]
+        params.area_code = this.location[2]
+        params.family_tree_address = this.family_tree_address
+        this.tableData.forEach(item => {
+          params[item.relation] = {}
+          for (let key in item) {
+            params[item.relation][key] = item[key]
+          }
+          delete params[item.relation].relation
+          delete params[item.relation].relation_desc
+        })
+        Family.familyCreate(params).then(res => {
+          if (!res.data) {
+            this.$message.error(res.message)
+            return
+          }
+          this.$alert('保存成功')
+        })
+      }
+    },
+    validate () {
+      let flag = true
+      if (this.location.length === 0 || this.family_tree_address === '') {
+        flag = false
+      }
+      this.tableData.forEach(item => {
+        if (item.surname === '' || item.fame === '' || item.sex === '') {
+          flag = false
+        }
+      })
+      return flag
+    }
   }
 
 }
@@ -287,7 +355,7 @@ export default {
 
   .container {
     padding: 10px;
-    width: 1164px;
+    width: 1350px;
     margin: 100px auto;
     background-color: #ffffff;
 
@@ -296,7 +364,9 @@ export default {
       font-size: 18px;
       padding: 10px 0 20px 0;
       border-bottom: 1px solid #ddd;
-
+      .desc {
+        font-size: 20px
+      }
       .close-icon {
         position: absolute;
         right: 10px;
@@ -308,15 +378,22 @@ export default {
     }
 
     .content {
-
       .header {
+        margin: 30px 0;
 
-        .desc {
-          text-align: center;
-          font-size: 20px
+        .location,
+        .tree-address {
+          display: inline-block
+        }
+
+        .tree-address {
+          margin-left: 100px;
+          .input {
+            display: inline-block;
+            width: 220px
+          }
         }
       }
-
       .footer {
         padding: 50px;
         text-align: center;

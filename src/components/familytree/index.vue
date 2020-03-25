@@ -37,9 +37,17 @@
                 key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? 'no-border' : '',
                 ele.be_alive === '2' ? 'dashed' : 'solid'
               ]"
+              @mouseover="handleMouseOver"
+              @mouseleave="handleMouseLeave"
             >
-              {{ele.user_name}}{{ele.sex === '2' ? '(女)' : ''}}
+              {{ele.user_name}}
+              <div v-if="ele.sex === '2' || ele.claim === '1'" class="icon-wrapper">
+                <img v-if="ele.sex === '2'" :src="sexImg" class="sex-img">
+                <span v-if="ele.claim === '1'" class="required">*</span>
+              </div>
+              <!-- <div class="action-wrapper">
 
+              </div> -->
             </div>
           </div>
         </div>
@@ -52,6 +60,7 @@
 
 <script>
 // import json from './example.json'
+import sexImg from '@/assets/imgs/sex.png'
 export default {
   name: 'FamilyTree',
   props: {
@@ -60,6 +69,11 @@ export default {
       default () {
         return []
       }
+    }
+  },
+  data () {
+    return {
+      sexImg
     }
   },
   computed: {
@@ -169,7 +183,9 @@ export default {
         })
       })
       return flag
-    }
+    },
+    handleMouseOver () {},
+    handleMouseLeave () {}
   }
 }
 </script>
@@ -197,7 +213,23 @@ export default {
 
     .leaf {
       padding: 10px 20px;
+      width: 100px;
       display: inline-block;
+
+      .icon-wrapper {
+        display: inline-block;
+        position: absolute;
+        min-width: 40px;
+        margin-top: -5px;
+        .required {
+          color: red;
+          font-size: 30px;
+        }
+        .sex-img {
+          width: 26px;
+          height: 26px
+        }
+      }
     }
 
     .tree-key {
