@@ -37,23 +37,33 @@
                 key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? 'no-border' : '',
                 ele.be_alive === '2' ? 'dashed' : 'solid'
               ]"
-              @mouseover="handleMouseOver"
-              @mouseleave="handleMouseLeave"
             >
               {{ele.user_name}}
               <div v-if="ele.sex === '2' || ele.claim === '1'" class="icon-wrapper">
                 <img v-if="ele.sex === '2'" :src="sexImg" class="sex-img">
                 <span v-if="ele.claim === '1'" class="required">*</span>
               </div>
-              <!-- <div class="action-wrapper">
-
-              </div> -->
+              <div class="action-wrapper" :style="{marginTop: key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? '-1px' : ''}">
+                <div class="pie">
+                  <div class="line1"></div>
+                  <div class="line2"></div>
+                  <div class="line3"></div>
+                  <div class="first" @click="handleViewDetail(ele)">
+                    详情
+                  </div>
+                  <div class="second" @click="handleEdit(ele)">
+                    编辑
+                  </div>
+                  <div class="thired" @click="handleAdd(ele)">
+                    添加
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
-
     </div>
   </div>
 </template>
@@ -73,11 +83,15 @@ export default {
   },
   data () {
     return {
-      sexImg
+      sexImg,
+      hoverNode: {}
     }
   },
   computed: {
     treeData () {
+      if (this.data.length === 0) {
+        return []
+      }
       let res = []
       this.data.forEach(item => {
         let parent = []
@@ -129,7 +143,7 @@ export default {
       const _this = this
       const fn = setInterval(() => {
         const node = document.querySelectorAll('.tree-node')
-        if (node.length === 0) {
+        if (node.length === 0 && this.data.length !== 0) {
           _this.interval()
         } else {
           _this.handleDrawConnectLine()
@@ -184,8 +198,17 @@ export default {
       })
       return flag
     },
-    handleMouseOver () {},
-    handleMouseLeave () {}
+    handleViewDetail (ele) {
+      this.$emit('onView', ele)
+    },
+    handleEdit (ele) {
+      this.$emit('onEdit', ele)
+
+    },
+    handleAdd (ele) {
+      this.$emit('onAdd', ele)
+
+    }
   }
 }
 </script>
@@ -215,6 +238,7 @@ export default {
       padding: 10px 20px;
       width: 100px;
       display: inline-block;
+      position: relative;
 
       .icon-wrapper {
         display: inline-block;
@@ -228,6 +252,79 @@ export default {
         .sex-img {
           width: 26px;
           height: 26px
+        }
+      }
+
+      &:hover {
+        .action-wrapper {
+          display: block;
+        }
+      }
+
+      .action-wrapper {
+        display: none;
+        position: absolute;
+        z-index: 99;
+        background-color: #fff;
+        top: 40px;
+        left: 0;
+        .pie {
+          border: 1px solid #000;
+          border-radius: 50%;
+          width: 80px;
+          height: 80px;
+          position: relative;
+
+          .line1 {
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            top: 0;
+            left: 39px;
+            background-color: #000;
+          }
+
+          .line2 {
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            top: 30px;
+            left: 23px;
+            transform: rotate(55deg);
+            background-color: #000;
+          }
+
+          .line3 {
+            width: 1px;
+            height: 40px;
+            position: absolute;
+            top: 30px;
+            left: 57px;
+            background-color: #000;
+            transform: rotate(125deg);
+          }
+          .first {
+            position: absolute;
+            cursor: pointer;
+            left: 5px;
+            top: 20px;
+          }
+
+          .second {
+            position: absolute;
+            cursor: pointer;
+            right: 5px;
+            top: 20px;
+            color: red;
+          }
+
+          .thired {
+            position: absolute;
+            cursor: pointer;
+            left: 25px;
+            bottom: 10px;
+            color: #1890FF;
+          }
         }
       }
     }
@@ -288,32 +385,4 @@ export default {
     border-bottom: 1px solid #000
   }
 }
-// .tree {
-//   .tree-item {
-//     width: 100%;
-//     height: 100%;
-//     display: inline-block;
-//     border-bottom: 1px solid #000;
-//     .tree-item-key {
-//       display: inline-block;
-//       position: relative;
-//       height: 100%;
-//       &:after {
-//         content: '';
-//         height: 20px;
-//         width: 1px;
-//         position: absolute;
-//         left: 50%;
-//         top: 100%;
-//         border-left: 1px solid #000;
-//       }
-//       .tree-item-key-ele {
-//         height: 100%;
-//         padding: 5px 8px;
-//         display: inline-block;
-//         text-align: center
-//       }
-//     }
-//   }
-// }
 </style>

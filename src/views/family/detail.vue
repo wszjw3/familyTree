@@ -12,55 +12,369 @@
       </span>
     </div>
     <el-row>
-      <el-col :span="16">
-        <p>
-          首页 > {{title}}
-        </p>
-        <family-tree :data="treeData"></family-tree>
+      <el-col :span="18">
+        <p>首页 > {{title}}</p>
+        <family-tree :data="treeData" @onView="handleViewNode" @onEdit="handleEditNode" @onAdd="handleAddNode"></family-tree>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="6">
         <p>
           捐献记录
-          <el-button
-            type="success"
-            size="small"
-          >捐赠</el-button>
-          <el-button
-            type="primary"
-            size="small"
-          >导出家谱树</el-button>
-          <el-button
-            type="primary"
-            size="small"
-          >分享</el-button>
+          <el-button type="success" size="small">捐赠</el-button>
+          <el-button type="primary" size="small">导出家谱树</el-button>
+          <el-button type="primary" size="small">分享</el-button>
         </p>
-        <h2 class="familytree-info-title">
-          家谱树信息
-        </h2>
-        <div
-          v-for="(item, idx) in familytreeInfo"
-          :key="'familytreeInfo_' + idx"
-          class="familytree-item"
-        >
-          <span>
-            {{item.label + '： '}}
-          </span>
-          <span>
-            {{item.name}}
-          </span>
+        <div v-if="!isShowNodeDetail">
+          <h2 class="familytree-info-title">家谱树信息</h2>
+          <div
+            v-for="(item, idx) in familytreeInfo"
+            :key="'familytreeInfo_' + idx"
+            class="familytree-item"
+          >
+            <span>{{item.label + '： '}}</span>
+            <span>{{item.name}}</span>
+          </div>
         </div>
+        <life-info v-else :info="nodeDetail" />
       </el-col>
     </el-row>
+    <el-dialog
+      title="成员信息变更："
+      :visible.sync="show.editModal"
+      width="60%"
+    >
+      <el-table
+        :data="editData"
+        style="width: 100%; overflow: auto"
+      >
+        <el-table-column
+          align="center"
+          prop="relation_desc"
+          min-width="50"
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="firstname"
+          min-width="90"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            姓
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.surname"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="surname"
+          min-width="90"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            名
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.fame"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="character_name"
+          label="字辈"
+          min-width="90"
+        >
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.character_name" :disabled="scope.row.relation === 'mother' || scope.row.relation === 'grandmother'"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="sex"
+          min-width="120"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            性别
+          </template>
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.sex" placeholder="请选择" :disabled="scope.row.relation_desc !== '孩子'" >
+              <el-option
+                v-for="item in sexOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="born_time"
+          min-width="150"
+        >
+          <template slot="header">
+            是否在世
+          </template>
+          <template slot-scope="scope">
+              <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
+              <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="born_time"
+          min-width="150"
+        >
+          <template slot="header">
+            出生日期
+          </template>
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.born_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+                :picker-options="pickerOptions[scope.row.relation].born_time"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="death_time"
+          label="死亡日期"
+          min-width="150"
+        >
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.death_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+                :picker-options="pickerOptions[scope.row.relation].death_time"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="address"
+          min-width="200"
+        >
+          <template slot="header">
+            地址
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.address"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="marry_time"
+          label="结婚时间"
+          min-width="150"
+        >
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.marry_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelEdit">取消</el-button>
+        <el-button type="primary" @click="handleConfirmEdit">申请修改</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="添加家谱树成员"
+      :visible.sync="show.addModal"
+      width="60%"
+    >
+      <el-table
+        class="add-table"
+        :data="addData"
+        style="width: 100%; overflow: auto"
+      >
+        <el-table-column
+          align="center"
+          prop="relation_desc"
+          min-width="50"
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="firstname"
+          min-width="90"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            姓
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.surname"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="surname"
+          min-width="90"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            名
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.fame"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="character_name"
+          label="字辈"
+          min-width="90"
+        >
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.character_name" :disabled="scope.row.relation === 'mother' || scope.row.relation === 'grandmother'"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="sex"
+          min-width="120"
+        >
+          <template slot="header">
+            <span class="required">* </span>
+            性别
+          </template>
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.sex" placeholder="请选择" :disabled="scope.row.relation_desc !== '孩子'" >
+              <el-option
+                v-for="item in sexOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="born_time"
+          min-width="150"
+        >
+          <template slot="header">
+            是否在世
+          </template>
+          <template slot-scope="scope">
+              <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
+              <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="born_time"
+          min-width="150"
+        >
+          <template slot="header">
+            出生日期
+          </template>
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.born_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+                :picker-options="pickerOptions[scope.row.relation].born_time"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="death_time"
+          label="死亡日期"
+          min-width="150"
+        >
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.death_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+                :picker-options="pickerOptions[scope.row.relation].death_time"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="address"
+          min-width="200"
+        >
+          <template slot="header">
+            地址
+          </template>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.address"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="marry_time"
+          label="结婚时间"
+          min-width="150"
+        >
+          <template slot-scope="scope">
+              <el-date-picker
+                v-model="scope.row.marry_time"
+                type="date"
+                style="width: 140px"
+                placeholder="选择日期"
+              >
+              </el-date-picker>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="operation">
+        <span @click="handleAdd('father')">
+          添加父亲
+        </span>
+        <span @click="handleAdd('mother')">
+          添加母亲
+        </span>
+        <span @click="handleAdd('spouse')">
+          添加配偶
+        </span>
+        <span @click="handleAdd('brother')">
+          添加兄妹
+        </span>
+        <span @click="handleAdd('child')">
+          添加子女
+        </span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCancelAdd">取消</el-button>
+        <el-button type="primary" @click="handleConfirmAdd">提交审核</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import FamilyTree from '@/components/familytree/index'
 import { Family } from '@/api'
+import lifeInfo from './cmp/lifeInfo'
 export default {
   name: 'Detail',
   components: {
-    FamilyTree
+    FamilyTree,
+    lifeInfo
   },
   data() {
     return {
@@ -98,7 +412,15 @@ export default {
           label: '剩余修谱金额',
           name: ''
         }
-      ]
+      ],
+      isShowNodeDetail: false,
+      nodeDetail: {},
+      show: {
+        editModal: false,
+        addModal: false
+      },
+      editData: [],
+      AddData: [],
     }
   },
   computed: {
@@ -112,7 +434,7 @@ export default {
   },
   methods: {
     getFamilyInfo() {
-      Family.familyInfo({ user_id: '2' }).then(res => {
+      Family.familyInfo({ user_id: '1003' }).then(res => {
         if (!res.data) {
           return
         }
@@ -154,7 +476,7 @@ export default {
     },
     getTreeData() {
       let id = 0
-      Family.familyquery({ user_id: '2' }).then(res => {
+      Family.familyquery({ user_id: '1003' }).then(res => {
         if (!res.data) {
           return
         }
@@ -225,7 +547,29 @@ export default {
         console.log(result)
         this.treeData = result
       })
-    }
+    },
+    handleViewNode (prop) {
+      const user_id = prop.user_id
+      Family.familyNodeView({user_id: user_id}).then(res => {
+        if (res.code !== '000000') {
+          this.$alert(res.message)
+          return
+        }
+        this.isShowNodeDetail = true
+        this.nodeDetail = res.data
+      })
+    },
+    handleEditNode (prop) {
+      this.show.editModal = true
+    },
+    handleAddNode (prop) {
+      this.show.addModal = true
+    },
+    handleCancelEdit () {},
+    handelConfirmEdit () {},
+    handleCancelAdd () {},
+    handelConfirmAdd () {},
+    handleAdd(type) {}
   }
 }
 </script>
@@ -255,4 +599,22 @@ export default {
 .familytree-item {
   padding: 5px 0;
 }
+
+.operation {
+  width: 80%;
+  margin: 40px auto;
+  padding: 10px;
+  text-align: center;
+  border: 1px dashed #ddd;
+
+  span {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 8px;
+    margin: 0 10px;
+    display: inline-block;
+    cursor: pointer
+  }
+}
+
 </style>

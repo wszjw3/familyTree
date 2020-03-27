@@ -142,7 +142,6 @@ export default {
               }else {
                 this.$router.push({path: '/tree'})
               }
-              
             } else {
               this.resultMessage = res.message
               this.getGraph()

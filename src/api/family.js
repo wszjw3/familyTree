@@ -44,5 +44,14 @@ export default {
   },
   familyCreate (params) {
     return http.post(URL + '/tree/add', params)
+  },
+  familyNodeView (params) {
+    return http.post(URL + '/tree/queryLifeHis', params)
+  },
+  familyAddRecord (params) {
+    return http.post(URL + '/tree/addRecord', params)
+  },
+  familyQueryLabel (params) {
+    return http.post(URL + '/tree/queryLabel', params)
   }
 }

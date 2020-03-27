@@ -76,7 +76,7 @@
               min-width="90"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.character_name" :disabled="scope.row.relation === '母亲' || scope.row.relation === '祖母'"></el-input>
+                <el-input v-model="scope.row.character_name" :disabled="scope.row.relation === 'mother' || scope.row.relation === 'grandmother'"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -125,22 +125,26 @@
                     v-model="scope.row.born_time"
                     type="date"
                     style="width: 140px"
-                    placeholder="选择日期">
+                    placeholder="选择日期"
+                    :picker-options="pickerOptions[scope.row.relation].born_time"
+                  >
                   </el-date-picker>
               </template>
             </el-table-column>
             <el-table-column
               align="center"
-              prop="deaddate"
+              prop="death_time"
               label="死亡日期"
               min-width="150"
             >
               <template slot-scope="scope">
                   <el-date-picker
-                    v-model="scope.row.deaddate"
+                    v-model="scope.row.death_time"
                     type="date"
                     style="width: 140px"
-                    placeholder="选择日期">
+                    placeholder="选择日期"
+                    :picker-options="pickerOptions[scope.row.relation].death_time"
+                  >
                   </el-date-picker>
               </template>
             </el-table-column>
@@ -167,7 +171,9 @@
                     v-model="scope.row.marry_time"
                     type="date"
                     style="width: 140px"
-                    placeholder="选择日期">
+                    placeholder="选择日期"
+                    @change="value => { handleChangeMarryTime(value, scope.row) }"
+                  >
                   </el-date-picker>
               </template>
             </el-table-column>
@@ -283,14 +289,106 @@ export default {
           value: '2'
         }
       ]
+    },
+    pickerOptions () {
+      return {
+        grandfather: {
+          born_time: {
+            disabledDate: time => {
+              if (this.tableData[0].death_time != '') {
+                  return time.getTime() > this.tableData[0].death_time
+              }
+            }
+          },
+          death_time: {
+            disabledDate:  time => {
+              if (this.tableData[0].born_time != '') {
+                  return time.getTime() < this.tableData[0].born_time
+              }
+            }
+          }
+        },
+        grandmother: {
+          born_time: {
+            disabledDate: time => {
+              if (this.tableData[1].death_time != '') {
+                  return time.getTime() > this.tableData[1].death_time
+              }
+            }
+          },
+          death_time: {
+            disabledDate:  time => {
+              if (this.tableData[1].born_time != '') {
+                  return time.getTime() < this.tableData[1].born_time
+              }
+            }
+          }
+        },
+        father: {
+          born_time: {
+            disabledDate: time => {
+              if (this.tableData[2].death_time != '') {
+                  return time.getTime() > this.tableData[2].death_time
+              }
+            }
+          },
+          death_time: {
+            disabledDate:  time => {
+              if (this.tableData[2].born_time != '') {
+                  return time.getTime() < this.tableData[2].born_time
+              }
+            }
+          }
+        },
+        mother: {
+          born_time: {
+            disabledDate: time => {
+              if (this.tableData[3].death_time != '') {
+                  return time.getTime() > this.tableData[3].death_time
+              }
+            }
+          },
+          death_time: {
+            disabledDate:  time => {
+              if (this.tableData[3].born_time != '') {
+                  return time.getTime() < this.tableData[3].born_time
+              }
+            }
+          }
+        },
+        boy: {
+          born_time: {
+            disabledDate: time => {
+              if (this.tableData[4].death_time != '') {
+                  return time.getTime() > this.tableData[4].death_time
+              }
+            }
+          },
+          death_time: {
+            disabledDate:  time => {
+              if (this.tableData[4].born_time != '') {
+                  return time.getTime() < this.tableData[4].born_time
+              }
+            }
+          }
+        }
+      }
     }
   },
   methods: {
+    handleChangeMarryTime (value, row) {
+      if (row.relation === 'father') {
+        this.tableData[3].marry_time = value
+      }
+      if (row.relation === 'grandfather') {
+        this.tableData[1].marry_time = value
+      }
+    },
     handleCancel () {},
     handleSave () {
       if (this.validate()) {
         let params = {}
-        params.user_id = '1'
+        params.user_id = '1003'
         params.create_user = 'admin'
         params.manage_phone = '13100022001'
         params.prov_code = this.location[0]
@@ -306,11 +404,12 @@ export default {
           delete params[item.relation].relation_desc
         })
         Family.familyCreate(params).then(res => {
-          if (!res.data) {
+          if (res.code === '000000') {
+            this.$alert('保存成功')
+          } else {
             this.$message.error(res.message)
             return
           }
-          this.$alert('保存成功')
         })
       }
     },
