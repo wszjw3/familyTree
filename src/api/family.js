@@ -8,8 +8,6 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 
 
 export default {
-
-
   familyquery(params) {
     console.log(params)
     return http.post(URL + '/tree/query', params)
@@ -39,19 +37,34 @@ export default {
   showgraph() {
     return URL + '/currency/createCheckCodeImg?aa=' + Math.random()
   },
-  familyInfo (params) {
+  familyInfo(params) {
     return http.post(URL + '/tree/queryTree', params)
   },
-  familyCreate (params) {
+  familyCreate(params) {
     return http.post(URL + '/tree/add', params)
   },
-  familyNodeView (params) {
+  familyNodeView(params) {
     return http.post(URL + '/tree/queryLifeHis', params)
   },
-  familyAddRecord (params) {
+  familyAddRecord(params) {
     return http.post(URL + '/tree/addRecord', params)
   },
-  familyQueryLabel (params) {
+  familyQueryLabel(params) {
     return http.post(URL + '/tree/queryLabel', params)
+  },
+  familyQueryUser(params) {
+    return http.post(URL + '/tree/queryUser', params)
+  },
+  familyUpdateUser(params) {
+    return http.post(URL + '/tree/update', params)
+  },
+  familyQueryMother(params) {
+    return http.post(URL + '/tree/queryMother', params)
+  },
+  familyAddUser(params) {
+    return http.post(URL + '/tree/insert', params)
+  },
+  familyQuery(params) {
+    return http.post(URL + '/tree/queryEldest', params)
   }
 }

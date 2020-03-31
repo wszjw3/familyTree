@@ -1,6 +1,6 @@
 <template>
 <section>
- 
+
   <div class="login-container clearfix">
     <div class="login-left"><img src="../assets/imgs/family.png" alt=""></div>
     <div class="loginForm-container">
@@ -112,9 +112,9 @@ export default {
     },
     //获取图片验证码
     getGraph() {
-      
+
       this.$set(this.loginForm,'graphUrl',Family.showgraph())
-      
+
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -140,7 +140,7 @@ export default {
               if(res.data.user_type === '3') {
                 this.$router.push('/familymanage')
               }else {
-                this.$router.push({path: '/tree'})
+                this.$router.push({path: '/family/detail'})
               }
             } else {
               this.resultMessage = res.message

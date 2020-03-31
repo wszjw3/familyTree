@@ -24,11 +24,13 @@
       <div class="search-block">
         按条件选择：
         <div class="inline-block ml-md">
-          <el-input v-model="search.surname" placeholder="按姓氏" @input="handleQuery">
+          <el-input v-model="search.surname" @input="handleQuery">
+            <template slot="prepend">按姓氏：</template>
           </el-input>
         </div>
         <div class="inline-block ml-md">
-          <el-input v-model="search.area" placeholder="按地区" @input="handleQuery">
+          <el-input v-model="search.area" @input="handleQuery">
+            <template slot="prepend">按地区：</template>
           </el-input>
         </div>
         <div class="inline-block ml-md">
@@ -55,25 +57,14 @@
       </div>
     </div>
     <div class="result">
-      <div v-if="noresult" class="no-result">
-        <router-link :to="{path: '/create'}" class="routerLink">
+      <div v-if="result.length === 0 && searched" class="no-result">
+        <router-link :to="{path: '/family/create'}" class="routerLink">
           家族谱还未创建，请创建管理
           <a>立即创建</a>
         </router-link>
       </div>
       <div v-else>
-        <h3>搜索结果：共包含 3 棵家谱树、80,123 人</h3>
-        <div class="inline-block">家族名人：</div>
-        <div class="inline-block">
-          <router-link :to="{path: '/detail'}" class="celebrity">
-            <span
-              v-for="(item, idx) in celebrity"
-              :key="'celebrity_' + idx"
-            >
-              {{item}}{{idx < celebrity.length - 1 ? '，' : ''}}
-            </span>
-          </router-link>
-        </div>
+        <h3>搜索结果：共包含 {{treeCount}} 棵家谱树、{{totalPeople}} 人</h3>
         <result-cmp :data="result" class="mt-md"></result-cmp>
       </div>
     </div>
@@ -99,7 +90,8 @@ export default {
         area: [],
         text: ''
       },
-      result: ''
+      result: [],
+      searched: false
     }
   },
   computed: {
@@ -109,16 +101,24 @@ export default {
     userName () {
       return 'test'
     },
-    noresult () {
-      return false
+    treeCount () {
+      return this.result.length
     },
-    celebrity () {
-      return ['孔子', '孔融']
+    totalPeople () {
+      let count = 0
+      this.result.forEach(item => {
+        count += parseInt(item.total)
+      })
+      return count
     }
   },
   methods: {
     handleQuery () {
-      Family.familyQuery().then(res => {
+      const params = {
+        eldest_son_flag: this.$router.query.eldest_son_flag
+      }
+      Family.familyQuery(params).then(res => {
+        this.searched = true
         if (res.data && res.code === '000000') {
           this.result = res.data
         } else {

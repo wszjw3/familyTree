@@ -165,7 +165,7 @@ export const demoRouter = {
         path: '/',
         view: '/',
         component: () =>
-          import( /* webpackChunkName: "main" */ '@/views/search/index.vue'),
+          import( /* webpackChunkName: "main" */ '@/views/family/index.vue'),
         meta: {
           requiresAuth: false,
           resourceCode: ['user']
@@ -217,10 +217,10 @@ export const demoRouter = {
     },
     {
       name: '搜索页',
-      path: '/search',
-      view: '/search',
+      path: '/family/index',
+      view: '/family/index',
       component: () =>
-        import( /* webpackChunkName: "main" */ '@/views/search/index.vue'),
+        import( /* webpackChunkName: "main" */ '@/views/family/index.vue'),
       meta: {
         requiresAuth: false,
       }
@@ -241,7 +241,7 @@ export const demoRouter = {
       path: '/family/detail',
       view: '/family/detail',
       component: () =>
-        import( /* webpackChunkName: "main" */ '@/views/family/detail.vue'),
+        import( /* <webpack></webpack>ChunkName: "main" */ '@/views/family/detail.vue'),
       meta: {
         requiresAuth: false,
       }

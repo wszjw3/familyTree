@@ -96,7 +96,7 @@ export default {
   position: absolute;
   top: 50px;
   left: -1px;
-  width: 30vw;
+  width: 25vw;
   text-align: left;
   border: 1px solid #ddd;
   border-top: none;

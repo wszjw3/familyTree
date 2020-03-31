@@ -6,19 +6,19 @@
           v-for="(item, idx) in data"
           :key="'tr_' + idx"
         >
-          <td>
+          <td style="width: 60px">
             {{item.level}}
           </td>
-          <td>
+          <td style="width: 150px;">
             {{item.family_name}}
           </td>
-          <td>
+          <td style="width: 100px">
             （{{item.level + '世/' + item.total + '人'}}）
           </td>
           <td>
-            （{{item.level + '/'}}）
+            {{item.fame}}
           </td>
-          <td>
+          <td style="width: 100px">
             <router-link :to="{path: '/detail', query: {id: item.user_id}}">查看</router-link>
           </td>
         </tr>
