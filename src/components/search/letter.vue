@@ -1,8 +1,8 @@
 <template>
   <div>
     <a
-      v-for="item in enLetter"
-      :key="'letter_' + item"
+      v-for="(item, idx) in enLetter"
+      :key="'letter_' + idx"
       class="letter"
       :class="item.children.includes(select) ? 'active' : ''"
     >
@@ -13,7 +13,7 @@
           :key="'letter_detail_' + key"
           class="detail-item"
           :class="select === key ? 'active' : ''"
-          @click="handleSelect(key)"
+          @click="handleSelect(key, item)"
         >
           {{key}}
         </a>
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { Manage } from '@/api'
 export default {
   name: 'Letter',
   props: {
@@ -36,6 +37,7 @@ export default {
   data () {
     return {
       select: this.value,
+      enLetter: []
     }
   },
   watch: {
@@ -43,22 +45,28 @@ export default {
       this.select = val
     }
   },
-  computed: {
-    enLetter () {
-      let arr = []
-      for(var i = 65; i < 91; i++){
-        let obj = {}
-        obj.name = String.fromCharCode(i)
-        obj.children = ['a', 'b', 'c']
-        arr.push(obj)
-      }
-      return arr
-    }
+  created () {
+    this.getOpts()
   },
   methods: {
-    handleSelect (val) {
-      this.select = val
-      this.$emit('input', val)
+    getOpts () {
+      Manage.surnameFind().then(res => {
+        if (res.data) {
+          this.enLetter = res.data.map(v => {
+            let obj = {}
+            obj.name = v.initials
+            obj.children = v.initials_data.map(v => {
+              return v.surname
+            })
+            return obj
+          })
+        }
+      })
+    },
+    handleSelect (key, item) {
+      this.select = key
+      this.$emit('input', key)
+      this.$emit('change', item, key)
     }
   }
 }

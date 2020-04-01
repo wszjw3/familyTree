@@ -1,21 +1,22 @@
 <template>
   <div>
     <a
-      v-for="item in _area"
-      :key="'area_' + item.name"
+      v-for="item in options"
+      :key="'area_' + item.label"
       class="area"
       :class="item.children.includes(select) ? 'active' : ''"
+      @mousemove="queryChild(item)"
     >
-      {{item.name}}
-      <div class="detail">
+      {{item.label}}
+      <div v-if="item.children" class="detail">
         <a
           v-for="key in item.children"
-          :key="'area_detail_' + item.name + key"
+          :key="'area_detail_' + item.label + key"
           class="detail-item"
-          :class="select === key ? 'active' : ''"
-          @click="handleSelect(key)"
+          :class="select === key.label ? 'active' : ''"
+          @click="handleSelect(key, item)"
         >
-          {{key}}
+          {{key.label}}
         </a>
       </div>
     </a>
@@ -23,7 +24,8 @@
 </template>
 
 <script>
-import json from './province.js'
+import { Family } from '@/api'
+
 export default {
   name: 'Area',
   props: {
@@ -34,8 +36,8 @@ export default {
   },
   data () {
     return {
-      json,
-      select: this.value
+      select: this.value,
+      options: []
     }
   },
   watch: {
@@ -43,24 +45,45 @@ export default {
       this.select = val
     }
   },
-  computed: {
-    _area () {
-      let arr = []
-      this.json.forEach(item => {
-        let obj = {}
-        obj.name = item.name.replace( /省|市/g, '')
-        obj.children = item.city.map(v => {
-          return v.name.replace('市', '')
-        })
-        arr.push(obj)
-      })
-      return arr
-    }
+  created () {
+    this.getOpts()
   },
   methods: {
-    handleSelect (val) {
-      this.select = val
-      this.$emit('input', val)
+    getOpts (params, item) {
+      Family.familyDistrictFind(params).then(res => {
+        if (res.data) {
+          if (!item) {
+            this.options = res.data.map(v => {
+              return {
+                label: v.district,
+                value: v.rc_id
+              }
+            })
+          } else {
+            item.children = res.data.map(v => {
+              return {
+                label: v.district,
+                value: v.rc_id
+              }
+            })
+          }
+          
+        }
+      })
+    },
+    queryChild (item) {
+      if (item.children) {
+        return
+      }
+      const params = {
+        rc_id: item.value
+      }
+      this.getOpts(params)
+    },
+    handleSelect (key, item) {
+      this.select = key.label
+      this.$emit('input', key.label)
+      this.$emit('change', key, item)
     }
   }
 }

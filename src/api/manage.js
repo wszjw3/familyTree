@@ -61,4 +61,9 @@ export default {
     console.log(params)
     return http.post(URL + '/Backend/familyTreeDropDownFind', params)
   },
+  // 地区联动查询
+  familyDistrictFind(params) {
+    console.log(params)
+    return http.post(URL + '/currency/familyDistrictFind', params)
+  },
 }

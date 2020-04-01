@@ -4,7 +4,14 @@
     <el-form inline :model="searchForm">
       <el-row type="flex" class="row-bg" justify="end">
         <el-form-item label="家谱名称：">
-          <el-input v-model="searchForm.name" placeholder='请输入' clearable></el-input>
+          <el-select v-model="searchForm.name" placeholder="请选择">
+            <el-option
+              v-for="item in familyOpts"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="状态：">
           <el-select v-model="searchForm.status" filterable placeholder="请选择" clearable>
@@ -64,7 +71,7 @@
 </template>
 <script>
 import {
-  Family
+  Manage
 } from '@/api'
 export default {
   name: 'jijin-table',
@@ -78,7 +85,16 @@ export default {
   },
   methods: {
     getFamilyOpts () {
-      // Family.familyQueryOptions(){}
+      Manage.familyTreeDropDownFind().then(res => {
+        if (res.data) {
+          this.familyOpts = res.data.map(v => {
+            return {
+              label: v.family_name,
+              value: v.family_id
+            }
+          })
+        }
+      })
     }
   }
 }

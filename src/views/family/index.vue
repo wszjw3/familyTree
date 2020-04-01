@@ -23,15 +23,17 @@
       <h3>开始您的寻根问祖之旅 请按条件进行筛选后，输入姓名搜索</h3>
       <div class="search-block">
         按条件选择：
-        <div class="inline-block ml-md">
-          <el-input v-model="search.surname" @input="handleQuery">
-            <template slot="prepend">按姓氏：</template>
-          </el-input>
+        <div class="inline-block ml-md border">
+          <span class="text-faded">
+            按姓氏：
+          </span>
+          {{nameDis}}
         </div>
-        <div class="inline-block ml-md">
-          <el-input v-model="search.area" @input="handleQuery">
-            <template slot="prepend">按地区：</template>
-          </el-input>
+        <div class="inline-block ml-md border">
+          <span class="text-faded">
+            按地区：
+          </span>
+          {{areaDis}}
         </div>
         <div class="inline-block ml-md">
           <el-input v-model="search.text" @keydown.enter="handleQuery">
@@ -48,7 +50,7 @@
           按姓氏选择：
         </div>
         <div class="ml-md inline-block" style="flex: 1">
-          <LetterCmp v-model="search.surname" @input="handleQuery" />
+          <LetterCmp v-model="search.surname" @input="handleQuery" @change="handleNameChange" />
         </div>
       </div>
       <div class="search-block">
@@ -56,7 +58,7 @@
           按地区选择：
         </div>
         <div class="ml-md inline-block" style="flex: 1">
-          <AreaCmp v-model="search.area" @input="handleQuery" />
+          <AreaCmp v-model="search.area" @input="handleQuery" @change="handleAreaChange"/>
         </div>
       </div>
     </div>
@@ -91,9 +93,11 @@ export default {
   },
   data() {
     return {
+      nameDis: '',
+      areaDis: '',
       search: {
         surname: '',
-        area: [],
+        area: '',
         text: ''
       },
       result: [],
@@ -120,9 +124,11 @@ export default {
   },
   methods: {
     handleQuery() {
-      const params = {
-        eldest_son_flag: this.$router.query.eldest_son_flag
-      }
+      let params = {}
+      params.family_surname = this.search.surname,
+      params.territory = this.search.aream,
+      params.user_fame = this.search.text,
+      params.user_type = this.userType
       Family.familyQuery(params).then(res => {
         this.searched = true
         if (res.data && res.code === '000000') {
@@ -131,6 +137,12 @@ export default {
           this.$message.error(res.message)
         }
       })
+    },
+    handleNameChange (item, key) {
+      this.nameDis = key
+    },
+    handleAreaChange (item, key) {
+      this.areaDis = item.label + ' - ' + key.label
     }
   }
 }
@@ -214,5 +226,17 @@ export default {
 .celebrity {
   color: #000;
   text-decoration: none;
+}
+.border {
+  border: 1px solid rgba(201, 201, 201, 1);
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 10px;
+  border-radius: 4px;
+}
+.text-faded {
+  color: #AEAEAE;
+  margin-right: 10px;
 }
 </style>

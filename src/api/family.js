@@ -65,7 +65,7 @@ export default {
     return http.post(URL + '/tree/insert', params)
   },
   familyQuery(params) {
-    return http.post(URL + '/tree/queryEldest', params)
+    return http.post(URL + '/currency/findFamilyUserInfo', params)
   },
   familyQueryEducation(params) {
     return http.post(URL + '/tree/queryEducation', params)
@@ -75,5 +75,10 @@ export default {
   },
   familyClaim(params) {
     return http.post(URL + '/tree/claim', params)
-  }
+  },
+  // 地区联动查询
+  familyDistrictFind(params) {
+    console.log(params)
+    return http.post(URL + '/currency/familyDistrictFind', params)
+  },
 }

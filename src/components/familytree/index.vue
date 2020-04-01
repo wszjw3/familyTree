@@ -63,7 +63,7 @@
                 }"
               >
                 <div
-                  v-if="userType === '3' || userType === '4' || userType === '5'"
+                  v-if="userType === '2' || userType === '3' || userType === '4'"
                   class="pie"
                 >
                   <div class="line1"></div>
@@ -80,7 +80,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="userType === '1' || userType === '2'"
+                  v-if="userType === '0' || userType === '1'"
                   class="claim"
                   @click="handleClaim(ele)"
                 >
@@ -116,7 +116,7 @@ export default {
   },
   computed: {
     userType () {
-      return this.$store.state.user.token.user_type || '3'
+      return this.$store.state.user.token.user_type || '2'
     },
     treeData() {
       if (this.data.length === 0) {
@@ -238,7 +238,7 @@ export default {
       this.$emit('onAdd', ele)
     },
     handleClaim (ele) {
-      this.$emit('onClaim', ele)
+      this.$emit('onClaim', ele, this.userType)
     }
   }
 }

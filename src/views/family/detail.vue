@@ -255,7 +255,11 @@ export default {
       this.show.addModal = true
       this.getCurrentUser(prop)
     },
-    handleClaim (prop) {
+    handleClaim (prop, userType) {
+      if (userType === '1') {
+        this.$router.push('/login')
+        return
+      }
       this.show.claimModal = true
       this.getCurrentUser(prop)
     },
