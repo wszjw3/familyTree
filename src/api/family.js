@@ -66,5 +66,14 @@ export default {
   },
   familyQuery(params) {
     return http.post(URL + '/tree/queryEldest', params)
+  },
+  familyQueryEducation(params) {
+    return http.post(URL + '/tree/queryEducation', params)
+  },
+  familyQueryOptions(params) {
+    return http.post(URL + '/Backend/familyTreeDropDownFind', params)
+  },
+  familyClaim(params) {
+    return http.post(URL + '/tree/claim', params)
   }
 }

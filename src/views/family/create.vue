@@ -126,6 +126,8 @@
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy-MM-dd"
                     :picker-options="pickerOptions[scope.row.relation].born_time"
                   >
                   </el-date-picker>
@@ -143,6 +145,8 @@
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy-MM-dd"
                     :picker-options="pickerOptions[scope.row.relation].death_time"
                   >
                   </el-date-picker>
@@ -172,6 +176,8 @@
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy-MM-dd"
                     @change="value => { handleChangeMarryTime(value, scope.row) }"
                   >
                   </el-date-picker>

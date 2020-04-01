@@ -20,7 +20,7 @@
       人
     </div>
     <div class="search-container">
-      <h3>开始您的寻根问祖之旅  请按条件进行筛选后，输入姓名搜索</h3>
+      <h3>开始您的寻根问祖之旅 请按条件进行筛选后，输入姓名搜索</h3>
       <div class="search-block">
         按条件选择：
         <div class="inline-block ml-md">
@@ -35,7 +35,11 @@
         </div>
         <div class="inline-block ml-md">
           <el-input v-model="search.text" @keydown.enter="handleQuery">
-            <i slot="suffix" class="el-input__icon el-icon-search"  @click="handleQuery"></i>
+            <i
+              slot="suffix"
+              class="el-input__icon el-icon-search"
+              @click="handleQuery"
+            ></i>
           </el-input>
         </div>
       </div>
@@ -44,7 +48,7 @@
           按姓氏选择：
         </div>
         <div class="ml-md inline-block" style="flex: 1">
-          <LetterCmp v-model="search.surname" @input="handleQuery"/>
+          <LetterCmp v-model="search.surname" @input="handleQuery" />
         </div>
       </div>
       <div class="search-block">
@@ -52,19 +56,21 @@
           按地区选择：
         </div>
         <div class="ml-md inline-block" style="flex: 1">
-          <AreaCmp v-model="search.area" @input="handleQuery"/>
+          <AreaCmp v-model="search.area" @input="handleQuery" />
         </div>
       </div>
     </div>
     <div class="result">
       <div v-if="result.length === 0 && searched" class="no-result">
-        <router-link :to="{path: '/family/create'}" class="routerLink">
+        <router-link :to="{ path: '/family/create' }" class="routerLink">
           家族谱还未创建，请创建管理
           <a>立即创建</a>
         </router-link>
       </div>
       <div v-else>
-        <h3>搜索结果：共包含 {{treeCount}} 棵家谱树、{{totalPeople}} 人</h3>
+        <h3 v-if="searched">
+          搜索结果：共包含 {{ treeCount }} 棵家谱树、{{ totalPeople }} 人
+        </h3>
         <result-cmp :data="result" class="mt-md"></result-cmp>
       </div>
     </div>
@@ -83,7 +89,7 @@ export default {
     AreaCmp,
     ResultCmp
   },
-  data () {
+  data() {
     return {
       search: {
         surname: '',
@@ -95,16 +101,16 @@ export default {
     }
   },
   computed: {
-    isLogin () {
+    isLogin() {
       return true
     },
-    userName () {
+    userName() {
       return 'test'
     },
-    treeCount () {
+    treeCount() {
       return this.result.length
     },
-    totalPeople () {
+    totalPeople() {
       let count = 0
       this.result.forEach(item => {
         count += parseInt(item.total)
@@ -113,7 +119,7 @@ export default {
     }
   },
   methods: {
-    handleQuery () {
+    handleQuery() {
       const params = {
         eldest_son_flag: this.$router.query.eldest_son_flag
       }
@@ -154,7 +160,7 @@ export default {
     margin-left: 20px;
   }
   .exit {
-    margin-left: 20px
+    margin-left: 20px;
   }
 }
 .banner {
@@ -166,7 +172,7 @@ export default {
 
   .num {
     font-size: 32px;
-    color: #7FBC5D
+    color: #7fbc5d;
   }
 }
 .search-container {
@@ -177,19 +183,19 @@ export default {
   }
 }
 .inline-block {
-  display: inline-block
+  display: inline-block;
 }
 .ml-md {
-  margin-left: 10px
+  margin-left: 10px;
 }
 .mt-md {
-  margin-top: 10px
+  margin-top: 10px;
 }
 .search-block {
-  display: flex
+  display: flex;
 }
 .border-bottom-ddd {
-  border-bottom: 1px solid #ddd
+  border-bottom: 1px solid #ddd;
 }
 .result {
   .no-result {
@@ -199,8 +205,8 @@ export default {
       color: #000;
       text-decoration: none;
       a {
-        color: #169BD5;
-        text-decoration: underline
+        color: #169bd5;
+        text-decoration: underline;
       }
     }
   }

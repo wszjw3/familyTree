@@ -2,11 +2,11 @@
     <div class="node-detail">
         <div class="toolbar-wrapper">
             <div class="title">生平信息</div>
-            <el-button size="small" @click="handleEdit">编辑</el-button>
+            <el-button size="small" @click="handleEdit()">编辑</el-button>
         </div>
         <div class="content">
             <div class="desc">
-                <img :src="info.img ? info.img : avatar" />
+                <img :src="info.tree_user_img ? info.tree_user_img : avatar" />
                 <div>
                     <span>生于{{info.brith_time}}</span>
                     <span>死于{{info.death_time}}</span>
@@ -48,29 +48,34 @@
                     >
                         <el-table-column
                             align="left"
-                            prop="date"
+                            prop="record_date"
                             label="日期"
                         >
                             <template slot-scope="scope">
                                 <el-date-picker
-                                    v-model="scope.row.date"
+                                    v-model="scope.row.record_date"
                                     type="date"
                                     placeholder="选择日期"
                                     class="input"
+                                    value-format="yyyy-MM-dd"
+                                    format="yyyy-MM-dd"
                                 >
                                 </el-date-picker>
                             </template>
                         </el-table-column>
                         <el-table-column
                             align="left"
-                            prop="education"
+                            prop="record_name"
                             label="学历"
                         >
                             <template slot-scope="scope">
                                 <el-select
-                                    v-model="scope.row.education"
+                                    v-model="scope.row.record_name"
                                     placeholder="请选择"
                                     class="input"
+                                    allow-create
+                                    filterable
+                                    default-first-option
                                 >
                                     <el-option
                                         v-for="item in education"
@@ -153,7 +158,12 @@ export default {
                     value: '硕士'
                 }
             ],
-            uploadImg: this.info.img ? this.info.img : ''
+            uploadImg: this.info.tree_user_img ? this.info.tree_user_img : ''
+        }
+    },
+    watch: {
+        info () {
+            this.handleCancel()
         }
     },
     created () {
@@ -161,8 +171,10 @@ export default {
     },
     methods: {
         handleEdit() {
-            this.status = 'edit'
-            this.getEducation()
+            if (this.status === 'view') {
+                this.status = 'edit'
+                this.getEducation()
+            }
         },
         getLabel() {
             Family.familyQueryLabel().then(res => {
@@ -172,7 +184,17 @@ export default {
                 this.tags = res.data
             })
         },
-        getEducation() {},
+        getEducation() {
+            const params = {
+                user_id: this.info.user_id
+            }
+            Family.familyQueryEducation(params).then(res => {
+                if (res.data) {
+                    this.tableData = res.data
+                }
+
+            })
+        },
         handleChooseTag (value) {
             this.selectTag.indexOf(value.label_id) < 0 ? this.selectTag.push(value.label_id) : this.selectTag = this.selectTag.filter(v => {
                 return v!== value.label_id
@@ -185,8 +207,8 @@ export default {
         },
         handleAddColumn () {
             this.tableData.push({
-                date: '',
-                education: '',
+                record_date: '',
+                record_name: '',
                 school_name: '',
                 idx: this.idx
             })
@@ -205,6 +227,15 @@ export default {
             params.label_list = label_list
             params.tree_user_img = this.uploadImg
             params.record_list = this.tableData
+            // params.user_id = this.info.user_id
+            params.user_id = '1019'
+            Family.familyAddRecord(params).then(res => {
+                if (res.code === '000000') {
+                    this.$alert('保存成功')
+                } else {
+                    this.$message.error(res.message)
+                }
+            })
         },
         handleCancel () {
             this.status = 'view'

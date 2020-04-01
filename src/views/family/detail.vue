@@ -19,9 +19,10 @@
           @onView="handleViewNode"
           @onEdit="handleEditNode"
           @onAdd="handleAddNode"
+          @onClaim="handleClaim"
         ></family-tree>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" class="family-info">
         <p>
           捐献记录
           <el-button type="success" size="small">捐赠</el-button>
@@ -44,6 +45,7 @@
     </el-row>
     <edit-modal v-model="show.editModal" :userInfo="currentUser" />
     <add-modal v-model="show.addModal" :userInfo="currentUser" />
+    <claim-modal v-model="show.claimModal" :userInfo="currentUser" />
   </div>
 </template>
 
@@ -53,13 +55,15 @@ import { Family } from '@/api'
 import lifeInfo from './cmp/lifeInfo'
 import EditModal from './cmp/modal/edit'
 import AddModal from './cmp/modal/add'
+import ClaimModal from './cmp/modal/claim'
 export default {
   name: 'Detail',
   components: {
     FamilyTree,
     lifeInfo,
     EditModal,
-    AddModal
+    AddModal,
+    ClaimModal
   },
   data() {
     return {
@@ -240,7 +244,7 @@ export default {
           return
         }
         this.isShowNodeDetail = true
-        this.nodeDetail = res.data
+        this.nodeDetail = Object.assign({}, res.data, {user_id: user_id})
       })
     },
     handleEditNode(prop) {
@@ -251,10 +255,16 @@ export default {
       this.show.addModal = true
       this.getCurrentUser(prop)
     },
+    handleClaim (prop) {
+      this.show.claimModal = true
+      this.getCurrentUser(prop)
+    },
     getCurrentUser(prop) {
       Family.familyQueryUser({ user_id: prop.user_id }).then(res => {
         if (res.data) {
-          this.currentUser = Object.assign({}, res.data, {mother_id: prop.mother_id})
+          this.currentUser = Object.assign({}, res.data, {
+            mother_id: prop.mother_id
+          })
         } else {
           this.$message.error(res.message)
         }
@@ -292,5 +302,10 @@ export default {
 
 .required {
   color: red;
+}
+.family-info {
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

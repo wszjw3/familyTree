@@ -1,12 +1,8 @@
 <template>
-  <div class="tree">
-    <div
-      v-for="(item, idx) in treeData"
-      :key="idx"
-      class="tree-item"
-    >
+  <div id="tree" class="tree">
+    <div v-for="(item, idx) in treeData" :key="idx" class="tree-item">
       <div class="level">
-        {{item.level}}
+        {{ item.level }}
       </div>
       <div
         class="wrapper"
@@ -20,11 +16,10 @@
           <div
             v-for="(key, kdx) in t"
             :key="kdx"
-            :data-node="key.id + '-' + (key.parent !== undefined ? key.parent : '' )"
-            :class="[
-              idx !== 0 ? 'px-sm' : '',
-              'tree-node'
-            ]"
+            :data-node="
+              key.id + '-' + (key.parent !== undefined ? key.parent : '')
+            "
+            :class="[idx !== 0 ? 'px-sm' : '', 'tree-node']"
             :id="key.id.toString()"
           >
             <div
@@ -32,19 +27,45 @@
               :key="edx"
               class="leaf"
               :class="[
-                ele.sex === '2' && idx !== treeData.length - 1 && findChildWidthId(key.id) ? 'tree-after' : '',
-                (ele.sex === '1' && idx !== 0) || (key.parent !== undefined && key.current.length === 1) || (key.current.length === 1 && idx !== 0) ? 'tree-before' : '',
-                key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? 'no-border' : '',
+                ele.sex === '2' &&
+                idx !== treeData.length - 1 &&
+                findChildWidthId(key.id)
+                  ? 'tree-after'
+                  : '',
+                (ele.sex === '1' && idx !== 0) ||
+                (key.parent !== undefined && key.current.length === 1) ||
+                (key.current.length === 1 && idx !== 0)
+                  ? 'tree-before'
+                  : '',
+                key.current.length === 1 && idx !== 0 && ele.be_alive !== '2'
+                  ? 'no-border'
+                  : '',
                 ele.be_alive === '2' ? 'dashed' : 'solid'
               ]"
             >
-              {{ele.user_name}}
-              <div v-if="ele.sex === '2' || ele.claim === '1'" class="icon-wrapper">
-                <img v-if="ele.sex === '2'" :src="sexImg" class="sex-img">
+              {{ ele.user_name }}
+              <div
+                v-if="ele.sex === '2' || ele.claim === '1'"
+                class="icon-wrapper"
+              >
+                <img v-if="ele.sex === '2'" :src="sexImg" class="sex-img" />
                 <span v-if="ele.claim === '1'" class="required">*</span>
               </div>
-              <div class="action-wrapper" :style="{marginTop: key.current.length === 1 && idx !== 0 && ele.be_alive !== '2' ? '-1px' : ''}">
-                <div class="pie">
+              <div
+                class="action-wrapper"
+                :style="{
+                  marginTop:
+                    key.current.length === 1 &&
+                    idx !== 0 &&
+                    ele.be_alive !== '2'
+                      ? '-1px'
+                      : ''
+                }"
+              >
+                <div
+                  v-if="userType === '3' || userType === '4' || userType === '5'"
+                  class="pie"
+                >
                   <div class="line1"></div>
                   <div class="line2"></div>
                   <div class="line3"></div>
@@ -58,11 +79,17 @@
                     添加
                   </div>
                 </div>
+                <div
+                  v-if="userType === '1' || userType === '2'"
+                  class="claim"
+                  @click="handleClaim(ele)"
+                >
+                  认领
+                </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -76,19 +103,22 @@ export default {
   props: {
     data: {
       type: Array,
-      default () {
+      default() {
         return []
       }
     }
   },
-  data () {
+  data() {
     return {
       sexImg,
       hoverNode: {}
     }
   },
   computed: {
-    treeData () {
+    userType () {
+      return this.$store.state.user.token.user_type || '3'
+    },
+    treeData() {
       if (this.data.length === 0) {
         return []
       }
@@ -119,27 +149,26 @@ export default {
       return res
     }
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
-
       window.onresize = () => {
         this.interval()
       }
       this.interval()
     })
   },
-  destroyed () {
+  destroyed() {
     window.onresize = null
     this.clearConnectLine()
   },
   methods: {
-    clearConnectLine () {
+    clearConnectLine() {
       const element = document.querySelectorAll('.line')
       element.forEach(item => {
-        document.body.removeChild(item)
+        document.getElementById('tree').removeChild(item)
       })
     },
-    interval () {
+    interval() {
       const _this = this
       const fn = setInterval(() => {
         const node = document.querySelectorAll('.tree-node')
@@ -152,7 +181,7 @@ export default {
       }, 300)
     },
 
-    handleDrawConnectLine () {
+    handleDrawConnectLine() {
       this.clearConnectLine()
       this.$nextTick(() => {
         const node = document.querySelectorAll('.tree-node')
@@ -166,28 +195,29 @@ export default {
             const fromId = val.split('-')[0]
             const toId = val.split('-')[1]
             const from = document.getElementById(fromId).firstChild
-            const fromRect = from.getBoundingClientRect()
+            // const fromRect = from.getBoundingClientRect()
             const to = document.getElementById(toId).lastChild
-            const toRect = to.getBoundingClientRect()
+            // const toRect = to.getBoundingClientRect()
             // 计算起点的after末端坐标
-            const fromX = fromRect.left + fromRect.width / 2
-            const fromY = fromRect.top - 30
-            const toX = toRect.left + toRect.width / 2
+            const fromX = from.offsetLeft + from.offsetWidth / 2
+            const fromY = from.offsetTop - 30
+            const toX = to.offsetLeft + to.offsetWidth / 2
             // const toY = toRect.top + toRect.height + 30
             let div = document.createElement('div')
             div.className = 'line'
-            div.style.position = 'fixed'
+            div.style.position = 'absolute'
             div.style.left = fromX > toX ? toX + 'px' : fromX + 'px'
             div.style.top = fromY + 'px'
-            div.style.width = fromX > toX ? fromX - toX + 'px' :toX - fromX + 'px'
+            div.style.width =
+              fromX > toX ? fromX - toX + 'px' : toX - fromX + 'px'
             div.style.height = '1px'
             div.style.borderTop = '1px solid #000'
-            document.body.appendChild(div)
+            document.getElementById('tree').appendChild(div)
           }
         }
       })
     },
-    findChildWidthId (id) {
+    findChildWidthId(id) {
       let flag = false
       this.treeData.forEach(item => {
         item.children.forEach(key => {
@@ -198,16 +228,17 @@ export default {
       })
       return flag
     },
-    handleViewDetail (ele) {
+    handleViewDetail(ele) {
       this.$emit('onView', ele)
     },
-    handleEdit (ele) {
+    handleEdit(ele) {
       this.$emit('onEdit', ele)
-
     },
-    handleAdd (ele) {
+    handleAdd(ele) {
       this.$emit('onAdd', ele)
-
+    },
+    handleClaim (ele) {
+      this.$emit('onClaim', ele)
     }
   }
 }
@@ -215,10 +246,11 @@ export default {
 
 <style lang="less" scoped>
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 .tree {
   width: 100%;
+  position: relative;
   .tree-item {
     display: flex;
     padding: 30px 10px;
@@ -251,7 +283,7 @@ export default {
         }
         .sex-img {
           width: 26px;
-          height: 26px
+          height: 26px;
         }
       }
 
@@ -323,8 +355,13 @@ export default {
             cursor: pointer;
             left: 25px;
             bottom: 10px;
-            color: #1890FF;
+            color: #1890ff;
           }
+        }
+        .claim {
+          margin-left: 20px;
+          color: #1890FF;
+          cursor: pointer;
         }
       }
     }
@@ -363,26 +400,26 @@ export default {
     margin-top: 20px;
   }
   .no-border {
-    border: none!important
+    border: none !important;
   }
   .px-sm {
     padding-left: 10px;
     padding-right: 10px;
   }
   .pl-md {
-    padding-left: 50px!important
+    padding-left: 50px !important;
   }
   .justify-center {
-    justify-content: center
+    justify-content: center;
   }
   .justify-between {
     justify-content: space-between;
   }
   .dashed {
-    border-bottom: 1px dashed #000
+    border-bottom: 1px dashed #000;
   }
   .solid {
-    border-bottom: 1px solid #000
+    border-bottom: 1px solid #000;
   }
 }
 </style>
