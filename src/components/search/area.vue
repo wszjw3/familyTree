@@ -1,143 +1,137 @@
 <template>
-  <div>
-    <a
-      v-for="item in options"
-      :key="'area_' + item.label"
-      class="area"
-      :class="item.children.includes(select) ? 'active' : ''"
-      @mousemove="queryChild(item)"
-    >
-      {{item.label}}
-      <div v-if="item.children" class="detail">
-        <a
-          v-for="key in item.children"
-          :key="'area_detail_' + item.label + key"
-          class="detail-item"
-          :class="select === key.label ? 'active' : ''"
-          @click="handleSelect(key, item)"
-        >
-          {{key.label}}
-        </a>
-      </div>
-    </a>
-  </div>
+	<div>
+		<a
+			v-for="item in options"
+			:key="'area_' + item.value"
+			class="area"
+			:class="select.includes(item.value) ? 'active' : ''"
+		>
+			{{ item.label }}
+			<template v-if="item.children.length > 0">
+				<div class="detail">
+					<a
+						v-for="key in item.children"
+						:key="'area_detail_' + item.value + key.value"
+						class="detail-item"
+						:class="select.includes(key.value) ? 'active' : ''"
+						@click="handleSelect(key, item)"
+					>
+						{{ key.label }}
+					</a>
+				</div>
+			</template>
+		</a>
+	</div>
 </template>
 
 <script>
 import { Family } from '@/api'
 
 export default {
-  name: 'Area',
-  props: {
-    value: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      select: this.value,
-      options: []
-    }
-  },
-  watch: {
-    value (val) {
-      this.select = val
-    }
-  },
-  created () {
-    this.getOpts()
-  },
-  methods: {
-    getOpts (params, item) {
-      Family.familyDistrictFind(params).then(res => {
-        if (res.data) {
-          if (!item) {
-            this.options = res.data.map(v => {
-              return {
-                label: v.district,
-                value: v.rc_id
-              }
-            })
-          } else {
-            item.children = res.data.map(v => {
-              return {
-                label: v.district,
-                value: v.rc_id
-              }
-            })
-          }
-          
-        }
-      })
-    },
-    queryChild (item) {
-      if (item.children) {
-        return
-      }
-      const params = {
-        rc_id: item.value
-      }
-      this.getOpts(params)
-    },
-    handleSelect (key, item) {
-      this.select = key.label
-      this.$emit('input', key.label)
-      this.$emit('change', key, item)
-    }
-  }
+	name: 'Area',
+	props: {
+		value: {
+			type: String,
+			default() {
+				return []
+			}
+		}
+	},
+	data() {
+		return {
+			select: this.value,
+			options: []
+		}
+	},
+	watch: {
+		value(val) {
+			this.select = val
+		}
+	},
+	created() {
+		this.getOpts()
+	},
+	methods: {
+		getOpts(params, item) {
+			Family.familyDistrictFind(params).then(res => {
+				if (res.data) {
+					if (!item) {
+						this.options = res.data.map(v => {
+							return {
+								label: v.district,
+								value: v.rc_id,
+								children: []
+							}
+						})
+					} else {
+						item.children = res.data.map(v => {
+							return {
+								label: v.district,
+								value: v.rc_id
+							}
+						})
+					}
+				}
+			})
+		},
+		handleSelect(key, item) {
+			this.select = [item.value, key.value]
+			this.$emit('input', this.select)
+			this.$emit('change', key, item)
+		}
+	}
 }
 </script>
 
 <style lang="less" scoped>
 .area {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  color: #000;
-  cursor: pointer;
-  border: 1px solid transparent;
-  &:hover {
-    border-left: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid transparent;
-    .detail {
-      display: block
-    }
-  }
+	position: relative;
+	display: inline-block;
+	height: 37px;
+	line-height: 37px;
+	width: 120px;
+	text-align: center;
+	color: #000;
+	cursor: pointer;
+	border: 1px solid transparent;
+	&:hover {
+		border-left: 1px solid #ddd;
+		border-top: 1px solid #ddd;
+		border-right: 1px solid #ddd;
+		border-bottom: 1px solid transparent;
+		.detail {
+			display: block;
+		}
+	}
 }
 .active {
-  color: #1890FF!important
+	color: #1890ff !important;
 }
 .detail {
-  z-index: 10;
-  display: none;
-  position: absolute;
-  top: 50px;
-  left: -1px;
-  width: 25vw;
-  text-align: left;
-  border: 1px solid #ddd;
-  border-top: none;
-  background-color: #fff;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50px;
-    width: calc(30vw - 50px);
-    height: 1px;
-    background-color: #ddd
-  }
-  .detail-item {
-    display: inline-block;
-    padding: 5px;
-    color: #000;
-    cursor: pointer;
-  }
+	z-index: 10;
+	display: none;
+	position: absolute;
+	top: 37px;
+	left: -1px;
+	width: 25vw;
+	text-align: left;
+	border: 1px solid #ddd;
+	border-top: none;
+	background-color: #fff;
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 120px;
+		width: calc(25vw - 120px);
+		height: 1px;
+		background-color: #ddd;
+	}
+	.detail-item {
+		display: inline-block;
+		padding: 5px;
+		color: #000;
+		cursor: pointer;
+	}
 }
 </style>

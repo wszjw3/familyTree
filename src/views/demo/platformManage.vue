@@ -3,8 +3,14 @@
     <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="stretch">
       <el-tab-pane label="基金处理" name="first" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基金处理</div>
-
-        <jijin-table></jijin-table>
+        <el-tabs type="border-card">
+          <el-tab-pane label="收支明细">
+            <income-table /> 
+          </el-tab-pane>
+          <el-tab-pane label="资金支出">
+            <foundout-table />
+          </el-tab-pane>
+        </el-tabs>
       </el-tab-pane>
       <el-tab-pane label="家谱树列表" name="second" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 家谱列表</div>
@@ -52,22 +58,24 @@
 </template>
 
 <script>
-import JijinTable from '@/components/table/jijintable'
 import FamilyTable from '@/components/table/familytable'
 import TagTable from '@/components/table/tagtable'
 import SurnameTable from '@/components/table/surnametable'
 import FamilymanageTable from '@/components/table/familymanagetable'
+import IncomeTable from '@/components/table/incometable'
+import FoundoutTable from '@/components/table/foundouttable'
 import {
   Manage
 } from '@/api'
 export default {
   name: 'platformManage',
   components: {
-    JijinTable,
     FamilyTable,
     TagTable,
     SurnameTable,
-    FamilymanageTable
+    FamilymanageTable,
+    IncomeTable,
+    FoundoutTable
   },
   data() {
     return {

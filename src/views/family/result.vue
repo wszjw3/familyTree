@@ -19,7 +19,7 @@
             {{item.fame}}
           </td>
           <td style="width: 100px">
-            <router-link :to="{path: '/detail', query: {id: item.user_id}}">查看</router-link>
+            <router-link :to="{path: '/family/detail', query: {id: item.family_id}}">查看</router-link>
           </td>
         </tr>
       </tbody>

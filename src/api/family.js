@@ -8,9 +8,10 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 
 
 export default {
-  familyquery(params) {
+  familyTreeQuery(params) {
     console.log(params)
-    return http.post(URL + '/tree/query', params)
+    const str = params.user_type && params.user_type === '2' ?  '/tree/queryMyTree' : '/tree/query'
+    return http.post(URL + str, params)
   },
 
   resetPasswd(params) {
@@ -65,7 +66,7 @@ export default {
     return http.post(URL + '/tree/insert', params)
   },
   familyQuery(params) {
-    return http.post(URL + '/currency/findFamilyUserInfo', params)
+    return http.post(URL + '/tree/queryEldest', params)
   },
   familyQueryEducation(params) {
     return http.post(URL + '/tree/queryEducation', params)
@@ -78,7 +79,9 @@ export default {
   },
   // 地区联动查询
   familyDistrictFind(params) {
-    console.log(params)
     return http.post(URL + '/currency/familyDistrictFind', params)
   },
+  familyWeChartPayLink(params) {
+    return http.post(URL + '/currency/familyWeChartPayLink', params)
+  }
 }

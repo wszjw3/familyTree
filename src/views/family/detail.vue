@@ -1,52 +1,61 @@
 <template>
-  <div>
-    <div class="banner">
-      已收录全国共
-      <span class="num">3000</span>
-      棵家谱树，总计
-      <span class="num">1111111</span>
-      人
-      <span class="normal">
-        该地区还有6棵孔氏家族谱，
-        <a>点击查看</a>
-      </span>
-    </div>
-    <el-row>
-      <el-col :span="18">
-        <p>首页 > {{ title }}</p>
-        <family-tree
-          :data="treeData"
-          @onView="handleViewNode"
-          @onEdit="handleEditNode"
-          @onAdd="handleAddNode"
-          @onClaim="handleClaim"
-        ></family-tree>
-      </el-col>
-      <el-col :span="6" class="family-info">
-        <p>
-          捐献记录
-          <el-button type="success" size="small">捐赠</el-button>
-          <el-button type="primary" size="small">导出家谱树</el-button>
-          <el-button type="primary" size="small">分享</el-button>
-        </p>
-        <div v-if="!isShowNodeDetail">
-          <h2 class="familytree-info-title">家谱树信息</h2>
-          <div
-            v-for="(item, idx) in familytreeInfo"
-            :key="'familytreeInfo_' + idx"
-            class="familytree-item"
-          >
-            <span>{{ item.label + '： ' }}</span>
-            <span>{{ item.name }}</span>
-          </div>
-        </div>
-        <life-info v-else :info="nodeDetail" />
-      </el-col>
-    </el-row>
-    <edit-modal v-model="show.editModal" :userInfo="currentUser" />
-    <add-modal v-model="show.addModal" :userInfo="currentUser" />
-    <claim-modal v-model="show.claimModal" :userInfo="currentUser" />
-  </div>
+	<div>
+		<div class="banner">
+			已收录全国共
+			<span class="num">3000</span>
+			棵家谱树，总计
+			<span class="num">1111111</span>
+			人
+			<span class="normal">
+				该地区还有6棵孔氏家族谱，
+				<a>点击查看</a>
+			</span>
+		</div>
+		<el-row>
+			<el-col :span="18">
+				<p>首页 > {{ title }}</p>
+				<family-tree
+					:data="treeData"
+					@onView="handleViewNode"
+					@onEdit="handleEditNode"
+					@onAdd="handleAddNode"
+					@onClaim="handleClaim"
+				></family-tree>
+			</el-col>
+			<el-col :span="6" class="family-info">
+				<p>
+					捐献记录
+					<el-button type="success" size="small" @click="handleDonate"
+						>捐赠</el-button
+					>
+          <el-button v-if="userType === '3'" type="success" size="small" @click="handleTransfor"
+						>管理员转让</el-button
+					>
+					<el-button type="primary" size="small">导出家谱树</el-button>
+					<el-button type="primary" size="small" @click="handleShare"
+						>分享</el-button
+					>
+				</p>
+				<div v-if="!isShowNodeDetail">
+					<h2 class="familytree-info-title">家谱树信息</h2>
+					<div
+						v-for="(item, idx) in familytreeInfo"
+						:key="'familytreeInfo_' + idx"
+						class="familytree-item"
+					>
+						<span>{{ item.label + '： ' }}</span>
+						<span>{{ item.name }}</span>
+					</div>
+				</div>
+				<life-info v-else :info="nodeDetail" />
+			</el-col>
+		</el-row>
+		<edit-modal v-model="show.editModal" :userInfo="currentUser" />
+		<add-modal v-model="show.addModal" :userInfo="currentUser" />
+		<claim-modal v-model="show.claimModal" :userInfo="currentUser" />
+		<donate-modal v-model="show.donateModal" />
+		<transfor-modal v-if="userType === '3'" v-model="show.transforModal" :info="treeInfo"/>
+	</div>
 </template>
 
 <script>
@@ -56,6 +65,8 @@ import lifeInfo from './cmp/lifeInfo'
 import EditModal from './cmp/modal/edit'
 import AddModal from './cmp/modal/add'
 import ClaimModal from './cmp/modal/claim'
+import DonateModal from './cmp/modal/donate'
+import TransforModal from './cmp/modal/transfor'
 export default {
   name: 'Detail',
   components: {
@@ -63,11 +74,14 @@ export default {
     lifeInfo,
     EditModal,
     AddModal,
-    ClaimModal
+    ClaimModal,
+    DonateModal,
+    TransforModal
   },
   data() {
     return {
       treeData: [],
+      treeInfo: {},
       familytreeInfo: [
         {
           label: '家谱名称',
@@ -106,14 +120,23 @@ export default {
       nodeDetail: {},
       show: {
         editModal: false,
-        addModal: false
+        addModal: false,
+        claimModal: false,
+        donateModal: false,
+        transforModal: false,
       },
-      currentUser: {}
+      currentUser: {},
     }
   },
   computed: {
     title() {
       return this.familytreeInfo.length > 0 ? this.familytreeInfo[0].name : ''
+    },
+    userInfo () {
+      return this.$store.state.user.token || {}
+    },
+    userType () {
+      return this.userInfo.user_type || 0
     }
   },
   created() {
@@ -126,6 +149,7 @@ export default {
         if (!res.data) {
           return
         }
+        this.treeInfo = res.data
         this.familytreeInfo = [
           {
             label: '家谱名称',
@@ -164,7 +188,11 @@ export default {
     },
     getTreeData() {
       let id = 0
-      Family.familyquery({ user_id: '1003' }).then(res => {
+      let params = {
+        user_id: this.userInfo.user_id || '1003',
+        user_type: this.userInfo.user_type || '0'
+      }
+      Family.familyTreeQuery(params).then(res => {
         if (!res.data) {
           return
         }
@@ -273,6 +301,30 @@ export default {
           this.$message.error(res.message)
         }
       })
+    },
+    handleDonate () {
+      this.show.donateModal = true
+    },
+    handleShare () {
+      document.designMode = 'on'
+      let bool = document.execCommand('copy')
+      if (!bool) {
+          this.$alert('sorry, 手动复制吧')
+      } else {
+          let val = window.location.href
+          let inputEle = document.createElement('input')
+          document.body.appendChild(inputEle)
+          inputEle.setAttribute('value', val)
+          inputEle.setAttribute('readonly', 'readonly')
+          inputEle.select()
+          document.execCommand('copy')
+          document.body.removeChild(inputEle)
+          this.$alert('网页链接已复制，快去粘贴分享')
+      }
+      document.designMode = 'off'
+    },
+    handleTransfor () {
+      this.show.transforModal = true
     }
   }
 }
@@ -280,36 +332,36 @@ export default {
 
 <style lang="less" scoped>
 .banner {
-  padding: 20px 80px;
-  background-color: #000;
-  color: #fff;
-  font-size: 24px;
-  font-weight: 600;
+	padding: 20px 80px;
+	background-color: #000;
+	color: #fff;
+	font-size: 24px;
+	font-weight: 600;
 
-  .num {
-    font-size: 32px;
-    color: #7fbc5d;
-  }
+	.num {
+		font-size: 32px;
+		color: #7fbc5d;
+	}
 
-  .normal {
-    font-size: 14px;
-    margin-left: 20px;
-  }
+	.normal {
+		font-size: 14px;
+		margin-left: 20px;
+	}
 }
 .familytree-info-title {
-  border-left: 3px solid red;
-  padding: 5px;
+	border-left: 3px solid red;
+	padding: 5px;
 }
 .familytree-item {
-  padding: 5px 0;
+	padding: 5px 0;
 }
 
 .required {
-  color: red;
+	color: red;
 }
 .family-info {
-  max-height: 80vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+	max-height: 80vh;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 </style>

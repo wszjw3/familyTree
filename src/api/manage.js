@@ -61,9 +61,34 @@ export default {
     console.log(params)
     return http.post(URL + '/Backend/familyTreeDropDownFind', params)
   },
-  // 地区联动查询
-  familyDistrictFind(params) {
+  // 收支明细查询
+  fundHandleBudgetDetaileFind(params) {
     console.log(params)
-    return http.post(URL + '/currency/familyDistrictFind', params)
+    return http.post(URL + '/Backend/fundHandleBudgetDetaileFind', params)
   },
+  // 资金查询
+  fundHandleFundAmountFind(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/fundHandleFundAmountFind', params)
+  },
+  // 资金操作
+  fundAmountDetailOperation(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/fundAmountDetailOperation', params)
+  },
+  // 收支明细导出
+  fundDetaileExportExcelFile(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/fundDetaileExportExcelFile', params)
+  },
+  // 修谱支出
+  repairSpectrumAmount(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/repairSpectrumAmount', params)
+  },
+  // 修谱支出
+  fundHandleAmount(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/fundHandleAmount', params)
+  }
 }

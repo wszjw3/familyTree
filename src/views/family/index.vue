@@ -97,7 +97,7 @@ export default {
       areaDis: '',
       search: {
         surname: '',
-        area: '',
+        area: [],
         text: ''
       },
       result: [],
@@ -125,10 +125,12 @@ export default {
   methods: {
     handleQuery() {
       let params = {}
-      params.family_surname = this.search.surname,
-      params.territory = this.search.aream,
-      params.user_fame = this.search.text,
-      params.user_type = this.userType
+      params.eldest_son_flag = this.$router.query ? this.$router.query.eldest_son_flag : '1'
+      params.surname = this.search.surname
+      params.prov_code = this.search.area[0] || ''
+      params.city_code = this.search.area[1] || ''
+      params.area_code = this.search.area[2] || ''
+      params.user_name = this.search.text || ''
       Family.familyQuery(params).then(res => {
         this.searched = true
         if (res.data && res.code === '000000') {
@@ -141,7 +143,7 @@ export default {
     handleNameChange (item, key) {
       this.nameDis = key
     },
-    handleAreaChange (item, key) {
+    handleAreaChange (key, item) {
       this.areaDis = item.label + ' - ' + key.label
     }
   }
