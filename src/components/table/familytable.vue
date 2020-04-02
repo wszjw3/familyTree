@@ -4,18 +4,23 @@
     <el-form inline :model="searchForm" ref="searchForm">
       <el-row type="flex" class="row-bg" justify="end">
         <el-form-item label="家谱名称：">
-          <el-autocomplete
-            v-model="searchForm.family_name"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="请输入内容"
-            value-key="family_name"
-            @select="handleSelect"
-            clearable
-          ></el-autocomplete>
+          <el-select
+							v-model="searchForm.family_id"
+							filterable
+							placeholder="请选择"
+						>
+							<el-option
+								v-for="item in familyOpts"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value"
+							>
+							</el-option>
+						</el-select>
         </el-form-item>
         <el-form-item label="家谱树繁荣度：">
           <el-select v-model="searchForm.prosperity_type" filterable placeholder="请选择" clearable>
-            <el-option v-for="item in searchForm.options" :key="item.value" :label="item.label" :value="item.value">
+            <el-option v-for="item in prosperOpts" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
@@ -29,24 +34,29 @@
     </el-form>
   </el-col>
   <el-table :data="subAccountList" border highlight-current-row :header-cell-style="{background:'#eef1f6',color:'#606266'}" v-loading="loading">
-    <el-table-column property="family_name" label="家谱名称" min-width="150" align="center">
+    <el-table-column prop="family_name" label="家谱名称" min-width="150" align="center">
     </el-table-column>
-    <!-- <el-table-column property="appCode" label="应用代码" min-width="80" align="center">
+    <!-- <el-table-column prop="appCode" label="应用代码" min-width="80" align="center">
     </el-table-column> -->
-    <el-table-column property="family_manage_name" label="管理员姓名" min-width="150" align="center">
+    <el-table-column prop="manage_name" label="管理员姓名" min-width="150" align="center">
     </el-table-column>
-    <el-table-column property="family_fund" label="家谱总基金" min-width="120" align="center">
+    <el-table-column prop="amount" label="家谱总基金" min-width="120" align="center">
     </el-table-column>
-    <el-table-column property="generations" label="家谱总代数/代" min-width="120" align="center">
+    <el-table-column prop="generations" label="家谱总代数/代" min-width="120" align="center">
     </el-table-column>
-    <el-table-column property="people_number" label="家谱总人数/个" min-width="120" align="center">
+    <el-table-column prop="people_number" label="家谱总人数/个" min-width="120" align="center">
     </el-table-column>
-    <el-table-column property="family_prosperity" label="家谱树繁荣度/分" min-width="120" align="center">
+    <el-table-column prop="score" label="家谱树繁荣度/分" min-width="120" align="center">
     </el-table-column>
   </el-table>
   <el-col :span="24" class="toolbar">
-    <el-pagination style="float:right" :pager-count="5" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30,40,100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-      :total="records">
+    <el-pagination
+				style="float:right"
+				@current-change="handleCurrentChange"
+				:current-page="currentPage"
+				layout="prev, pager, next"
+				:total="records"
+			>
     </el-pagination>
   </el-col>
 </section>
@@ -60,77 +70,59 @@ export default {
   data() {
     
     return {
-      reviseFormDialogVisible: false,
-      resetPassDialogVisible: false, //修改密码
-      addDialogVisible: false,
       loading: false,
-      restaurants: [],
-      timeout:  null,
       searchForm: {
-        family_name: '',
-        prosperity_type: '',
-        options: [{
-          value: '0',
-          label: '由高到低'
-        }, {
-          value: '1',
-          label: '由低到高'
-        }],
+        family_id: '',
+        prosperity_type: ''
       },
-      
+      prosperOpts: [{
+        value: '0',
+        label: '由高到低'
+      }, {
+        value: '1',
+        label: '由低到高'
+      }],
       subAccountList: [],
       currentPage: 1,
-      pageSize: 10,
       total: 0,
-      records: 0
+      records: 0,
+      familyOpts: []
     }
   },
   watch: {
     
   },
   created: function() {
-    Manage.familyTreeDropDownFind().then((res) => {
-      console.log(res)
-      this.restaurants = res.data
-    })
+    this.getFamilyOpts()
+		this.searchFormSubmit()
   },
   methods: {
+    getFamilyOpts () {
+      Manage.familyTreeDropDownFind().then(res => {
+        if (res.data) {
+          this.familyOpts = res.data.map(v => {
+            return {
+              label: v.family_name,
+              value: v.family_id
+            }
+          })
+        }
+      })
+    },
     resetForm() {
-      this.searchForm.family_name = ''
+      this.searchForm.family_id = ''
       this.searchForm.prosperity_type = ''
-    },
-    querySearchAsync(queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
-
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        cb(results)
-      }, 3000 * Math.random())
-    },
-    createStateFilter(queryString) {
-      return (state) => {
-        return (state.family_name.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
-      }
-    },
-    handleSelect(item) {
-      console.log(item)
+      this.searchFormSubmit()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.currentPage = val
-      var params = this.searchForm
-      params.page = this.currentPage
-      this.searchFormSubmit(params)
+      this.searchFormSubmit()
     },
-    //查询子账户列表
-    searchFormSubmit(params) {
+    searchFormSubmit() {
       this.loading = true
-      var data = this.searchForm
-      data.pageSize = this.pageSize
-      data.currentPage = 1
-      data = params || data
-      Manage.familyTreeFind(data).then(content => {
+      const params = Object.assign({}, this.searchForm, {page: this.currentPage})
+      Manage.familyTreeFind(params).then(content => {
         console.log(content)
         this.subAccountList = []
         if (content && content.data && content.data.length > 0) {
