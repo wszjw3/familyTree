@@ -257,6 +257,16 @@ export const demoRouter = {
       }
     },
     {
+      name: '个人资料',
+      path: '/user/index',
+      view: '/user/index',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/user/index.vue'),
+      meta: {
+        requiresAuth: false,
+      }
+    },
+    {
       name: '家谱demo',
       path: '/tree',
       view: '/demo/tree',

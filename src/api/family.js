@@ -83,5 +83,17 @@ export default {
   },
   familyWeChartPayLink(params) {
     return http.post(URL + '/currency/familyWeChartPayLink', params)
+  },
+  findUserMessage(params) {
+    return http.post(URL + '/currency/findUserMessage', params)
+  },
+  baseDataHandle(params) {
+    return http.post(URL + '/currency/baseDataHandle', params)
+  },
+  passwdHandle(params) {
+    return http.post(URL + '/currency/passwdHandle', params)
+  },
+  contactHandle(params) {
+    return http.post(URL + '/currency/contactHandle', params)
   }
 }
