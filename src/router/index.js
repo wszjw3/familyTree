@@ -64,7 +64,7 @@ export const asynRouter = [{
     path: '/',
     view: '/',
     component: () =>
-      import( /* webpackChunkName: "main" */ '@/views/order/accOrder.vue'),
+      import( /* webpackChunkName: "main" */ '@/views/index.vue'),
     meta: {
       requiresAuth: false,
       resourceCode: ['user']
@@ -165,7 +165,7 @@ export const demoRouter = {
         path: '/',
         view: '/',
         component: () =>
-          import( /* webpackChunkName: "main" */ '@/views/family/index.vue'),
+          import( /* webpackChunkName: "main" */ '@/views/index.vue'),
         meta: {
           requiresAuth: false,
           resourceCode: ['user']

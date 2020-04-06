@@ -140,7 +140,7 @@ export default {
               if(res.data.user_type === '3') {
                 this.$router.push('/familymanage')
               }else {
-                this.$router.push({path: '/family/index'})
+                this.$router.push({path: '/'})
               }
             } else {
               this.resultMessage = res.message

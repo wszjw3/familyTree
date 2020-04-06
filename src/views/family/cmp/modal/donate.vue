@@ -90,7 +90,11 @@ export default {
 			money: '',
 			showQr: false,
 			qrCode: '',
-			reqQrSuccess: false
+			reqQrSuccess: false,
+			orderId: '',
+			qrCodeTime: '',
+			timingInterval: null,
+			queryInterval: null
 		}
 	},
 	computed: {
@@ -105,14 +109,28 @@ export default {
 		value(val) {
 			this.isShow = val
 		},
+		isShow (val) {
+			!val && this.reset()
+		}
+	},
+	destroyed () {
+		clearInterval(this.timingInterval)
+		clearInterval(this.queryInterval)
 	},
 	methods: {
 		reset() {
 			this.isShow = false
-			this.money = ''
 			this.payType = 'wepay'
+			this.money = ''
+			this.showQr = false
+			this.qrCode = ''
+			this.reqQrSuccess = false
+			this.orderId = ''
+			clearInterval(this.timingInterval)
+			clearInterval(this.queryInterval)
 		},
 		confirm() {
+			clearInterval(this.timingInterval)
 			const params = {
 				user_name: this.userInfo.user_name || '游客',
 				phone: this.userInfo.user_name || '1',
@@ -134,6 +152,7 @@ export default {
 						this.reqQrSuccess = false
 						return null
 					} else {
+						// this.orderId = response.header.order_id
 						return (
 							'data:image/png;base64,' +
 							btoa(
@@ -144,12 +163,15 @@ export default {
 							)
 						)
 					}
-					
+
 				})
 				.then((data) => {
 					this.qrCode = data
 					this.reqQrSuccess = true
 					this.showQr = true
+					this.qrCodeTime = Date.now()
+					this.handleTiming()
+					// this.queryOrderStatus()
 				})
 			// Family.familyWeChartPayLink(params).then(res => {
 			// 	this.showQr = true
@@ -172,6 +194,23 @@ export default {
 			this.reqQrSuccess = false
 			this.qrCode = ''
 		},
+		handleTiming () {
+			this.timingInterval = setInterval(() => {
+				if (Date.now() - this.qrCodeTime > 5 * 1000) {
+					this.confirm()
+				}
+			}, 1000)
+		},
+		queryOrderStatus () {
+			this.queryInterval = setInterval(() => {
+				Family.familyWeChartPayFind({order_id: this.orderId}).then(res => {
+					if (res.code === '000') {
+						this.$alert('支付成功')
+						this.reset()
+					}
+				})
+			}, 1000)
+		}
 	},
 }
 </script>

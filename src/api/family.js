@@ -84,6 +84,9 @@ export default {
   familyWeChartPayLink(params) {
     return http.post(URL + '/currency/familyWeChartPayLink', params)
   },
+  familyWeChartPayFind(params) {
+    return http.post(URL + '/currency/familyWeChartPayFind', params)
+  },
   findUserMessage(params) {
     return http.post(URL + '/currency/findUserMessage', params)
   },
@@ -95,5 +98,8 @@ export default {
   },
   contactHandle(params) {
     return http.post(URL + '/currency/contactHandle', params)
+  },
+  familyHomePageFind(params) {
+    return http.post(URL + '/currency/familyHomePageFind', params)
   }
 }

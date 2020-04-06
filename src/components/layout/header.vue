@@ -10,19 +10,19 @@
     <ul class="nav-bar">
       <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
         <el-button type="success">创建新家谱</el-button>
-     
-        <div class="nav-desc">
+
+        <router-link class="nav-desc" to="/user/index">
           <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
           <span>张三</span>
-          
-        </div>
+
+        </router-link>
         <div>
           <span>[退出]</span>
         </div>
-        
 
-        
-        
+
+
+
         <!-- <el-dropdown @command="handleCommand">
           <a class="nav-bar-item-link">我的账户</a>
           <el-dropdown-menu slot="dropdown" style="margin-top: -2px;transform-origin: center top 0px;">
@@ -33,7 +33,7 @@
       </li>
     </ul>
   </div>
-  
+
 </div>
 </template>
 
@@ -114,6 +114,8 @@ export default {
     align-items: center;
     justify-content: center;
     margin-left: 30px;
+    text-decoration: none;
+    color: #000
   }
    .userIcon {
      color:#409EFF;
