@@ -116,7 +116,7 @@ export default {
   },
   computed: {
     userType () {
-      return this.$store.state.user.token.user_type || '2'
+      return this.$store.getters.getToken.user_type || '2'
     },
     treeData() {
       if (this.data.length === 0) {

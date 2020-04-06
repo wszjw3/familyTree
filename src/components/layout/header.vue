@@ -9,14 +9,14 @@
   <div class="fr">
     <ul class="nav-bar">
       <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
-        <el-button type="success">创建新家谱</el-button>
+        <el-button type="success" @click="navigateToCreate">创建新家谱</el-button>
 
         <router-link class="nav-desc" to="/user/index">
           <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
-          <span>张三</span>
+          <span>{{userName}}</span>
 
         </router-link>
-        <div>
+        <div class="cursor-pointer" @click="handleLogOut">
           <span>[退出]</span>
         </div>
 
@@ -38,30 +38,24 @@
 </template>
 
 <script>
-import {
-  Account
-} from '@/api'
 export default {
   data() {
     return {
       userInfo: {}
     }
   },
-  created() {
-    Account.getUserInfo().then((res) => {
-      this.userInfo = res.userInfo
-    })
+  computed: {
+    userName () {
+      return this.$store.getters.getToken.user_name || ''
+    }
   },
   methods: {
-    handleCommand(command) {
-      if (command === 'logout') {
-        this.$store.dispatch('removeToken')
-        this.$store.dispatch('removeRoutes')
-        this.$router.push('/login')
-      }
-      if (command === 'accountInfo') {
-        this.$router.push('/account/accountInfo')
-      }
+    navigateToCreate () {
+      this.$router.push('/family/create')
+    },
+    handleLogOut () {
+      this.$store.dispatch('removeToken')
+      this.$router.push('/login')
     }
   }
 
@@ -133,5 +127,9 @@ export default {
 
 .page-header .nav-bar .nav-bar-item .nav-bar-item-link:hover {
   background-color: #435060;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

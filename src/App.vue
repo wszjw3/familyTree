@@ -6,7 +6,11 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  created () {
+    const token = JSON.parse(localStorage.getItem('token'))
+    token && this.$store.dispatch('setToken', token)
+  }
 }
 </script>
 

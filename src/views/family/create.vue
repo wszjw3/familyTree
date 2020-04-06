@@ -379,6 +379,9 @@ export default {
           }
         }
       }
+    },
+    userInfo () {
+      return this.$store.getters.getToken
     }
   },
   methods: {
@@ -394,9 +397,9 @@ export default {
     handleSave () {
       if (this.validate()) {
         let params = {}
-        params.user_id = '1003'
-        params.create_user = 'admin'
-        params.manage_phone = '13100022001'
+        params.user_id = this.userInfo.user_id || ''
+        params.create_user = this.userInfo.user_name || ''
+        params.manage_phone = this.userInfo.phone || ''
         params.prov_code = this.location[0]
         params.city_code = this.location[1]
         params.area_code = this.location[2]

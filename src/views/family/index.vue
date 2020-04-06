@@ -129,7 +129,7 @@ export default {
       params.surname = this.search.surname
       params.prov_code = this.search.area[0] || ''
       params.city_code = this.search.area[1] || ''
-      params.area_code = this.search.area[2] || ''
+      params.area_code = this.search.area[2] || '11000'
       params.user_name = this.search.text || ''
       Family.familyQuery(params).then(res => {
         this.searched = true

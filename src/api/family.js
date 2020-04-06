@@ -9,9 +9,11 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 
 export default {
   familyTreeQuery(params) {
-    console.log(params)
-    const str = params.user_type && params.user_type === '2' ?  '/tree/queryMyTree' : '/tree/query'
-    return http.post(URL + str, params)
+    const str = params.isMyTree ? '/tree/queryMyTree' : '/tree/query'
+    const obj = {
+      user_id: params.user_id
+    }
+    return http.post(URL + str, obj)
   },
 
   resetPasswd(params) {
@@ -101,5 +103,8 @@ export default {
   },
   familyHomePageFind(params) {
     return http.post(URL + '/currency/familyHomePageFind', params)
+  },
+  familyManageFind(params) {
+    return http.post(URL + '/currency/familyManageFind', params)
   }
 }

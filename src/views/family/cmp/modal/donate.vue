@@ -59,7 +59,7 @@
 		</div>
 		<div v-show="showQr" class="qr-code">
 			<div class="back" @click="back">返回</div>
-			<img v-if="reqQrSuccess" :src="qrCode"/>
+			<img v-if="reqQrSuccess" :src="qrCode" />
 			<div v-else class="qr-img-error" @click="confirm">
 				二维码请求失败，点击重新请求
 			</div>
@@ -94,12 +94,12 @@ export default {
 			orderId: '',
 			qrCodeTime: '',
 			timingInterval: null,
-			queryInterval: null
+			queryInterval: null,
 		}
 	},
 	computed: {
 		userInfo() {
-			return this.$store.state.user.token
+			return this.$store.getters.getToken
 		},
 		moneyOpts() {
 			return [50, 100, 200, 500, 1000]
@@ -109,11 +109,11 @@ export default {
 		value(val) {
 			this.isShow = val
 		},
-		isShow (val) {
+		isShow(val) {
 			!val && this.reset()
-		}
+		},
 	},
-	destroyed () {
+	destroyed() {
 		clearInterval(this.timingInterval)
 		clearInterval(this.queryInterval)
 	},
@@ -152,7 +152,7 @@ export default {
 						this.reqQrSuccess = false
 						return null
 					} else {
-						// this.orderId = response.header.order_id
+						this.orderId = response.header.order_id
 						return (
 							'data:image/png;base64,' +
 							btoa(
@@ -163,7 +163,6 @@ export default {
 							)
 						)
 					}
-
 				})
 				.then((data) => {
 					this.qrCode = data
@@ -171,7 +170,7 @@ export default {
 					this.showQr = true
 					this.qrCodeTime = Date.now()
 					this.handleTiming()
-					// this.queryOrderStatus()
+					this.queryOrderStatus()
 				})
 			// Family.familyWeChartPayLink(params).then(res => {
 			// 	this.showQr = true
@@ -194,23 +193,23 @@ export default {
 			this.reqQrSuccess = false
 			this.qrCode = ''
 		},
-		handleTiming () {
+		handleTiming() {
 			this.timingInterval = setInterval(() => {
 				if (Date.now() - this.qrCodeTime > 5 * 1000) {
 					this.confirm()
 				}
 			}, 1000)
 		},
-		queryOrderStatus () {
+		queryOrderStatus() {
 			this.queryInterval = setInterval(() => {
-				Family.familyWeChartPayFind({order_id: this.orderId}).then(res => {
+				Family.familyWeChartPayFind({ order_id: this.orderId }).then((res) => {
 					if (res.code === '000') {
 						this.$alert('支付成功')
 						this.reset()
 					}
 				})
 			}, 1000)
-		}
+		},
 	},
 }
 </script>

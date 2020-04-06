@@ -2,15 +2,23 @@
   <el-tabs v-model="activeName">
 		<el-tab-pane label="首页" name="first" class="table-item">
       <el-row>
-        <el-col :span="12">
-          <el-table :data="familyData">
+        <el-col :span="12" class="pa-md">
+          <p class="title">
+            家谱繁荣度排名
+            <span class="text-red">TOP10</span>
+          </p>
+          <el-table border :data="familyData">
             <el-table-column prop="idx" label="排名"></el-table-column>
             <el-table-column prop="family_name" label="家谱树名称"></el-table-column>
             <el-table-column prop="family_score" label="家谱树繁荣得分"></el-table-column>
           </el-table>
         </el-col>
-        <el-col :span="12">
-          <el-table :data="manageData">
+        <el-col :span="12" class="pa-md">
+          <p class="title">
+            个人捐献排名
+            <span class="text-red">TOP10</span>
+          </p>
+          <el-table border :data="manageData">
             <el-table-column prop="idx" label="排名"></el-table-column>
             <el-table-column prop="manage_name" label="管理员姓名"></el-table-column>
             <el-table-column prop="manage_number" label="管理员得分"></el-table-column>
@@ -19,24 +27,50 @@
       </el-row>
 		</el-tab-pane>
     <el-tab-pane label="家谱查询" name="second" class="table-item">
+      <family-index />
 		</el-tab-pane>
-    <el-tab-pane label="我管理的家谱" name="thired" class="table-item">
+    <el-tab-pane v-if="userType === '2'" lazy label="我的家谱" name="thired" class="table-item">
+      <family-detail ref="detail"/>
+		</el-tab-pane>
+    <el-tab-pane v-if="userType === '3'" label="我管理的家谱" name="fourth" class="table-item">
+      <el-table :data="myManage">
+        <el-table-column prop="idx" label="序号"></el-table-column>
+        <el-table-column prop="family_name" label="家谱名称"></el-table-column>
+        <el-table-column prop="family_stay" label="待办事项"></el-table-column>
+        <el-table-column prop="fund_total" label="基金总额"></el-table-column>
+      </el-table>
 		</el-tab-pane>
   </el-tabs>
 </template>
 <script>
 import { Family } from '@/api'
+import FamilyIndex from '@/views/family/index'
+import FamilyDetail from '@/views/family/detail'
 export default {
   name: 'Index',
+  components: {
+    FamilyIndex,
+    FamilyDetail
+  },
   data() {
     return {
       activeName: 'first',
       familyData: [],
-      manageData: []
+      manageData: [],
+      myManage: []
     }
   },
   created () {
     this.getTableData()
+    this.userType === '3' && this.getMyManage()
+  },
+  computed: {
+    userType () {
+      return this.$store.getters.getToken.user_type
+    },
+    userId () {
+      return this.$store.getters.getToken.tree_user_id
+    }
   },
   methods: {
     getTableData () {
@@ -52,7 +86,27 @@ export default {
           })
         }
       })
+    },
+    getMyManage () {
+      Family.familyManageFind({user_id: this.userId}).then(res => {
+        this.myManage = res.data
+      })
     }
   }
 }
 </script>
+
+<style scoped lang="less">
+.title {
+  border-left: 4px solid #409eff;
+  padding-left: 10px;
+}
+
+.pa-md {
+  padding: 10px 40px;
+}
+
+.text-red {
+  color: red
+}
+</style>

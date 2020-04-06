@@ -5,16 +5,18 @@ const state = {
 
 // getters
 const getters = {
-  getToken: state => state.token
+  getToken: state => state.token || {}
 }
 
 // actions
 const actions = {
   setToken({ commit }, token) {
     commit('SET_TOKEN', { token })
+    localStorage.setItem('token', JSON.stringify(token))
   },
   removeToken({ commit }) {
     commit('REMOVE_TOKEN')
+    localStorage.removeItem('token')
   }
 }
 

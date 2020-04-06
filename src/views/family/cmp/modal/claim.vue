@@ -80,7 +80,7 @@ export default {
 				if (valid) {
 					const params = {
 						user_id: this.userInfo.user_id,
-						login_id: this.$store.state.user.token.id,
+						login_id: this.$store.getters.getToken.id,
 						name: this.form.name,
 						phone: this.form.phone,
 						remark: this.form.name

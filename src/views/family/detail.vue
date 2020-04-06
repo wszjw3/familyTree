@@ -133,19 +133,25 @@ export default {
       return this.familytreeInfo.length > 0 ? this.familytreeInfo[0].name : ''
     },
     userInfo () {
-      return this.$store.state.user.token || {}
+      return this.$store.getters.getToken
     },
     userType () {
-      return this.userInfo.user_type || 0
+      return this.userInfo.user_type
     }
   },
-  created() {
+  mounted() {
     this.getFamilyInfo()
     this.getTreeData()
   },
   methods: {
     getFamilyInfo() {
-      Family.familyInfo({ user_id: '1003' }).then(res => {
+      let params = {}
+      if (this.$router.query && this.$router.query.familyId) {
+        params.family_id = this.$router.query.familyId
+      } else {
+        params.user_id = this.userInfo.tree_user_id
+      }
+      Family.familyInfo(params).then(res => {
         if (!res.data) {
           return
         }
@@ -188,10 +194,9 @@ export default {
     },
     getTreeData() {
       let id = 0
-      let params = {
-        user_id: this.userInfo.user_id || '1003',
-        user_type: this.userInfo.user_type || '0'
-      }
+      let params = {}
+      params.user_id = this.userInfo.tree_user_id
+      params.isMyTree = this.$router.currentRoute.name === '首页'
       Family.familyTreeQuery(params).then(res => {
         if (!res.data) {
           return

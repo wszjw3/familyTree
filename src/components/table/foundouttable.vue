@@ -195,7 +195,7 @@ export default {
 	},
 	computed: {
 		userInfo() {
-			return this.$store.state.user.token || {}
+			return this.$store.getters.getToken || {}
 		}
 	},
 	mounted() {

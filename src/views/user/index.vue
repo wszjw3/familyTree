@@ -31,7 +31,7 @@
 				<el-button class="resetBtn" @click="reset('basic')">重置</el-button>
 			</div>
 		</el-tab-pane>
-		<el-tab-pane label="银行卡号" name="second" class="table-item">
+		<!-- <el-tab-pane label="银行卡号" name="second" class="table-item">
 			<el-form
 				ref="form"
 				:model="bankForm"
@@ -51,7 +51,7 @@
 				>
 				<el-button class="resetBtn" @click="reset('bank')">重置</el-button>
 			</div>
-		</el-tab-pane>
+		</el-tab-pane> -->
 		<el-tab-pane label="联系方式" name="thired" class="table-item">
 			<el-form
 				ref="form"
@@ -153,7 +153,7 @@ export default {
 	},
 	computed: {
 		userId() {
-			return this.$store.state.user.token.user_id || '2'
+			return this.$store.getters.getToken.user_id || '2'
 		},
 	},
 	methods: {
@@ -214,10 +214,10 @@ export default {
 				case 'contact':
 					Family.contactHandle({
 						user_id: this.userId,
-						phone: this.passwdForm.phone,
-						email: this.passwdForm.email,
-						wechart: this.passwdForm.wechart,
-						qq: this.passwdForm.qq,
+						phone: this.contactForm.phone,
+						email: this.contactForm.email,
+						wechart: this.contactForm.wechart,
+						qq: this.contactForm.qq,
 					}).then((res) => {
 						if (res.code === '000000') {
 							this.$alert('保存成功')
