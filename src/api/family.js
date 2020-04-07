@@ -10,8 +10,12 @@ if ('true' !== process.env.VUE_APP_USE_MOCK) {
 export default {
   familyTreeQuery(params) {
     const str = params.isMyTree ? '/tree/queryMyTree' : '/tree/query'
-    const obj = {
-      user_id: params.user_id
+    let obj = {}
+    if (params.tree_user_id) {
+      obj.tree_user_id = params.tree_user_id
+    }
+    if (params.family_id) {
+      obj.family_id = params.family_id
     }
     return http.post(URL + str, obj)
   },
@@ -106,5 +110,20 @@ export default {
   },
   familyManageFind(params) {
     return http.post(URL + '/currency/familyManageFind', params)
+  },
+  familyTreeStatistics(params) {
+    return http.post(URL + '/currency/familyTreeStatistics', params)
+  },
+  familyFundIncomeFind(params) {
+    return http.post(URL + '/currency/familyFundIncomeFind', params)
+  },
+  checkTaskList(params) {
+    return http.post(URL + '/tree/checkTaskList', params)
+  },
+  auditRefusedTask(params) {
+    return http.post(URL + '/tree/auditRefusedTask', params)
+  },
+  auditPassTask(params) {
+    return http.post(URL + '/tree/auditPassTask', params)
   }
 }

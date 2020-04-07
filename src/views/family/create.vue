@@ -1,16 +1,6 @@
 <template>
   <div class="family-create-view">
-    <div class="banner">
-      已收录全国共
-      <span class="num">3000</span>
-      棵家谱树，总计
-      <span class="num">1111111</span>
-      人
-      <span class="normal">
-        该地区还有6棵孔氏家族谱，
-        <a>点击查看</a>
-      </span>
-    </div>
+    <statistics />
     <div class="container">
       <div class="title">
         创建新家谱：
@@ -442,24 +432,6 @@ export default {
 <style lang="less" scoped>
 .family-create-view {
   background-color: rgba(242, 242, 242, 1);
-
-  .banner {
-    padding: 20px 80px;
-    background-color: #000;
-    color: #fff;
-    font-size: 24px;
-    font-weight: 600;
-
-    .num {
-      font-size: 32px;
-      color: #7fbc5d;
-    }
-
-    .normal {
-      font-size: 14px;
-      margin-left: 20px;
-    }
-  }
 
   .container {
     padding: 10px;

@@ -24,7 +24,15 @@ axios.interceptors.response.use(
   response => {
     //console.log('response' + JSON.stringify(response))
     // 通用逻辑，请求出错，全屏弹层提示
-    const data = response.data
+    let data = {}
+    if (response.headers.order_id) {
+      data = {
+        headers: {order_id: response.headers.order_id},
+        data: response.data
+      }
+    } else {
+      data = response.data
+    }
     return data
   },
   error => {

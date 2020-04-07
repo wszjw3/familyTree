@@ -31,7 +31,7 @@
 				<el-button class="resetBtn" @click="reset('basic')">重置</el-button>
 			</div>
 		</el-tab-pane>
-		<!-- <el-tab-pane label="银行卡号" name="second" class="table-item">
+		<el-tab-pane v-if="userType === '3'" label="银行卡号" name="second" class="table-item">
 			<el-form
 				ref="form"
 				:model="bankForm"
@@ -51,7 +51,7 @@
 				>
 				<el-button class="resetBtn" @click="reset('bank')">重置</el-button>
 			</div>
-		</el-tab-pane> -->
+		</el-tab-pane>
 		<el-tab-pane label="联系方式" name="thired" class="table-item">
 			<el-form
 				ref="form"
@@ -153,8 +153,11 @@ export default {
 	},
 	computed: {
 		userId() {
-			return this.$store.getters.getToken.user_id || '2'
+			return this.$store.getters.getToken.user_id
 		},
+		userType () {
+			return this.$store.getters.getToken.user_type
+		}
 	},
 	methods: {
 		getUserInfo() {

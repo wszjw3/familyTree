@@ -1,46 +1,62 @@
 <template>
-  <el-tabs v-model="activeName">
-		<el-tab-pane label="首页" name="first" class="table-item">
-      <el-row>
-        <el-col :span="12" class="pa-md">
-          <p class="title">
-            家谱繁荣度排名
-            <span class="text-red">TOP10</span>
-          </p>
-          <el-table border :data="familyData">
-            <el-table-column prop="idx" label="排名"></el-table-column>
-            <el-table-column prop="family_name" label="家谱树名称"></el-table-column>
-            <el-table-column prop="family_score" label="家谱树繁荣得分"></el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="12" class="pa-md">
-          <p class="title">
-            个人捐献排名
-            <span class="text-red">TOP10</span>
-          </p>
-          <el-table border :data="manageData">
-            <el-table-column prop="idx" label="排名"></el-table-column>
-            <el-table-column prop="manage_name" label="管理员姓名"></el-table-column>
-            <el-table-column prop="manage_number" label="管理员得分"></el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-		</el-tab-pane>
-    <el-tab-pane label="家谱查询" name="second" class="table-item">
-      <family-index />
-		</el-tab-pane>
-    <el-tab-pane v-if="userType === '2'" lazy label="我的家谱" name="thired" class="table-item">
-      <family-detail ref="detail"/>
-		</el-tab-pane>
-    <el-tab-pane v-if="userType === '3'" label="我管理的家谱" name="fourth" class="table-item">
-      <el-table :data="myManage">
-        <el-table-column prop="idx" label="序号"></el-table-column>
-        <el-table-column prop="family_name" label="家谱名称"></el-table-column>
-        <el-table-column prop="family_stay" label="待办事项"></el-table-column>
-        <el-table-column prop="fund_total" label="基金总额"></el-table-column>
-      </el-table>
-		</el-tab-pane>
-  </el-tabs>
+  <div>
+    <statistics />
+
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="首页" name="first" class="table-item">
+        <el-row>
+          <el-col :span="12" class="pa-md">
+            <p class="title">
+              家谱繁荣度排名
+              <span class="text-red">TOP10</span>
+            </p>
+            <el-table border :data="familyData">
+              <el-table-column prop="idx" label="排名"></el-table-column>
+              <el-table-column prop="family_name" label="家谱树名称"></el-table-column>
+              <el-table-column prop="family_score" label="家谱树繁荣得分"></el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="12" class="pa-md">
+            <p class="title">
+              个人捐献排名
+              <span class="text-red">TOP10</span>
+            </p>
+            <el-table border :data="manageData">
+              <el-table-column prop="idx" label="排名"></el-table-column>
+              <el-table-column prop="manage_name" label="管理员姓名"></el-table-column>
+              <el-table-column prop="manage_number" label="管理员得分"></el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="家谱查询" lazy name="second" class="table-item">
+        <family-index />
+      </el-tab-pane>
+      <el-tab-pane v-if="userType === '2'" lazy label="我的家谱" name="thired" class="table-item">
+        <family-detail ref="detail"/>
+      </el-tab-pane>
+      <el-tab-pane v-if="userType === '3'" label="我管理的家谱" name="fourth" class="table-item">
+        <el-table :data="myManage">
+          <el-table-column prop="idx" label="序号"></el-table-column>
+          <el-table-column prop="family_name" label="家谱名称">
+            <template slot-scope="scope">
+              <router-link :to="'/family/detail?familyId=' + scope.row.family_id">{{scope.row.family_name}}</router-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="family_stay" label="待办事项">
+            <template slot-scope="scope">
+              <router-link :to="'/family/detail?familyId=' + scope.row.family_id">{{scope.row.family_stay}}</router-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="fund_total" label="基金总额">
+            <template slot-scope="scope">
+              <router-link :to="'/user/fund?family_name=' + scope.row.family_name + '&family_id=' + scope.row.family_id">{{scope.row.fund_total}}</router-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 <script>
 import { Family } from '@/api'

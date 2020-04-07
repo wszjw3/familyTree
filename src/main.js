@@ -12,12 +12,13 @@ import './assets/icon/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
 import Mock from './mock'
+import statistics from '@/components/banner/statistics'
 
 import {
   // asynRouter,
   demoRouter
 } from './router'
-
+Vue.component('statistics',statistics)
 Vue.use(ElementUI)
 Vue.use(VueAreaLinkage)
 

@@ -251,6 +251,7 @@ export default {
 .tree {
   width: 100%;
   position: relative;
+  padding-bottom: 100px;
   .tree-item {
     display: flex;
     padding: 30px 10px;

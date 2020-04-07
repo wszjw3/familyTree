@@ -152,11 +152,11 @@ export default {
 						this.reqQrSuccess = false
 						return null
 					} else {
-						this.orderId = response.header.order_id
+						this.orderId = response.headers.order_id
 						return (
 							'data:image/png;base64,' +
 							btoa(
-								new Uint8Array(response).reduce(
+								new Uint8Array(response.data).reduce(
 									(data, byte) => data + String.fromCharCode(byte),
 									''
 								)
@@ -195,7 +195,7 @@ export default {
 		},
 		handleTiming() {
 			this.timingInterval = setInterval(() => {
-				if (Date.now() - this.qrCodeTime > 5 * 1000) {
+				if (Date.now() - this.qrCodeTime > 30 * 1000) {
 					this.confirm()
 				}
 			}, 1000)
@@ -203,12 +203,12 @@ export default {
 		queryOrderStatus() {
 			this.queryInterval = setInterval(() => {
 				Family.familyWeChartPayFind({ order_id: this.orderId }).then((res) => {
-					if (res.code === '000') {
+					if (res.code === '000000') {
 						this.$alert('支付成功')
 						this.reset()
 					}
 				})
-			}, 1000)
+			}, 3000)
 		},
 	},
 }
@@ -273,6 +273,7 @@ export default {
 		right: 10px;
 		padding: 5px 8px;
 		border: 1px solid #ddd;
+		cursor: pointer;
 	}
 
 	img {

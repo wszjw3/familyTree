@@ -12,13 +12,7 @@
         <span class="exit">[退出]</span>
       </div>
     </div> -->
-    <div class="banner">
-      已收录全国共
-      <span class="num">3000</span>
-      棵家谱树，总计
-      <span class="num">1111111</span>
-      人
-    </div>
+
     <div class="search-container">
       <h3>开始您的寻根问祖之旅 请按条件进行筛选后，输入姓名搜索</h3>
       <div class="search-block">
@@ -129,7 +123,7 @@ export default {
       params.surname = this.search.surname
       params.prov_code = this.search.area[0] || ''
       params.city_code = this.search.area[1] || ''
-      params.area_code = this.search.area[2] || '11000'
+      params.area_code = this.search.area[2] || ''
       params.user_name = this.search.text || ''
       Family.familyQuery(params).then(res => {
         this.searched = true

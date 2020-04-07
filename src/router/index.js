@@ -267,6 +267,17 @@ export const demoRouter = {
       }
     },
     {
+      name: '基金收入',
+      path: '/user/fund',
+      view: '/user/fund',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/user/fund.vue'),
+      meta: {
+        requiresAuth: false,
+      }
+    },
+    
+    {
       name: '家谱demo',
       path: '/tree',
       view: '/demo/tree',

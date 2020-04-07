@@ -1,39 +1,43 @@
 <template>
-<div class="page-header clearfix">
-  <div class="page-logo">
-    <img src="../../assets/imgs/family-logo.png" class="logo">根深叶茂
+<div>
+  <div class="page-header clearfix">
+    <div class="page-logo">
+      <img src="../../assets/imgs/family-logo.png" class="logo">根深叶茂
+    </div>
+    <div class="page-nav">
+
+    </div>
+    <div class="fr">
+      <ul class="nav-bar">
+        <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
+          <el-button type="success" @click="navigateToCreate">创建新家谱</el-button>
+
+          <router-link v-if="userName" class="nav-desc" to="/user/index">
+            <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
+            <span>{{userName}}</span>
+
+          </router-link>
+          <div v-if="!userName" class="cursor-pointer" @click="handleLogin">
+            <span>[登录]</span>
+          </div>
+          <div v-else class="cursor-pointer" @click="handleLogOut">
+            <span>[退出]</span>
+          </div>
+
+
+
+
+          <!-- <el-dropdown @command="handleCommand">
+            <a class="nav-bar-item-link">我的账户</a>
+            <el-dropdown-menu slot="dropdown" style="margin-top: -2px;transform-origin: center top 0px;">
+              <el-dropdown-item command="accountInfo">查看账户信息</el-dropdown-item>
+              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown> -->
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="page-nav">
-
-  </div>
-  <div class="fr">
-    <ul class="nav-bar">
-      <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
-        <el-button type="success" @click="navigateToCreate">创建新家谱</el-button>
-
-        <router-link class="nav-desc" to="/user/index">
-          <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
-          <span>{{userName}}</span>
-
-        </router-link>
-        <div class="cursor-pointer" @click="handleLogOut">
-          <span>[退出]</span>
-        </div>
-
-
-
-
-        <!-- <el-dropdown @command="handleCommand">
-          <a class="nav-bar-item-link">我的账户</a>
-          <el-dropdown-menu slot="dropdown" style="margin-top: -2px;transform-origin: center top 0px;">
-            <el-dropdown-item command="accountInfo">查看账户信息</el-dropdown-item>
-            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
-      </li>
-    </ul>
-  </div>
-
 </div>
 </template>
 
@@ -46,7 +50,7 @@ export default {
   },
   computed: {
     userName () {
-      return this.$store.getters.getToken.user_name || ''
+      return this.$store.getters.getToken.user_name
     }
   },
   methods: {
@@ -55,6 +59,9 @@ export default {
     },
     handleLogOut () {
       this.$store.dispatch('removeToken')
+      this.$router.push('/login')
+    },
+    handleLogin () {
       this.$router.push('/login')
     }
   }

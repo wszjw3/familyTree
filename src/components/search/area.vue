@@ -31,7 +31,7 @@ export default {
 	name: 'Area',
 	props: {
 		value: {
-			type: String,
+			type: Array,
 			default() {
 				return []
 			}
@@ -52,25 +52,32 @@ export default {
 		this.getOpts()
 	},
 	methods: {
-		getOpts(params, item) {
+		getOpts() {
+			let params = {
+				rc_id: '01'
+			}
 			Family.familyDistrictFind(params).then(res => {
 				if (res.data) {
-					if (!item) {
-						this.options = res.data.map(v => {
-							return {
-								label: v.district,
-								value: v.rc_id,
-								children: []
+					let arr = res.data.filter(v => {
+						return v.rc_pid === '1'
+					}).map(v => {
+						return {
+							label: v.district,
+							value: v.rc_id,
+							children: []
+						}
+					})
+					arr.forEach(item => {
+						res.data.forEach(key => {
+							if (item.value === key.rc_pid) {
+								item.children.push({
+									label: key.district,
+									value: key.rc_id
+								})
 							}
 						})
-					} else {
-						item.children = res.data.map(v => {
-							return {
-								label: v.district,
-								value: v.rc_id
-							}
-						})
-					}
+					})
+					this.options = arr
 				}
 			})
 		},

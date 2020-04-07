@@ -1,16 +1,6 @@
 <template>
 	<div>
-		<div class="banner">
-			已收录全国共
-			<span class="num">3000</span>
-			棵家谱树，总计
-			<span class="num">1111111</span>
-			人
-			<span class="normal">
-				该地区还有6棵孔氏家族谱，
-				<a>点击查看</a>
-			</span>
-		</div>
+
 		<el-row>
 			<el-col :span="18">
 				<p>首页 > {{ title }}</p>
@@ -140,16 +130,13 @@ export default {
     }
   },
   mounted() {
-    this.getFamilyInfo()
+    this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
     this.getTreeData()
   },
   methods: {
-    getFamilyInfo() {
-      let params = {}
-      if (this.$router.query && this.$router.query.familyId) {
-        params.family_id = this.$router.query.familyId
-      } else {
-        params.user_id = this.userInfo.tree_user_id
+    getFamilyInfo(familyId) {
+      let params = {
+        family_id: familyId
       }
       Family.familyInfo(params).then(res => {
         if (!res.data) {
@@ -195,11 +182,19 @@ export default {
     getTreeData() {
       let id = 0
       let params = {}
-      params.user_id = this.userInfo.tree_user_id
-      params.isMyTree = this.$router.currentRoute.name === '首页'
+      if (this.$router.currentRoute.query && this.$router.currentRoute.query.familyId) {
+        params.family_id = this.$router.currentRoute.query.familyId
+        params.isMyTree = false
+      } else {
+        params.tree_user_id = this.userInfo.tree_user_id
+        params.isMyTree = true
+      }
       Family.familyTreeQuery(params).then(res => {
         if (!res.data) {
           return
+        }
+        if (!this.$router.currentRoute.query.familyId) {
+          this.getFamilyInfo(res.data[0].family_id)
         }
         let result = []
         res.data.forEach(item => {
