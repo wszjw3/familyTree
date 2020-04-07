@@ -125,5 +125,8 @@ export default {
   },
   auditPassTask(params) {
     return http.post(URL + '/tree/auditPassTask', params)
+  },
+  baseBankDataHandle(params) {
+    return http.post(URL + '/currency/baseBankDataHandle', params)
   }
 }

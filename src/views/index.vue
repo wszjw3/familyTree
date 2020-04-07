@@ -45,12 +45,23 @@
           </el-table-column>
           <el-table-column prop="family_stay" label="待办事项">
             <template slot-scope="scope">
-              <router-link :to="'/family/detail?familyId=' + scope.row.family_id">{{scope.row.family_stay}}</router-link>
+              <router-link :to="{
+                path: '/user/task',
+                query: {
+                  familyName: scope.row.family_name
+                }
+              }">{{scope.row.family_stay}}</router-link>
             </template>
           </el-table-column>
           <el-table-column prop="fund_total" label="基金总额">
             <template slot-scope="scope">
-              <router-link :to="'/user/fund?family_name=' + scope.row.family_name + '&family_id=' + scope.row.family_id">{{scope.row.fund_total}}</router-link>
+              <router-link :to="{
+                path: '/user/fund',
+                query: {
+                  familyName: scope.row.family_name,
+                  familyId: scope.row.family_id
+                }
+              }">{{scope.row.fund_total}}</router-link>
             </template>
           </el-table-column>
         </el-table>

@@ -228,6 +228,19 @@ export default {
 							this.$message.error(res.message)
 						}
 					})
+					break
+				case 'bank':
+					Family.baseBankDataHandle({
+						user_id: this.userId,
+						bank_no: this.bankForm.bank_code,
+						bank_name: this.bankForm.bank_name
+					}).then((res) => {
+						if (res.code === '000000') {
+							this.$alert('保存成功')
+						} else {
+							this.$message.error(res.message)
+						}
+					})
 			}
 		},
 		reset(type) {
