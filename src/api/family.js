@@ -117,6 +117,9 @@ export default {
   familyFundIncomeFind(params) {
     return http.post(URL + '/currency/familyFundIncomeFind', params)
   },
+  familyFundAddIncome(params) {
+    return http.post(URL + '/currency/familyFundAddIncome', params)
+  },
   checkTaskList(params) {
     return http.post(URL + '/tree/checkTaskList', params)
   },
@@ -128,5 +131,8 @@ export default {
   },
   baseBankDataHandle(params) {
     return http.post(URL + '/currency/baseBankDataHandle', params)
+  },
+  familyManageTransfer(params) {
+    return http.post(URL + '/currency/familyManageTransfer', params)
   }
 }

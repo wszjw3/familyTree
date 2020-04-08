@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style="padding: 0 20px 40px 0">
 		<a
 			v-for="item in options"
 			:key="'area_' + item.value"
@@ -77,7 +77,9 @@ export default {
 							}
 						})
 					})
-					this.options = arr
+					this.options = arr.sort((a, b) => {
+						return parseInt(a.value) - parseInt(b.value)
+					})
 				}
 			})
 		},
@@ -120,7 +122,7 @@ export default {
 	position: absolute;
 	top: 37px;
 	left: -1px;
-	width: 25vw;
+	width: 15vw;
 	text-align: left;
 	border: 1px solid #ddd;
 	border-top: none;
@@ -130,7 +132,7 @@ export default {
 		position: absolute;
 		top: 0;
 		left: 120px;
-		width: calc(25vw - 120px);
+		width: calc(15vw - 120px);
 		height: 1px;
 		background-color: #ddd;
 	}

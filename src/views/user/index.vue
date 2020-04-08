@@ -87,15 +87,16 @@
 				label-width="150px"
 			>
 				<el-form-item label="原密码：" prop="passwd">
-					<el-input type="password" v-model="passwdForm.passwd"></el-input>
+					<el-input type="password" v-model="passwdForm.passwd" show-password></el-input>
 				</el-form-item>
 				<el-form-item label="新密码：" prop="new_passwd">
-					<el-input type="password" v-model="passwdForm.new_passwd"></el-input>
+					<el-input type="password" v-model="passwdForm.new_passwd" show-password></el-input>
 				</el-form-item>
 				<el-form-item label="确认密码：" prop="new_passwd_confirm">
 					<el-input
 						type="password"
 						v-model="passwdForm.new_passwd_confirm"
+						show-password
 					></el-input>
 				</el-form-item>
 			</el-form>
@@ -167,7 +168,7 @@ export default {
 					user_surname: data.user_surname,
 					user_fame: data.user_fame,
 					sex: data.sex,
-					area: [data.city, data.county],
+					area: [data.province, data.city, data.county],
 					address: data.address,
 				}
 				this.bankForm = {
@@ -190,8 +191,9 @@ export default {
 						surname: this.basicForm.user_surname,
 						name: this.basicForm.user_fame,
 						sex: this.basicForm.sex,
-						city: this.basicForm.city,
-						county: this.basicForm.county,
+						province: this.basicForm.area[0] ? this.basicForm.area[0] : '',
+						city: this.basicForm.area[1] ? this.basicForm.area[1] : '',
+						county: this.basicForm.area[2] ? this.basicForm.area[2] : '',
 						address: this.basicForm.address,
 					}).then((res) => {
 						if (res.code === '000000') {
@@ -202,6 +204,10 @@ export default {
 					})
 					break
 				case 'passwd':
+					if (this.passwdForm.new_passwd !== this.passwdForm.new_passwd_confirm) {
+						this.$message.error('两次输入的密码不一致')
+						return
+					}
 					Family.passwdHandle({
 						user_id: this.userId,
 						passwd: this.passwdForm.passwd,

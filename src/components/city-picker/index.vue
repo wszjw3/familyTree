@@ -28,6 +28,11 @@ export default {
   created () {
     this.load()
   },
+  watch: {
+    value (val) {
+      this.selection = val
+    }
+  },
   methods: {
     load () {
       Family.familyDistrictFind().then(res => {

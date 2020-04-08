@@ -2,26 +2,49 @@
 	<div>
 
 		<el-row>
-			<el-col :span="18">
-				<p>首页 > {{ title }}</p>
-				<family-tree
-					:data="treeData"
-					@onView="handleViewNode"
-					@onEdit="handleEditNode"
-					@onAdd="handleAddNode"
-					@onClaim="handleClaim"
-				></family-tree>
+			<el-col :span="17" style="position: relative">
+				<el-breadcrumb class="header" separator="/">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div id="export"> 
+          <p class="text-bold">{{title}}</p>
+          <div class="desc">
+            <div>
+              ——&nbsp;&nbsp;&nbsp;&nbsp;健在
+            </div>
+            <div>
+              ------&nbsp;&nbsp;&nbsp;&nbsp;已故
+            </div>
+            <div class="items-center">
+              <img :src="sexImg" class="sex-img" />
+              女儿
+            </div>
+            <div class="items-center" style="margin-top: -10px">
+              <span class="required">*</span>
+              已认领
+            </div>
+          </div>
+          <family-tree
+            :data="treeData"
+            @onView="handleViewNode"
+            @onEdit="handleEditNode"
+            @onAdd="handleAddNode"
+            @onClaim="handleClaim"
+          ></family-tree>
+        </div>
+        
 			</el-col>
-			<el-col :span="6" class="family-info">
+			<el-col :span="7" class="family-info">
 				<p>
 					捐献记录
 					<el-button type="success" size="small" @click="handleDonate"
 						>捐赠</el-button
 					>
-          <el-button v-if="userType === '3'" type="success" size="small" @click="handleTransfor"
+          <el-button v-if="$router.currentRoute.query.from === 'manage'" type="success" size="small" @click="handleTransfor"
 						>管理员转让</el-button
 					>
-					<el-button type="primary" size="small">导出家谱树</el-button>
+					<el-button type="primary" size="small" @click="exportToPDF">导出家谱树</el-button>
 					<el-button type="primary" size="small" @click="handleShare"
 						>分享</el-button
 					>
@@ -49,6 +72,7 @@
 </template>
 
 <script>
+import * as jsPDF from 'jspdf'
 import FamilyTree from '@/components/familytree/index'
 import { Family } from '@/api'
 import lifeInfo from './cmp/lifeInfo'
@@ -57,6 +81,7 @@ import AddModal from './cmp/modal/add'
 import ClaimModal from './cmp/modal/claim'
 import DonateModal from './cmp/modal/donate'
 import TransforModal from './cmp/modal/transfor'
+import sexImg from '@/assets/imgs/sex.png'
 export default {
   name: 'Detail',
   components: {
@@ -70,6 +95,7 @@ export default {
   },
   data() {
     return {
+      sexImg,
       treeData: [],
       treeInfo: {},
       familytreeInfo: [
@@ -311,7 +337,7 @@ export default {
       if (!bool) {
           this.$alert('sorry, 手动复制吧')
       } else {
-          let val = window.location.href
+          let val = window.location.href.split('&')[0]
           let inputEle = document.createElement('input')
           document.body.appendChild(inputEle)
           inputEle.setAttribute('value', val)
@@ -325,7 +351,45 @@ export default {
     },
     handleTransfor () {
       this.show.transforModal = true
-    }
+    },
+    exportToPDF () {
+      html2canvas(
+        document.getElementById('export')
+        ).then(canvas => {
+            var contentWidth = canvas.width
+            var contentHeight = canvas.height
+
+            //一页pdf显示html页面生成的canvas高度
+            var pageHeight = contentWidth / 592.28 * 841.89
+            //未生成pdf的html页面高度
+            var leftHeight = contentHeight
+            //pdf页面偏移
+            var position = 0
+            //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
+            var imgWidth = 595.28
+            var imgHeight = 592.28 / contentWidth * contentHeight
+
+            var pageData = canvas.toDataURL('image/jpeg', 1.0)
+            var pdf = new jsPDF('', 'pt', 'a4')
+
+            //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+            //当内容未超过pdf一页显示的范围，无需分页
+            if (leftHeight < pageHeight) {
+                pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
+            } else {
+                while (leftHeight > 0) {
+                    pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+                    leftHeight -= pageHeight
+                    position -= 841.89
+                    //避免添加空白页
+                    if (leftHeight > 0) {
+                        pdf.addPage()
+                    }
+                }
+            }
+            pdf.save('content.pdf')
+        })
+      }
   }
 }
 </script>
@@ -363,5 +427,33 @@ export default {
 	max-height: 80vh;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+.text-bold {
+  font-weight: 600
+}
+
+.desc {
+  display: inline-block;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: 1px solid #000;
+  padding: 10px 10px 0 10px;
+  .sex-img {
+    width: 26px;
+    height: 26px;
+    margin-right: 14px;
+  }
+}
+.required {
+  color: red;
+  font-size: 30px;
+  margin: 0 18px 0 10px;
+  display: inline-block;
+  padding-top: 10px;
+}
+.items-center {
+  display: flex;
+  align-items: center;
 }
 </style>

@@ -58,10 +58,10 @@
     </div>
     <div class="result">
       <div v-if="result.length === 0 && searched" class="no-result">
-        <router-link :to="{ path: '/family/create' }" class="routerLink">
+        <span @click="handleCreate" class="routerLink">
           家族谱还未创建，请创建管理
           <a>立即创建</a>
-        </router-link>
+        </span>
       </div>
       <div v-else>
         <h3 v-if="searched">
@@ -99,12 +99,6 @@ export default {
     }
   },
   computed: {
-    isLogin() {
-      return true
-    },
-    userName() {
-      return 'test'
-    },
     treeCount() {
       return this.result.length
     },
@@ -139,6 +133,13 @@ export default {
     },
     handleAreaChange (key, item) {
       this.areaDis = item.label + ' - ' + key.label
+    },
+    handleCreate () {
+      if (this.$store.getters.getToken.user_id) {
+        this.$router.push('/family/create')
+      } else {
+        this.$router.push('/login')
+      }
     }
   }
 }
@@ -209,6 +210,7 @@ export default {
   .no-result {
     text-align: center;
     .routerLink {
+      cursor: pointer;
       font-size: 14px;
       color: #000;
       text-decoration: none;

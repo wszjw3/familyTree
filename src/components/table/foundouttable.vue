@@ -1,16 +1,15 @@
 <template>
 	<section>
-		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+		<el-col :span="24" class="toolbar relative" style="padding-bottom: 0px;">
+			<div class="btn-wrapper">
+				<el-button type="primary" @click="handleShowModal('wave')">工资支出</el-button>
+				<el-button type="primary" @click="handleShowModal('familytree')">修谱支出</el-button>
+			</div>
 			<el-form inline :model="searchForm">
-				<el-row type="flex" class="row-bg" justify="end">
-					<el-form-item>
-						<el-button type="primary" @click="handleShowModal('wave')">工资支出</el-button>
-					</el-form-item>
-					<el-form-item>
-						<el-button type="primary" @click="handleShowModal('familytree')">修谱支出</el-button>
-					</el-form-item>
+				<el-row type="flex" class="row-bg" justify="end" label-width="80px">
+					
 					<el-form-item label="家谱名称：">
-						<el-select v-model="searchForm.family_id" filterable placeholder="请选择">
+						<el-select v-model="searchForm.family_id" filterable placeholder="请选择" style="width: 150px">
 							<el-option
 								v-for="item in familyOpts"
 								:key="item.family_id"
@@ -21,7 +20,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="姓名：">
-						<el-input v-model="searchForm.name"></el-input>
+						<el-input v-model="searchForm.name" style="width: 150px"></el-input>
 					</el-form-item>
 					<el-form-item label="选择日期：">
 						<el-date-picker
@@ -32,6 +31,7 @@
 							value-format="yyyy-MM-dd"
 							start-placeholder="开始日期"
 							end-placeholder="结束日期"
+							style="width: 300px"
 						>
 						</el-date-picker>
 					</el-form-item>
@@ -382,5 +382,12 @@ export default {
 }
 .confirm {
     color: rgb(24, 144, 255)
+}
+.btn-wrapper {
+	display: inline-block;
+	position: absolute;
+}
+.relative {
+	position: relative;
 }
 </style>

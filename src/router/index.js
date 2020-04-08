@@ -276,6 +276,16 @@ export const demoRouter = {
         requiresAuth: false,
       }
     },
+    {
+      name: '待办事项',
+      path: '/user/task',
+      view: '/user/task',
+      component: () =>
+        import( /* webpackChunkName: "main" */ '@/views/user/task.vue'),
+      meta: {
+        requiresAuth: false,
+      }
+    },
     
     {
       name: '家谱demo',

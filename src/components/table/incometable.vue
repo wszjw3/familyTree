@@ -119,6 +119,7 @@
 </template>
 <script>
 import { Manage } from '@/api'
+import axios from 'axios'
 export default {
 	name: 'income-table',
 	data() {
@@ -239,9 +240,33 @@ export default {
 				begin_time: this.searchForm.date[0],
 				end_time: this.searchForm.date[1]
 			}
-			Manage.fundDetaileExportExcelFile(params).then(res => {
-				console.log(res)
+			let URL = ''
+			if ('true' !== process.env.VUE_APP_USE_MOCK) {
+				URL = process.env.VUE_APP_BASE_MANAGE
+			}
+			axios({
+				method: 'post',
+				baseURL: URL,
+				url: '/Backend/fundDetaileExportExcelFile',
+				responseType: 'blob',
+				data: params,
 			})
+				.then((response) => {
+					if (!response) {
+						this.$message.error('导出失败，请点击重试')
+					} else {
+						const filename = '收支明细'
+						const blob = new Blob([response], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+						if (window.navigator.msSaveOrOpenBlob) {
+							navigator.msSaveBlob(blob, filename)
+						} else {
+							const node = document.createElement('a')
+							node.download = filename
+							node.href = window.URL.createObjectURL(blob)
+							node.click()
+						}
+					}
+				})
 		}
 	}
 }

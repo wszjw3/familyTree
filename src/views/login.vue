@@ -138,7 +138,7 @@ export default {
               this.resultMessage = ''
               this.$store.dispatch('setToken', res.data)
               if(res.data.user_type === '3') {
-                this.$router.push('/familymanage')
+                this.$router.push('/')
               }else {
                 this.$router.push({path: '/'})
               }

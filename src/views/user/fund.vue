@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h5 class="header">
-      我管理的家谱 / 
-      {{familyName}}
-      / 家谱基金
-    </h5>
+    <el-breadcrumb class="header" separator="/">
+      <el-breadcrumb-item :to="{ path: '/?active=fourth' }">我管理的家谱</el-breadcrumb-item>
+      <el-breadcrumb-item>{{familyName}}</el-breadcrumb-item>
+      <el-breadcrumb-item>家谱基金</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="mt-md">
-      <div class="desc">
+      <div class="desc text-left">
         最高捐献者：
         <span class="text-red">{{fundInfo.high_name}}</span>
       </div>
@@ -18,7 +18,7 @@
         捐献总人数：
         <span class="text-red">{{fundInfo.donate_number}}</span>
       </div>
-      <div class="desc">
+      <div class="desc no-border">
         累计总额：
         <span class="text-red">{{fundInfo.donate_amt}}</span>
       </div>
@@ -66,6 +66,23 @@
 			>
 			</el-pagination>
     </div>
+    <el-dialog title="添加基金收入" :visible.sync="isShow" width="80%">
+      <el-form v-model="addFundForm" label-width="80px">
+        <el-form-item label="捐献人：">
+          <el-input v-model="addFundForm.donate_people" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号：">
+          <el-input v-model="addFundForm.phone" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="捐献金额：">
+          <el-input v-model="addFundForm.donate_amt" type="number" placeholder="请输入"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取消</el-button>
+        <el-button type="primary" @click="confirm">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -79,15 +96,18 @@ export default {
       date: [],
       fundInfo: {},
       currentPage: 1,
-      records: 0
+      records: 0,
+      isShow: false,
+      addFundForm: {
+        donate_people: '',
+        donate_amt: null,
+        phone: ''
+      }
     }
-  },
-  created () {
-    // this.loadData()
   },
   computed: {
     familyName () {
-      return this.$router.currentRoute.query.name
+      return this.$router.currentRoute.query.familyName
     },
     tableData () {
       return this.fundInfo.donate || []
@@ -96,7 +116,42 @@ export default {
       return this.$store.getters.getToken.user_id
     }
   },
+  created () {
+    this.getDefaultDateRange()
+    this.handleSearch()
+  },
   methods: {
+    getDefaultDateRange() {
+			this.date = []
+			var date = new Date()
+			var seperator1 = '-'
+			var year = date.getFullYear()
+			var month = date.getMonth() + 1
+			var strDate = date.getDate()
+			if (month >= 1 && month <= 9) {
+				month = '0' + month
+			}
+			if (strDate >= 0 && strDate <= 9) {
+				strDate = '0' + strDate
+			}
+			this.date.push(
+				year + seperator1 + month + seperator1 + strDate
+			)
+
+			date.setDate(date.getDate() - 7)
+			year = date.getFullYear()
+			month = date.getMonth() + 1
+			strDate = date.getDate()
+			if (month >= 1 && month <= 9) {
+				month = '0' + month
+			}
+			if (strDate >= 0 && strDate <= 9) {
+				strDate = '0' + strDate
+			}
+			this.date.unshift(
+				year + seperator1 + month + seperator1 + strDate
+			)
+		},
     handleSearch () {
       const params = {
         user_id: this.userId,
@@ -113,10 +168,39 @@ export default {
         }
       })
     },
-    handleAdd () {},
+    handleAdd () {
+      this.isShow = true
+    },
     handleCurrentChange (val) {
       this.currentPage = val
       this.handleSearch()
+    },
+    cancel () {
+      this.isShow = false
+      this.addFundForm = {
+        donate_people: '',
+        donate_amt: null,
+        phone: ''
+      }
+    },
+    confirm () {
+      const params = {
+        donate_people: this.addFundForm.donate_people,
+        donate_amt: this.addFundForm.donate_amt,
+        phone: this.addFundForm.phone,
+        user_id: this.userId,
+        family_id: this.$router.currentRoute.query.familyId
+      }
+      Family.familyFundAddIncome(params).then(res => {
+        if (res.code === '000000') {
+          this.$alert('添加成功')
+          this.cancel()
+          this.currentPage = 1
+          this.handleSearch()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }
@@ -124,7 +208,7 @@ export default {
 
 <style scoped lang="less">
 .header {
-  font-size: 24px;
+  font-size: 18px;
   padding: 0 0 20px 0;
   border-bottom: 1px solid #ddd;
   margin: 0;
@@ -132,10 +216,17 @@ export default {
 .desc {
   display: inline-block;
   width: 23%;
-  border-right: 5px solid #000;
+  border-right: 5px solid #333;
   height: 40px;
   line-height: 40px;
   padding-left: 10px;
+  text-align: center;
+}
+.text-left {
+  text-align: left
+}
+.no-border {
+  border: none
 }
 .mt-md {
   margin-top: 20px

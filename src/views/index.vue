@@ -30,7 +30,7 @@
         </el-row>
       </el-tab-pane>
       <el-tab-pane label="家谱查询" lazy name="second" class="table-item">
-        <family-index />
+        <family-index style="min-height: 100vh"/>
       </el-tab-pane>
       <el-tab-pane v-if="userType === '2'" lazy label="我的家谱" name="thired" class="table-item">
         <family-detail ref="detail"/>
@@ -40,7 +40,7 @@
           <el-table-column prop="idx" label="序号"></el-table-column>
           <el-table-column prop="family_name" label="家谱名称">
             <template slot-scope="scope">
-              <router-link :to="'/family/detail?familyId=' + scope.row.family_id">{{scope.row.family_name}}</router-link>
+              <router-link :to="{path: '/family/detail', query: {familyId: scope.row.family_id, from: 'manage'}}">{{scope.row.family_name}}</router-link>
             </template>
           </el-table-column>
           <el-table-column prop="family_stay" label="待办事项">
@@ -90,13 +90,14 @@ export default {
   created () {
     this.getTableData()
     this.userType === '3' && this.getMyManage()
+    this.activeName = this.$router.currentRoute.query.active ? this.$router.currentRoute.query.active : 'first'
   },
   computed: {
     userType () {
       return this.$store.getters.getToken.user_type
     },
     userId () {
-      return this.$store.getters.getToken.tree_user_id
+      return this.$store.getters.getToken.user_id
     }
   },
   methods: {
@@ -116,7 +117,10 @@ export default {
     },
     getMyManage () {
       Family.familyManageFind({user_id: this.userId}).then(res => {
-        this.myManage = res.data
+        this.myManage = res.data.family.map((v, i) => {
+          v.idx = i
+          return v
+        })
       })
     }
   }

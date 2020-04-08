@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { Family } from '@/api'
 export default {
 	name: 'TransforModal',
 	props: {
@@ -46,8 +47,8 @@ export default {
 		}
 	},
 	computed: {
-		userInfo () {
-            return this.$store.getters.getToken
+		userId () {
+            return this.$store.getters.getToken.user_id
         }
 	},
 	watch: {
@@ -62,6 +63,23 @@ export default {
             this.name = ''
 		},
 		confirm() {
+            let params = {
+                user_id: this.userId,
+                family_id: this.$router.currentRoute.query.familyId,
+                new_manage_no: this.account,
+                new_manage_name: this.name
+            }
+            Family.familyManageTransfer(params).then(res => {
+                if (res.code === '000000') {
+                    this.$alert('转让成功，即将跳转页面。。。')
+                    this.reset()
+                    setTimeout(() => {
+                        this.$router.back(-1)
+                    }, 2000)
+                } else {
+                    this.$message.error(res.message)
+                }
+            })
 		}
 	}
 }
