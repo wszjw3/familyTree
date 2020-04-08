@@ -1,6 +1,8 @@
 
 const state = {
-  token: {}
+  token: {
+    user_type: '0'
+  }
 }
 
 // getters

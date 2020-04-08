@@ -310,7 +310,7 @@ export default {
       this.getCurrentUser(prop)
     },
     handleClaim (prop, userType) {
-      if (userType === '1') {
+      if (userType === '0') {
         this.$router.push('/login')
         return
       }
