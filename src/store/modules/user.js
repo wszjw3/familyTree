@@ -19,6 +19,9 @@ const actions = {
   removeToken({ commit }) {
     commit('REMOVE_TOKEN')
     localStorage.removeItem('token')
+  },
+  createSuccess({ commit }) {
+    commit('CREATE_SUCCESS')
   }
 }
 
@@ -29,6 +32,10 @@ const mutations = {
   },
   REMOVE_TOKEN(state) {
     state.token = null
+  },
+  CREATE_SUCCESS(state) {
+    state.token.user_type = '3'
+    localStorage.setItem('token', JSON.stringify(state.token))
   }
 }
 

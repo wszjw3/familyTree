@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { Family } from '@/api/index'
+import { Family } from '@/api'
 export default {
   name: 'Statistics',
   data () {

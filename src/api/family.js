@@ -134,5 +134,14 @@ export default {
   },
   familyManageTransfer(params) {
     return http.post(URL + '/currency/familyManageTransfer', params)
+  },
+  familyDonateRecordStatistics(params) {
+    return http.post(URL + '/currency/familyDonateRecordStatistics', params)
+  },
+  familyDonateRecordStream(params) {
+    return http.post(URL + '/currency/familyDonateRecordStream', params)
+  },
+  familyDonateRecordRanking(params) {
+    return http.post(URL + '/currency/familyDonateRecordRanking', params)
   }
 }

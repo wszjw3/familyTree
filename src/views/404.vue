@@ -42,7 +42,7 @@ export default {
             width: 100%;
             max-width: 430px;
             float: right;
-            background-image: url("../assets/imgs/404.svg");
+            background-image: url("@/assets/imgs/404.svg");
             background-repeat: no-repeat;
             background-position: 50% 50%;
             background-size: contain;

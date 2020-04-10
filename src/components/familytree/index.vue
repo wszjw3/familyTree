@@ -272,6 +272,7 @@ export default {
       width: 100px;
       display: inline-block;
       position: relative;
+      text-align: center;
 
       .icon-wrapper {
         display: inline-block;
@@ -299,8 +300,8 @@ export default {
         position: absolute;
         z-index: 99;
         background-color: #fff;
-        top: 40px;
-        left: 0;
+        top: 37px;
+        left: 10px;
         .pie {
           border: 1px solid #000;
           border-radius: 50%;

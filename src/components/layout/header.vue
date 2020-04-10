@@ -1,8 +1,8 @@
 <template>
 <div>
   <div class="page-header clearfix">
-    <div class="page-logo">
-      <img src="../../assets/imgs/family-logo.png" class="logo">根深叶茂
+    <div class="page-logo" @click="$router.push('/')">
+      <img src="@/assets/imgs/family-logo.png" class="logo">根深叶茂
     </div>
     <div class="page-nav">
 
@@ -55,11 +55,12 @@ export default {
   },
   methods: {
     navigateToCreate () {
-      this.$router.push('/family/create')
+      const id = this.$store.getters.getToken.user_type
+      this.$router.push(id === '0' ? '/login' : '/family/create')
     },
     handleLogOut () {
       this.$store.dispatch('removeToken')
-      this.$router.push('/login')
+      this.$router.push(this.$router.currentRoute.path === '/platform/manage' ? '/platform/login' : '/login')
     },
     handleLogin () {
       this.$router.push('/login')
@@ -85,6 +86,7 @@ export default {
   font-style: normal;
   font-size: 28px;
   padding-left: 20px;
+  cursor: pointer;
   .logo {
     width: 3.5rem;
     vertical-align: middle;

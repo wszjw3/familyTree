@@ -90,5 +90,10 @@ export default {
   fundHandleAmount(params) {
     console.log(params)
     return http.post(URL + '/Backend/fundHandleAmount', params)
+  },
+  // 管理端登录
+  manageLogin(params) {
+    console.log(params)
+    return http.post(URL + '/Backend/manageLogin', params)
   }
 }

@@ -127,7 +127,14 @@ export default {
     }
   },
   watch: {
-    
+    addDialogVisible (val) {
+      if (!val) {
+        this.addForm = {
+          label_name: '',
+          label_desc: '',
+        }
+      }
+    }
   },
   created: function() {
     this.searchFormSubmit()
