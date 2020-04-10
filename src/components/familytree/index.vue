@@ -300,13 +300,15 @@ export default {
         position: absolute;
         z-index: 99;
         background-color: #fff;
-        top: 37px;
-        left: 10px;
+        top: 38px;
+        left: 0;
+        width: 100%;
         .pie {
           border: 1px solid #000;
           border-radius: 50%;
           width: 80px;
           height: 80px;
+          margin-left: 10px;
           position: relative;
 
           .line1 {
@@ -361,9 +363,10 @@ export default {
           }
         }
         .claim {
-          margin-left: 20px;
           color: #1890FF;
           cursor: pointer;
+          width: 100%;
+          text-align: center;
         }
       }
     }

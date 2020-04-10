@@ -56,19 +56,19 @@
           <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="birth_time" min-width="150">
+      <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
           出生日期
         </template>
         <template slot-scope="scope">
           <el-date-picker
-            v-model="scope.row.birth_time"
+            v-model="scope.row.brith_time"
             type="date"
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
-            :picker-options="pickerOptions.birth_time"
+            :picker-options="pickerOptions.brith_time"
           >
           </el-date-picker>
         </template>
@@ -166,7 +166,7 @@ export default {
     },
     pickerOptions() {
       return {
-        birth_time: {
+        brith_time: {
           disabledDate: time => {
             if (this.tableData[0].death_time != '') {
               return time.getTime() > this.tableData[0].death_time
@@ -175,8 +175,8 @@ export default {
         },
         death_time: {
           disabledDate: time => {
-            if (this.tableData[0].birth_time != '') {
-              return time.getTime() < this.tableData[0].birth_time
+            if (this.tableData[0].brith_time != '') {
+              return time.getTime() < this.tableData[0].brith_time
             }
           }
         }

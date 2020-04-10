@@ -13,7 +13,7 @@
           姓
         </template>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.surname"></el-input>
+          <el-input v-model="scope.row.surname" :disabled="scope.row.relation !== 'spouse' && scope.row.relation !== 'mother'"></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="fame" min-width="90">
@@ -38,6 +38,7 @@
               scope.row.relation === 'mother' ||
                 scope.row.relation === 'grandmother'
             "
+            @input="val => {handleCharacterNameInput(val, scope.row.relation)}"
           ></el-input>
         </template>
       </el-table-column>
@@ -66,7 +67,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="birth_time" min-width="150">
+      <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
           是否在世
         </template>
@@ -75,13 +76,13 @@
           <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="birth_time" min-width="150">
+      <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
           出生日期
         </template>
         <template slot-scope="scope">
           <el-date-picker
-            v-model="scope.row.birth_time"
+            v-model="scope.row.brith_time"
             type="date"
             style="width: 140px"
             placeholder="选择日期"
@@ -131,6 +132,7 @@
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
+            @change="val => {handleMarryTimeChanged(val, scope.row.relation)}"
           >
           </el-date-picker>
         </template>
@@ -224,7 +226,7 @@ export default {
     },
     pickerOptions() {
       return {
-        birth_time: {
+        brith_time: {
           disabledDate: time => {
             if (this.tableData[0].death_time != '') {
               return time.getTime() > this.tableData[0].death_time
@@ -233,8 +235,8 @@ export default {
         },
         death_time: {
           disabledDate: time => {
-            if (this.tableData[0].birth_time != '') {
-              return time.getTime() < this.tableData[0].birth_time
+            if (this.tableData[0].brith_time != '') {
+              return time.getTime() < this.tableData[0].brith_time
             }
           }
         }
@@ -280,7 +282,7 @@ export default {
       //   family_name: '',
       //   sex: '',
       //   be_alive: '',
-      //   birth_time: '',
+      //   brith_time: '',
       //   death_time: '',
       //   address: '',
       //   marry_time: ''
@@ -394,35 +396,50 @@ export default {
         'child'
       ]
       let obj = {
-        surname: '',
+        surname: type === 'spouse' || type === 'mother' ? '' : this.userInfo.surname,
         fame: '',
         character_name: '',
         family_name: '',
         sex: '',
         be_alive: '',
-        birth_time: '',
+        brith_time: '',
         death_time: '',
-        address: '',
+        address: this.userInfo.address,
         marry_time: ''
       }
       obj.relation = type
+      let marry_time = ''
+      this.tableData.forEach(item => {
+        if (item.relation === 'mother' || item.relation === 'father') {
+          marry_time = item.marry_time
+        }
+      })
       switch (type) {
         case 'father':
           obj.relation_desc = '父亲'
           obj.sex = '1'
+          obj.marry_time = marry_time
           break
         case 'mother':
           obj.relation_desc = '母亲'
           obj.sex = '2'
+          obj.marry_time = marry_time
           break
         case 'spouse':
           obj.relation_desc = '配偶'
+          obj.marry_time = this.userInfo.marry_time
           break
         case 'brother':
           obj.relation_desc = '兄妹'
+          obj.character_name = this.userInfo.character_name
           break
         case 'child':
           obj.relation_desc = '子女'
+          this.tableData.forEach(item => {
+            if (item.relation === 'child' && item.character_name !== '') {
+              obj.character_name = item.character_name
+            } 
+          })
       }
       this.tableData.push(obj)
       this.tableData = this.tableData.sort((a, b) => {
@@ -465,6 +482,38 @@ export default {
       this.tableData = this.tableData.filter(v => {
         return v.idx !== idx
       })
+    },
+    handleMarryTimeChanged (val, relation) {
+      if (relation === 'father') {
+        this.tableData.forEach(item => {
+          if (item.relation === 'mother') {
+            item.marry_time = val
+          }
+        })
+      }
+      if (relation === 'current' || relation === 'spouse') {
+        this.tableData.forEach(item => {
+          if (item.relation === 'current' || item.relation === 'spouse') {
+            item.marry_time = val
+          }
+        })
+      }
+    },
+    handleCharacterNameInput (val, relation) {
+      if (relation === 'current' || relation === 'brother') {
+        this.tableData.forEach(item => {
+          if (item.relation === 'current' || item.relation === 'brother') {
+            item.character_name = val
+          }
+        })
+      }
+      if (relation === 'child') {
+        this.tableData.forEach(item => {
+          if (item.relation === 'child') {
+            item.character_name = val
+          }
+        })
+      }
     }
   }
 }

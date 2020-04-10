@@ -194,6 +194,7 @@ export default {
 			if (this.status === 'view') {
 				this.status = 'edit'
 				this.getEducation()
+				this.selectTag = this.info.labelId.split(',')
 			}
 		},
 		getLabel() {

@@ -143,5 +143,8 @@ export default {
   },
   familyDonateRecordRanking(params) {
     return http.post(URL + '/currency/familyDonateRecordRanking', params)
+  },
+  queryUserTree(params) {
+    return http.post(URL + '/tree/queryUserTree', params)
   }
 }

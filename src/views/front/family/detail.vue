@@ -1,9 +1,10 @@
 <template>
 	<div>
+    <statistics :detail="statistics"/>
 
-		<el-row>
+		<el-row class="mt-lg">
 			<el-col :span="18" style="position: relative">
-				<el-breadcrumb class="header" separator="/">
+				<el-breadcrumb class="header" separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
         </el-breadcrumb>
@@ -150,7 +151,15 @@ export default {
       },
       currentUser: {},
       currentNodeUser: '',
-      href: window.location.href.split('&')[0]
+      href: window.location.href.split('&')[0],
+      statistics: {
+        isShow: true,
+        count: 0,
+        surname: '',
+        areaCode: '',
+        areaName: '',
+        people: 0
+      }
     }
   },
   computed: {
@@ -167,8 +176,20 @@ export default {
   mounted() {
     this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
     this.getTreeData()
+    this.queryUserTree()
   },
   methods: {
+    queryUserTree () {
+      Family.queryUserTree({tree_user_id: this.userInfo.tree_user_id}).then(res => {
+        this.statistics.count = res.data.countTree
+        this.statistics.surname = res.data.surname
+        this.statistics.area_code = res.data.area_code
+        this.statistics.areaName = res.data.areaName
+        this.statistics.people = res.data.people
+        this.statistics.prov_code = res.data.prov_code
+        this.statistics.city_code = res.data.city_code
+      })
+    },
     getFamilyInfo(familyId) {
       let params = {
         family_id: familyId
@@ -407,23 +428,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.banner {
-	padding: 20px 80px;
-	background-color: #000;
-	color: #fff;
-	font-size: 24px;
-	font-weight: 600;
-
-	.num {
-		font-size: 32px;
-		color: #7fbc5d;
-	}
-
-	.normal {
-		font-size: 14px;
-		margin-left: 20px;
-	}
-}
 .familytree-info-title {
 	border-left: 3px solid red;
 	padding: 5px;
@@ -476,5 +480,8 @@ export default {
   position: fixed;
   top: 0;
   left: 0
+}
+.mt-lg {
+  margin-top: 20px;
 }
 </style>

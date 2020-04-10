@@ -91,7 +91,7 @@
             </el-table-column>
             <el-table-column
               align="center"
-              prop="born_time"
+              prop="be_alive"
               min-width="150"
             >
               <template slot="header">
@@ -104,7 +104,7 @@
             </el-table-column>
             <el-table-column
               align="center"
-              prop="born_time"
+              prop="brith_time"
               min-width="150"
             >
               <template slot="header">
@@ -112,13 +112,13 @@
               </template>
               <template slot-scope="scope">
                   <el-date-picker
-                    v-model="scope.row.born_time"
+                    v-model="scope.row.brith_time"
                     type="date"
                     style="width: 140px"
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd"
                     format="yyyy-MM-dd"
-                    :picker-options="pickerOptions[scope.row.relation].born_time"
+                    :picker-options="pickerOptions[scope.row.relation].brith_time"
                   >
                   </el-date-picker>
               </template>
@@ -208,7 +208,7 @@ export default {
           fame: '',
           sex: '1',
           be_alive: '',
-          born_time: '',
+          brith_time: '',
           death_time: '',
           address: '',
           marry_time: '',
@@ -222,7 +222,7 @@ export default {
           fame: '',
           sex: '2',
           be_alive: '',
-          born_time: '',
+          brith_time: '',
           death_time: '',
           address: '',
           marry_time: '',
@@ -236,7 +236,7 @@ export default {
           fame: '',
           sex: '1',
           be_alive: '',
-          born_time: '',
+          brith_time: '',
           death_time: '',
           address: '',
           marry_time: '',
@@ -250,7 +250,7 @@ export default {
           fame: '',
           sex: '2',
           be_alive: '',
-          born_time: '',
+          brith_time: '',
           death_time: '',
           address: '',
           marry_time: '',
@@ -264,7 +264,7 @@ export default {
           fame: '',
           sex: '',
           be_alive: '',
-          born_time: '',
+          brith_time: '',
           death_time: '',
           address: '',
           marry_time: '',
@@ -289,7 +289,7 @@ export default {
     pickerOptions () {
       return {
         grandfather: {
-          born_time: {
+          brith_time: {
             disabledDate: time => {
               if (this.tableData[0].death_time != '') {
                   return time.getTime() > this.tableData[0].death_time
@@ -298,14 +298,14 @@ export default {
           },
           death_time: {
             disabledDate:  time => {
-              if (this.tableData[0].born_time != '') {
-                  return time.getTime() < this.tableData[0].born_time
+              if (this.tableData[0].brith_time != '') {
+                  return time.getTime() < this.tableData[0].brith_time
               }
             }
           }
         },
         grandmother: {
-          born_time: {
+          brith_time: {
             disabledDate: time => {
               if (this.tableData[1].death_time != '') {
                   return time.getTime() > this.tableData[1].death_time
@@ -314,14 +314,14 @@ export default {
           },
           death_time: {
             disabledDate:  time => {
-              if (this.tableData[1].born_time != '') {
-                  return time.getTime() < this.tableData[1].born_time
+              if (this.tableData[1].brith_time != '') {
+                  return time.getTime() < this.tableData[1].brith_time
               }
             }
           }
         },
         father: {
-          born_time: {
+          brith_time: {
             disabledDate: time => {
               if (this.tableData[2].death_time != '') {
                   return time.getTime() > this.tableData[2].death_time
@@ -330,14 +330,14 @@ export default {
           },
           death_time: {
             disabledDate:  time => {
-              if (this.tableData[2].born_time != '') {
-                  return time.getTime() < this.tableData[2].born_time
+              if (this.tableData[2].brith_time != '') {
+                  return time.getTime() < this.tableData[2].brith_time
               }
             }
           }
         },
         mother: {
-          born_time: {
+          brith_time: {
             disabledDate: time => {
               if (this.tableData[3].death_time != '') {
                   return time.getTime() > this.tableData[3].death_time
@@ -346,14 +346,14 @@ export default {
           },
           death_time: {
             disabledDate:  time => {
-              if (this.tableData[3].born_time != '') {
-                  return time.getTime() < this.tableData[3].born_time
+              if (this.tableData[3].brith_time != '') {
+                  return time.getTime() < this.tableData[3].brith_time
               }
             }
           }
         },
         boy: {
-          born_time: {
+          brith_time: {
             disabledDate: time => {
               if (this.tableData[4].death_time != '') {
                   return time.getTime() > this.tableData[4].death_time
@@ -362,8 +362,8 @@ export default {
           },
           death_time: {
             disabledDate:  time => {
-              if (this.tableData[4].born_time != '') {
-                  return time.getTime() < this.tableData[4].born_time
+              if (this.tableData[4].brith_time != '') {
+                  return time.getTime() < this.tableData[4].brith_time
               }
             }
           }
