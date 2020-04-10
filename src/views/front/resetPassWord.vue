@@ -54,7 +54,6 @@
 import {
   Family
 } from '@/api'
-var md5 = require('md5')
 
 export default {
   name: 'resetPasswd',
@@ -193,7 +192,7 @@ export default {
                 message: '密码修改成功'
               })
             } else {
-              this.$message.error(res.message);
+              this.$message.error(res.message)
             }
           })
         } else {

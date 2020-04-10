@@ -71,6 +71,7 @@
 		<donate-modal v-model="show.donateModal" />
 		<transfor-modal v-if="userType === '3'" v-model="show.transforModal" :info="treeInfo"/>
 		<donate-histroy-modal v-model="show.donateHistroyModal" :info="treeInfo"/>
+    <input class="hidden" id="hidden" type="text" v-model="href">
 	</div>
 </template>
 
@@ -148,7 +149,8 @@ export default {
         donateHistroyModal: false
       },
       currentUser: {},
-      currentNodeUser: ''
+      currentNodeUser: '',
+      href: window.location.href.split('&')[0]
     }
   },
   computed: {
@@ -345,21 +347,14 @@ export default {
       this.show.donateHistroyModal = true
     },
     handleShare () {
-      document.designMode = 'on'
       if (!document.execCommand('copy')) {
           this.$alert('sorry, 手动复制吧')
       } else {
-          let val = window.location.href.split('&')[0]
-          let inputEle = document.createElement('input')
-          document.body.appendChild(inputEle)
-          inputEle.setAttribute('value', val)
-          inputEle.setAttribute('readonly', 'readonly')
+          let inputEle = document.getElementById('hidden')
           inputEle.select()
           document.execCommand('copy')
-          document.body.removeChild(inputEle)
           this.$alert('网页链接已复制，快去粘贴分享')
       }
-      document.designMode = 'off'
     },
     handleTransfor () {
       this.show.transforModal = true
@@ -403,7 +398,8 @@ export default {
                     }
                 }
             }
-            pdf.save('content.pdf')
+          const name = this.familytreeInfo[0].name
+            pdf.save(name + '.pdf')
         })
       }
   }
@@ -474,5 +470,11 @@ export default {
 }
 .btn {
   margin: 5px;
+}
+.hidden {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0
 }
 </style>
