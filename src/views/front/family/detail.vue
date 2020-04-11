@@ -1,6 +1,6 @@
 <template>
 	<div>
-    <statistics :detail="statistics"/>
+    <statistics v-if="$router.currentRoute.path !== '/'" :detail="statistics"/>
 
 		<el-row class="mt-lg">
 			<el-col :span="18" style="position: relative">
@@ -66,10 +66,10 @@
 				<life-info v-else :info="nodeDetail" @success="handleLifeinfoSaved"/>
 			</el-col>
 		</el-row>
-		<edit-modal v-model="show.editModal" :userInfo="currentUser" />
-		<add-modal v-model="show.addModal" :userInfo="currentUser" />
-		<claim-modal v-model="show.claimModal" :userInfo="currentUser" />
-		<donate-modal v-model="show.donateModal" />
+		<edit-modal v-model="show.editModal" :userInfo="currentUser" @success="reload()"/>
+		<add-modal v-model="show.addModal" :userInfo="currentUser" @success="reload()" />
+		<claim-modal v-model="show.claimModal" :userInfo="currentUser"  @success="reload()"/>
+		<donate-modal v-model="show.donateModal"/>
 		<transfor-modal v-if="userType === '3'" v-model="show.transforModal" :info="treeInfo"/>
 		<donate-histroy-modal v-model="show.donateHistroyModal" :info="treeInfo"/>
     <input class="hidden" id="hidden" type="text" v-model="href">
@@ -249,6 +249,7 @@ export default {
         if (!res.data) {
           return
         }
+        this.$emit('loaded', res.data)
         if (!this.$router.currentRoute.query.familyId) {
           this.getFamilyInfo(res.data[0].family_id)
         }
@@ -308,7 +309,7 @@ export default {
               result.forEach(res => {
                 res.children.forEach(child2 => {
                   child2.current.forEach(cur2 => {
-                    if (cur2.user_id === Number(cur.mother_id)) {
+                    if (Number(cur2.user_id) === Number(cur.mother_id)) {
                       child.parent = child2.id
                     }
                   })
@@ -421,8 +422,14 @@ export default {
             }
           const name = this.familytreeInfo[0].name
             pdf.save(name + '.pdf')
-        })
-      }
+        }
+      )
+    },
+    reload () {
+      this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
+      this.getTreeData()
+      this.queryUserTree()
+    }
   }
 }
 </script>

@@ -110,6 +110,7 @@
 							style="width: 140px"
 							type="primary"
 							@click="handleConfirm"
+							:disabled="confirming"
 							>确认修改</el-button
 						>
 						<el-button style="width: 140px" @click="handleCancel"
@@ -178,7 +179,8 @@ export default {
 					value: '博士后'
 				}
 			],
-			uploadImg: this.info.tree_user_img ? this.info.tree_user_img : ''
+			uploadImg: this.info.tree_user_img ? this.info.tree_user_img : '',
+			confirming: false
 		}
 	},
 	watch: {
@@ -239,6 +241,7 @@ export default {
 			this.idx++
 		},
 		handleConfirm() {
+			this.confirming = true
 			let params = {}
 			let label_list = []
 			this.selectTag.forEach(item => {
@@ -258,8 +261,10 @@ export default {
 					this.$alert('保存成功')
 					this.handleCancel()
 					this.$emit('success')
+					this.confirming = false
 				} else {
 					this.$message.error(res.message)
+					this.confirming = false
 				}
 			})
 		},

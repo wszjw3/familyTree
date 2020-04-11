@@ -30,7 +30,7 @@
           {{areaDis}}
         </div>
         <div class="inline-block ml-md">
-          <el-input v-model="search.text" @keydown.enter="handleQuery">
+          <el-input v-model="search.text" placeholder="请输入姓名" @keydown.enter="handleQuery">
             <i
               slot="suffix"
               class="el-input__icon el-icon-search"

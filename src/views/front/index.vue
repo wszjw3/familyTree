@@ -1,6 +1,6 @@
 <template>
   <div>
-    <statistics />
+    <statistics :detail="myFmilyDetail" :statistics="myFmilyStatistics"/>
 
     <el-tabs v-model="activeName">
       <el-tab-pane label="首页" name="first" class="table-item">
@@ -33,7 +33,7 @@
         <family-index style="min-height: 100vh"/>
       </el-tab-pane>
       <el-tab-pane v-if="userType === '2'" lazy label="我的家谱" name="thired" class="table-item">
-        <family-detail ref="detail"/>
+        <family-detail ref="detail" @loaded="handleTreeLoaded"/>
       </el-tab-pane>
       <el-tab-pane v-if="userType === '3'" label="我管理的家谱" name="fourth" class="table-item">
         <el-table :data="myManage">
@@ -81,16 +81,42 @@ export default {
   },
   data() {
     return {
-      activeName: 'first',
+      activeName: this.$router.currentRoute.query.active || 'first',
       familyData: [],
       manageData: [],
-      myManage: []
+      myManage: [],
+      myFmilyDetail: {
+        isShow: true,
+        count: 0,
+        surname: '',
+        areaCode: '',
+        areaName: '',
+        people: 0
+      },
+      myFmilyStatistics: {
+        isShow: true,
+        family_number: '',
+        death_number: '',
+        beath_number: '',
+      }
     }
+  },
+  watch: {
+    $router (val) {
+			this.activeName = val.currentRoute.query.active
+		},
+		activeName (val, oldVal) {
+			val !== oldVal && this.$router.push({
+				path: '/',
+				query: {
+					active: val
+				}
+      })
+		}
   },
   created () {
     this.getTableData()
     this.userType === '3' && this.getMyManage()
-    this.activeName = this.$router.currentRoute.query.active ? this.$router.currentRoute.query.active : 'first'
   },
   computed: {
     userType () {
@@ -98,6 +124,9 @@ export default {
     },
     userId () {
       return this.$store.getters.getToken.user_id
+    },
+    treeUserId () {
+      return this.$store.getters.getToken.tree_user_id
     }
   },
   methods: {
@@ -121,6 +150,30 @@ export default {
           v.idx = i + 1
           return v
         })
+      })
+    },
+    handleTreeLoaded (data) {
+      this.getMyFmaily({family_id: data[0].family_id})
+    },
+    getMyFmaily (prop) {
+      Family.familyStatisticsFind({family_id: prop.family_id}).then(res => {
+        if (res.code === '000000' && res.data) {
+          this.myFmilyStatistics = {
+              isShow: true,
+              family_number: res.data.family_number,
+              death_number: res.data.death_number,
+              beath_number: res.data.beath_number
+          }
+        }
+      })
+      Family.queryUserTree({tree_user_id: this.treeUserId}).then(res => {
+        this.myFmilyDetail.count = res.data.countTree
+        this.myFmilyDetail.surname = res.data.surname
+        this.myFmilyDetail.area_code = res.data.area_code
+        this.myFmilyDetail.areaName = res.data.areaName
+        this.myFmilyDetail.people = res.data.people
+        this.myFmilyDetail.prov_code = res.data.prov_code
+        this.myFmilyDetail.city_code = res.data.city_code
       })
     }
   }

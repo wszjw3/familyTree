@@ -61,7 +61,7 @@
     <el-table-column label="操作" fixed="right" align="center" min-width="200">
       <template slot-scope="scope">
         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">移除</el-button>
-        <el-button size="mini" @click="handleReset(scope.$index, scope.row)">编辑</el-button>
+        <el-button size="mini" type="primary" @click="handleReset(scope.$index, scope.row)">任命</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -119,14 +119,14 @@ export default {
       loginOptions:[
         {
           value: '0',
-          label: '一个月'
+          label: '一个月未登录'
         }, {
           value: '1',
-          label: '半个月'
+          label: '半月内未登录'
         },
         {
           value: '2',
-          label: '七天'
+          label: '七天内未登录'
         }
       ],
       scoreOptions:[{
@@ -178,6 +178,10 @@ export default {
     },
     resetForm() {
       this.searchForm.label_name = ''
+      this.searchForm.manage_id = ''
+      this.searchForm.login_type = ''
+      this.searchForm.score = ''
+      this.searchForm.total_score = ''
     },
     querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants

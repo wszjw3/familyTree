@@ -36,7 +36,8 @@
             v-model="scope.row.character_name"
             :disabled="
               scope.row.relation === 'mother' ||
-                scope.row.relation === 'grandmother'
+              scope.row.relation === 'grandmother' ||
+              scope.row.relation === 'spouse'
             "
             @input="val => {handleCharacterNameInput(val, scope.row.relation)}"
           ></el-input>
@@ -106,6 +107,7 @@
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
+            @change="val => {handleDeathTimeChanged(val, scope.row)}"
           >
           </el-date-picker>
         </template>
@@ -169,7 +171,7 @@
       >
         添加母亲
       </span>
-      <span @click="handleAdd('spouse')" :class="userInfo.isWife ? 'disabled' : ''">
+      <span @click="handleAdd('spouse')" :class="userInfo.isWife || spouseDisabled ? 'disabled' : ''">
         添加配偶
       </span>
       <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
@@ -255,6 +257,15 @@ export default {
       let flag = false
       this.tableData.forEach(item => {
         if (item.relation === 'mother') {
+          flag = true
+        }
+      })
+      return flag
+    },
+    spouseDisabled () {
+      let flag = false
+      this.tableData.forEach(item => {
+        if (item.relation === 'spouse' && item.sex === '1' && this.userInfo.sex === '2') {
           flag = true
         }
       })
@@ -387,6 +398,9 @@ export default {
       if (type !== 'child' && this.userInfo.isWife) {
         return
       }
+      if (this.spouseDisabled) {
+        return
+      }
       const relation = [
         'current',
         'father',
@@ -406,6 +420,9 @@ export default {
         death_time: '',
         address: this.userInfo.address,
         marry_time: ''
+      }
+      if (type === 'spouse') {
+        obj.sex = this.userInfo.sex === '1' ? '2' : '1'
       }
       obj.relation = type
       let marry_time = ''
@@ -514,6 +531,9 @@ export default {
           }
         })
       }
+    },
+    handleDeathTimeChanged (val, row) {
+      row.be_alive = new Date(val) < Date.now() && val ? '2' : '1'
     }
   }
 }

@@ -268,7 +268,8 @@ export default {
     }
 
     .leaf {
-      padding: 10px 20px;
+      height: 40px;
+      line-height: 40px;
       width: 100px;
       display: inline-block;
       position: relative;
@@ -277,8 +278,7 @@ export default {
       .icon-wrapper {
         display: inline-block;
         position: absolute;
-        min-width: 40px;
-        margin-top: -5px;
+        top: 5px;
         .required {
           color: red;
           font-size: 30px;
@@ -300,7 +300,7 @@ export default {
         position: absolute;
         z-index: 99;
         background-color: #fff;
-        top: 38px;
+        top: 40px;
         left: 0;
         width: 100%;
         .pie {
@@ -343,14 +343,14 @@ export default {
             position: absolute;
             cursor: pointer;
             left: 5px;
-            top: 20px;
+            top: 10px;
           }
 
           .second {
             position: absolute;
             cursor: pointer;
             right: 5px;
-            top: 20px;
+            top: 10px;
             color: red;
           }
 
@@ -358,7 +358,7 @@ export default {
             position: absolute;
             cursor: pointer;
             left: 25px;
-            bottom: 10px;
+            bottom: 0px;
             color: #1890ff;
           }
         }

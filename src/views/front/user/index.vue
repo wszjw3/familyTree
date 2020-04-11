@@ -129,7 +129,7 @@ export default {
 	},
 	data() {
 		return {
-			activeName: 'first',
+			activeName: this.$router.currentRoute.query.active || 'first',
 			basicForm: {
 				user_surname: '',
 				user_fame: '',
@@ -215,6 +215,19 @@ export default {
 					}
 				]
 			},
+		}
+	},
+	watch: {
+		$router (val) {
+			this.activeName = val.currentRoute.query.active
+		},
+		activeName (val, oldVal) {
+			val !== oldVal && this.$router.push({
+				path: '/user/index',
+				query: {
+					active: val
+				}
+			})
 		}
 	},
 	created() {

@@ -146,5 +146,8 @@ export default {
   },
   queryUserTree(params) {
     return http.post(URL + '/tree/queryUserTree', params)
+  },
+  familyStatisticsFind(params) {
+    return http.post(URL + '/currency/familyStatisticsFind', params)
   }
 }

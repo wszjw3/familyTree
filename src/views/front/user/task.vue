@@ -130,7 +130,7 @@ export default {
     return {
       checkboxSelectedImg,
       checkboxImg,
-      activeTab: 'first',
+      activeTab: this.$router.currentRoute.query.active || 'first',
       unProcess: {
         apply_type: '',
         date: [],
@@ -155,6 +155,20 @@ export default {
     this.getDefaultDateRange('all')
     this.handleSearch('no')
     this.handleSearch('yes')
+  },
+  watch: {
+    $router (val) {
+			this.activeTab = val.currentRoute.query.active
+		},
+		activeTab (val, oldVal) {
+			val !== oldVal && this.$router.push({
+				path: '/user/task',
+				query: {
+          active: val,
+          familyName: this.$router.currentRoute.query.familyName
+				}
+			})
+		}
   },
   computed: {
     familyName () {

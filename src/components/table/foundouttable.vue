@@ -386,6 +386,7 @@ export default {
 .btn-wrapper {
 	display: inline-block;
 	position: absolute;
+	z-index: 2;
 }
 .relative {
 	position: relative;

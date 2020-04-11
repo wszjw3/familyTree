@@ -216,7 +216,10 @@ export default {
           Family.register(params).then((res) => {
             console.log(res)
             if (res.code === '000000') {
-              this.$router.push('/login')
+              this.$alert('注册成功')
+              setTimeout(() => {
+                this.$router.push('/login')
+              }, 500)
             } else {
               MessageBox.alert( res.message, '', {
                 confirmButtonText: '确定',

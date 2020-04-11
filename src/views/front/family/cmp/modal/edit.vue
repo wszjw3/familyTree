@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="60%">
+  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="80%">
     <el-table :data="tableData" style="width: 100%; overflow: auto">
       <el-table-column align="center" prop="surname" min-width="90">
         <template slot="header">
@@ -7,7 +7,7 @@
           姓
         </template>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.surname"></el-input>
+          <el-input v-model="scope.row.surname" disabled></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="fame" min-width="90">
@@ -88,6 +88,7 @@
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
             :picker-options="pickerOptions.death_time"
+            @change="val => {handleDeathTimeChanged(val, scope.row)}"
           >
           </el-date-picker>
         </template>
@@ -253,6 +254,9 @@ export default {
         this.$message.error('是否在世不能为空')
         return
       }
+    },
+    handleDeathTimeChanged (val, row) {
+      row.be_alive = new Date(val) < Date.now() && val ? '2' : '1'
     }
   }
 }

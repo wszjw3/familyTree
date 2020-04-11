@@ -79,12 +79,13 @@ export default {
   },
   data() {
     return {
-      activeName: 'second',
+      activeName: this.$router.currentRoute.query.active || 'second',
       stretch: false,
       baseForm: {
         scale:'',
         bank_name: '',
-        bank_no: ''
+        bank_no: '',
+        operation: '1'
       },
       baseFormRules:{
         scale:[{ required: true, message: '抽成比例', trigger: 'blur' }],
@@ -92,6 +93,19 @@ export default {
         bank_no:[{ required: true, message: '银行卡账号', trigger: 'blur' }]
       }
     }
+  },
+  watch: {
+    $router (val) {
+			this.activeName = val.currentRoute.query.active
+		},
+		activeName (val, oldVal) {
+			val !== oldVal && this.$router.push({
+				path: '/platform/manage',
+				query: {
+					active: val
+				}
+			})
+		}
   },
   methods: {
     handleClick(tab, event) {
@@ -104,6 +118,9 @@ export default {
       Manage.baseSetupFind().then(content => {
         if(content.code && content.code === '000000') {
             this.baseForm = content.data
+            if (content.data.scale || content.bank_name || content.bank_no) {
+              this.baseForm.operation = '0'
+            }
         } else {
           this.$message.error({
             message: `${content.message?','+content.message:''}`

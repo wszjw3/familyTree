@@ -1,10 +1,21 @@
 <template>
   <div class="banner-statistics">
-      已收录全国共
-      <span class="num">{{tree}}</span>
-      棵家谱树，总计
-      <span class="num">{{people}}</span>
-      人
+      <template v-if="!statistics.isShow">
+        已收录全国共
+        <span class="num">{{tree}}</span>
+        棵家谱树，总计
+        <span class="num">{{people}}</span>
+        人
+      </template>
+      <template v-if="statistics.isShow">
+        当前家谱树枝繁叶茂，已收录 
+        <span class="num">{{statistics.family_number}}</span>
+        人，近3个月 死亡
+        <span class="num">{{statistics.death_number}}</span>
+        人，新增
+        <span class="num">{{statistics.beath_number}}</span>
+        人。
+      </template>
       <span v-if="detail.isShow && detail.count > 0" class="detail">
         该地区还有{{detail.count}}棵{{detail.surname}}氏家谱树，
         <a class="link" @click="handleViewModal">点击查看</a>
@@ -36,6 +47,17 @@ export default {
           prov_code: '',
           areaName: '',
           people: 0
+        }
+      }
+    },
+    statistics: {
+      type: Object,
+      default () {
+        return {
+          isShow: false,
+          family_number: '',
+          death_number: '',
+          beath_number: '',
         }
       }
     }
