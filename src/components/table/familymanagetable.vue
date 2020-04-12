@@ -5,11 +5,12 @@
       <el-row type="flex" class="row-bg" justify="end">
         <el-form-item label="管理员姓名：">
           <el-autocomplete
-            v-model="searchForm.manage_id"
+            v-model="searchForm.manage_name"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入"
             value-key="manage_name"
             value="manage_id"
+            @select="item => {handleSelect('searchForm', item)}"
             clearable
           ></el-autocomplete>
           <!-- <el-input v-model="searchForm.manage_id" placeholder='请输入' clearable></el-input> -->
@@ -75,12 +76,12 @@
     <el-form :model="resetTag" :rules="resetTagRules" ref="resetTag" label-width="8rem">
       <el-form-item label="管理员姓名：" prop="manage_name">
         <el-autocomplete
-            v-model="resetTag.manage_id"
+            v-model="resetTag.manage_name"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入"
             value-key="manage_name"
             value="manage_id"
-            @select="handleSelect"
+            @select="item => {handleSelect('resetTag', item)}"
             clearable
           ></el-autocomplete>
       </el-form-item>
@@ -89,7 +90,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click.native="resetDialogVisible = false">取消</el-button>
+      <el-button @click.native="resetModal">取消</el-button>
       <el-button type="primary" @click.native="resetSubmit">提交</el-button>
     </div>
   </el-dialog>
@@ -112,6 +113,7 @@ export default {
       timeout:  null,
       searchForm: {
         manage_id: '',
+        manage_name: '',
         login_type: '',
         score: '',
         total_score: '',
@@ -179,14 +181,23 @@ export default {
     resetForm() {
       this.searchForm.label_name = ''
       this.searchForm.manage_id = ''
+      this.searchForm.manage_name = ''
       this.searchForm.login_type = ''
       this.searchForm.score = ''
       this.searchForm.total_score = ''
     },
+    resetModal () {
+      this.resetTag = {
+        family_id: '',
+        manage_id: '',
+        manage_name: '',
+        family_name: '',
+        manage_phone: ''
+      }
+    },
     querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
-
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         cb(results)
@@ -197,10 +208,10 @@ export default {
         return (state.manage_name.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
-    handleSelect(item) {
-      console.log(item)
-      this.resetTag.manage_name = item.manage_name
-      this.resetTag.manage_phone = item.manage_phone
+    handleSelect(type, item) {
+      this[type].manage_id = item.manage_id
+      this[type].manage_name = item.manage_name
+      this[type].manage_phone = item.manage_phone
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="80%">
+  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="80%" center>
     <el-table
       class="add-table"
       :data="tableData"
@@ -55,7 +55,8 @@
             :disabled="
               scope.row.relation === 'current' ||
                 scope.row.relation === 'father' ||
-                scope.row.relation === 'mother'
+                scope.row.relation === 'mother' ||
+                scope.row.relation === 'spouse'
             "
           >
             <el-option
@@ -70,6 +71,7 @@
       </el-table-column>
       <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
+          <span class="required">* </span>
           是否在世
         </template>
         <template slot-scope="scope">
@@ -114,6 +116,7 @@
       </el-table-column>
       <el-table-column align="center" prop="address" min-width="200">
         <template slot="header">
+          <span class="required">* </span>
           通讯地址
         </template>
         <template slot-scope="scope">
@@ -161,16 +164,16 @@
     <div class="operation">
       <span
         @click="handleAdd('father')"
-        :class="userInfo.mother_id || hasFather || userInfo.isWife ? 'disabled' : ''"
+        :class="userInfo.mother_id || hasFather || hasMother || userInfo.isWife ? 'disabled' : ''"
       >
-        添加父亲
+        添加父母
       </span>
-      <span
+      <!-- <span
         @click="handleAdd('mother')"
         :class="userInfo.mother_id || hasMother || userInfo.isWife ? 'disabled' : ''"
       >
         添加母亲
-      </span>
+      </span> -->
       <span @click="handleAdd('spouse')" :class="userInfo.isWife || spouseDisabled ? 'disabled' : ''">
         添加配偶
       </span>
@@ -181,9 +184,9 @@
         添加子女
       </span>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取消</el-button>
-      <el-button type="primary" @click="confirm">提交审核</el-button>
+    <span slot="footer">
+      <el-button class="ma-md" @click="cancel">取消</el-button>
+      <el-button class="ma-md" type="primary" @click="confirm">提交审核</el-button>
     </span>
   </el-dialog>
 </template>
@@ -204,6 +207,10 @@ export default {
       default() {
         return {}
       }
+    },
+    surName: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -387,7 +394,7 @@ export default {
       this.reset()
     },
     handleAdd(type) {
-      if (type === 'father' && (this.userInfo.mother_id || this.hasFather)) {
+      if (type === 'father' && (this.userInfo.mother_id || this.hasMother || this.hasFather)) {
         return
       }
       if (
@@ -410,7 +417,7 @@ export default {
         'child'
       ]
       let obj = {
-        surname: type === 'spouse' || type === 'mother' ? '' : this.userInfo.surname,
+        surname: type === 'spouse' || type === 'mother' ? '' : this.surName,
         fame: '',
         character_name: '',
         family_name: '',
@@ -436,6 +443,7 @@ export default {
           obj.relation_desc = '父亲'
           obj.sex = '1'
           obj.marry_time = marry_time
+          
           break
         case 'mother':
           obj.relation_desc = '母亲'
@@ -465,11 +473,14 @@ export default {
         v.idx = i
         return v
       })
+      if (type === 'father') {
+        this.handleAdd('mother')
+      }
     },
     validate() {
       let flag = true
       this.tableData.forEach(item => {
-        if (!item.surname || !item.fame || !item.sex || !item.be_alive) {
+        if (!item.surname || !item.fame || !item.sex || !item.be_alive || !item.address) {
           flag = false
         }
         flag === false && this.handleTip(item)
@@ -492,6 +503,10 @@ export default {
       }
       if (!obj.be_alive) {
         this.$message.error('是否在世不能为空')
+        return
+      }
+      if (!obj.address) {
+        this.$message.error('地址不能为空')
         return
       }
     },
@@ -563,5 +578,8 @@ export default {
     display: inline-block;
     cursor: pointer;
   }
+}
+.ma-md {
+  margin: 5px 20px
 }
 </style>

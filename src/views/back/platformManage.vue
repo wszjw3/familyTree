@@ -85,7 +85,7 @@ export default {
         scale:'',
         bank_name: '',
         bank_no: '',
-        operation: '1'
+        operation: '0'
       },
       baseFormRules:{
         scale:[{ required: true, message: '抽成比例', trigger: 'blur' }],
@@ -118,9 +118,6 @@ export default {
       Manage.baseSetupFind().then(content => {
         if(content.code && content.code === '000000') {
             this.baseForm = content.data
-            if (content.data.scale || content.bank_name || content.bank_no) {
-              this.baseForm.operation = '0'
-            }
         } else {
           this.$message.error({
             message: `${content.message?','+content.message:''}`

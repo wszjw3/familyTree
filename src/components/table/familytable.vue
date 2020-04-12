@@ -8,6 +8,7 @@
 							v-model="searchForm.family_id"
 							filterable
 							placeholder="请选择"
+              clearable
 						>
 							<el-option
 								v-for="item in familyOpts"

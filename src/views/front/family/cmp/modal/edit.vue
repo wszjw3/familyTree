@@ -1,6 +1,11 @@
 <template>
-  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="80%">
+  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="80%" center>
     <el-table :data="tableData" style="width: 100%; overflow: auto">
+      <el-table-column align="center" prop="surname" min-width="90">
+        <template slot-scope="scope">
+          变更人物
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="surname" min-width="90">
         <template slot="header">
           <span class="required">* </span>
@@ -48,8 +53,8 @@
       </el-table-column>
       <el-table-column align="center" prop="be_alive" min-width="150">
         <template slot="header">
-          是否在世
           <span class="required">* </span>
+          是否在世
         </template>
         <template slot-scope="scope">
           <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
@@ -95,8 +100,8 @@
       </el-table-column>
       <el-table-column align="center" prop="address" min-width="200">
         <template slot="header">
-          地址
           <span class="required">* </span>
+          地址
         </template>
         <template slot-scope="scope">
           <el-input v-model="scope.row.address"></el-input>
@@ -122,8 +127,8 @@
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取消</el-button>
-      <el-button type="primary" @click="confirm">申请修改</el-button>
+      <el-button class="ma-md" @click="cancel">取消</el-button>
+      <el-button class="ma-md" type="primary" @click="confirm">申请修改</el-button>
     </span>
   </el-dialog>
 </template>
@@ -265,5 +270,8 @@ export default {
 <style scoped lang="less">
 .required {
   color: red;
+}
+.ma-md {
+  margin: 5px 20px
 }
 </style>

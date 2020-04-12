@@ -252,6 +252,7 @@ export default {
       params.user_id = this.userId
       params.start_time = type === 'no' ? this.unProcess.date[0] : this.processed.date[0]
       params.end_time = type === 'no' ? this.unProcess.date[1] : this.processed.date[1]
+      params.page = type === 'no' ? this.unProcess.page : this.processed.page
       Family.checkTaskList(params).then(res => {
         if (res.code === '000000') {
           if (type === 'no') {
@@ -278,7 +279,7 @@ export default {
       } else {
         this.processed.page = val
       }
-      this.handleSearch()
+      this.handleSearch(type)
     },
     refuse () {
       const params = {
@@ -290,6 +291,7 @@ export default {
           this.unProcess.page = 1
           this.selection = []
           this.handleSearch('no')
+          this.handleSearch('yes')
         } else {
           this.$message.error(res.message)
         }
@@ -305,6 +307,7 @@ export default {
           this.unProcess.page = 1
           this.selection = []
           this.handleSearch('no')
+          this.handleSearch('yes')
         } else {
           this.$message.error(res.message)
         }

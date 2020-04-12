@@ -27,6 +27,7 @@
             </div>
           </div>
           <family-tree
+            ref="tree"
             :data="treeData"
             @onView="handleViewNode"
             @onEdit="handleEditNode"
@@ -67,7 +68,7 @@
 			</el-col>
 		</el-row>
 		<edit-modal v-model="show.editModal" :userInfo="currentUser" @success="reload()"/>
-		<add-modal v-model="show.addModal" :userInfo="currentUser" @success="reload()" />
+		<add-modal v-model="show.addModal" :userInfo="currentUser" :surName="title.charAt(1, 1)" @success="reload()" />
 		<claim-modal v-model="show.claimModal" :userInfo="currentUser"  @success="reload()"/>
 		<donate-modal v-model="show.donateModal"/>
 		<transfor-modal v-if="userType === '3'" v-model="show.transforModal" :info="treeInfo"/>
@@ -260,23 +261,28 @@ export default {
           obj.children = []
 
           item.collection.forEach(c => {
+            let arr = []
             if (c.wife && c.wife.length && c.wife.length > 0) {
               c.wife.forEach((w, wi) => {
                 w.isWife = true
                 let childrenObj = {
+                  related: c.landlord.user_id,
                   id: id,
                   current: []
                 }
+                if (c.landlord.mother_id) {
+                  childrenObj.parent = ''
+                }
                 if (wi === 0) {
-                  if (c.landlord.mother_id) {
-                    childrenObj.parent = ''
-                  }
                   childrenObj.current.push(c.landlord)
                   childrenObj.current.push(w)
                 } else {
                   childrenObj.current.push(w)
+                  childrenObj.husband = c.landlord.user_id
+                  childrenObj.related = c.landlord.user_id
                 }
-                obj.children.push(childrenObj)
+                // obj.children.push(childrenObj)
+                arr.push(childrenObj)
                 id++
               })
             } else {
@@ -288,9 +294,11 @@ export default {
               }
               childrenObj.current = []
               childrenObj.current.push(c.landlord)
-              obj.children.push(childrenObj)
+              // obj.children.push(childrenObj)
+              arr.push(childrenObj)
               id++
             }
+            obj.children.push(arr)
           })
 
           result.push(obj)
@@ -298,24 +306,31 @@ export default {
         let children = []
         result.forEach(r => {
           r.children.forEach(child => {
-            if (child.parent === '') {
-              children.push(child)
-            }
+            child.forEach(c1 => {
+              if (c1.parent === '') {
+                children.push(child)
+              }
+            })
+            
           })
         })
         children.forEach(child => {
-          child.current.forEach(cur => {
-            if (cur.mother_id) {
-              result.forEach(res => {
-                res.children.forEach(child2 => {
-                  child2.current.forEach(cur2 => {
-                    if (Number(cur2.user_id) === Number(cur.mother_id)) {
-                      child.parent = child2.id
-                    }
+          child.forEach(c1 => {
+            c1.current.forEach(cur => {
+              if (cur.mother_id) {
+                result.forEach(res => {
+                  res.children.forEach(child2 => {
+                    child2.forEach(c2Item => {
+                      c2Item.current.forEach(cur2 => {
+                        if (Number(cur2.user_id) === Number(cur.mother_id)) {
+                          c1.parent = c2Item.id
+                        }
+                      })
+                    })
                   })
                 })
-              })
-            }
+              }
+            })
           })
         })
         console.log(result)
@@ -386,6 +401,7 @@ export default {
       this.handleViewNode({user_id: this.currentNodeUser})
     },
     exportToPDF () {
+      // eslint-disable-next-line no-undef
       html2canvas(
         document.getElementById('export')
         ).then(canvas => {
@@ -429,6 +445,7 @@ export default {
       this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
       this.getTreeData()
       this.queryUserTree()
+      this.$refs.tree.interval()
     }
   }
 }

@@ -9,7 +9,7 @@
 				<el-row type="flex" class="row-bg" justify="end" label-width="80px">
 					
 					<el-form-item label="家谱名称：">
-						<el-select v-model="searchForm.family_id" filterable placeholder="请选择" style="width: 150px">
+						<el-select v-model="searchForm.family_id" clearable filterable placeholder="请选择" style="width: 150px">
 							<el-option
 								v-for="item in familyOpts"
 								:key="item.family_id"
@@ -20,7 +20,15 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="姓名：">
-						<el-input v-model="searchForm.name" style="width: 150px"></el-input>
+						<el-select v-model="searchForm.manage_id" clearable filterable placeholder="请选择" style="width: 150px">
+							<el-option
+								v-for="item in manageOpts"
+								:key="item.manage_id"
+								:label="item.manage_name"
+								:value="item.manage_id"
+							>
+							</el-option>
+						</el-select>
 					</el-form-item>
 					<el-form-item label="选择日期：">
 						<el-date-picker
@@ -53,7 +61,7 @@
 		>
 			<el-table-column property="commit_time" label="提交时间" align="center">
 			</el-table-column>
-			<el-table-column property="type" label="类型" align="center">
+			<el-table-column property="type_desc" label="类型" align="center">
 			</el-table-column>
 			<el-table-column
 				property="family_name"
@@ -67,7 +75,7 @@
 			</el-table-column>
 			<el-table-column property="trans_amt" label="金额（元）" align="center">
 			</el-table-column>
-			<el-table-column property="status" label="状态" align="center">
+			<el-table-column property="status_desc" label="状态" align="center">
 			</el-table-column>
 			<el-table-column label="操作" align="center">
                 <template slot-scope="scope">
@@ -144,7 +152,7 @@
 					<el-input v-model="familyForm.repair_desc"/>
 				</el-form-item>
 				<el-form-item label="操作者" prop="trans_amt">
-					<el-input v-model="familyForm.opertion_people" :readonly="true"/>
+					<el-input v-model="userInfo.user_name" :readonly="true"/>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
@@ -163,7 +171,7 @@ export default {
 			searchForm: {
 				family_id: '',
 				date: [],
-				name: ''
+				manage_id: ''
 			},
 			tableData: [],
 			loading: false,
@@ -205,6 +213,7 @@ export default {
 		this.getManageOpts()
 	},
 	methods: {
+		
 		getDefaultDateRange() {
 			this.searchForm.date = []
 			var date = new Date()
@@ -254,6 +263,7 @@ export default {
 			this.loading = true
 			const params = {
 				family_id: this.searchForm.family_id,
+				manage_id: this.searchForm.manage_id,
 				begin_time: this.searchForm.date[0],
 				end_time: this.searchForm.date[1],
 				page: this.currentPage,
@@ -261,7 +271,24 @@ export default {
 			}
 			Manage.fundHandleFundAmountFind(params).then(res => {
 				if (res.data && res.code === '000000') {
-					this.tableData = res.data
+					this.tableData = res.data.map(v => {
+						if (v.type === '0') {
+							v.type_desc = '修谱支出'
+						} else if (v.type === '1') {
+							v.type_desc = '工资支出'
+						} else {
+							v.type_desc = '捐献'
+						}
+						if (v.status === '0') {
+							v.status_desc = '初始'
+						} else if (v.status === '1') {
+							v.status_desc = '已处理'
+						} else {
+							v.status_desc = '已取消'
+						}
+						return v
+					})
+					this.records = parseInt(res.pageContent)
 				} else {
 					this.$message.error(res.message)
 				}
@@ -281,7 +308,7 @@ export default {
 			this.currentPage = 1
 			this.records = 0
 			this.searchForm.family_id = ''
-			this.searchForm.name = ''
+			this.searchForm.manage_id = ''
 			this.getDefaultDateRange()
 			this.getTableData()
         },
@@ -346,10 +373,13 @@ export default {
 			})
 		},
 		confirmFamilyOut () {
-			Manage.repairSpectrumAmount(this.familyForm).then(res => {
+			const params = Object.assign({}, this.familyForm, {
+				opertion_people: this.userInfo.user_name
+			})
+			Manage.repairSpectrumAmount(params).then(res => {
 				if (res.code === '000000') {
 					this.$alert('保存成功')
-					this.show.wave = false
+					this.show.familytree = false
 					this.familyForm = {
 						family_name: '',
 						family_id: '',
@@ -357,6 +387,8 @@ export default {
 						repair_desc: '',
 						opertion_people: ''
 					}
+					this.currentPage = 1
+					this.getTableData()
 				} else {
 					this.$message.error(res.message)
 				}

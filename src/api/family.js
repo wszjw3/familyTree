@@ -5,8 +5,6 @@ let URL = ''
 if ('true' !== process.env.VUE_APP_USE_MOCK) {
   URL = process.env.VUE_APP_BASE_FAMILY
 }
-
-
 export default {
   familyTreeQuery(params) {
     const str = params.isMyTree ? '/tree/queryMyTree' : '/tree/query'

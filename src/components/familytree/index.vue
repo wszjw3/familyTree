@@ -14,81 +14,83 @@
           style="display: flex; justify-content: space-between"
         >
           <div
-            v-for="(key, kdx) in t"
-            :key="kdx"
-            :data-node="
-              key.id + '-' + (key.parent !== undefined ? key.parent : '')
-            "
-            :class="[idx !== 0 ? 'px-sm' : '', 'tree-node']"
-            :id="key.id.toString()"
+            v-for="(t1, t1dx) in t"
+            :key="t1dx"
+            style="display: flex; justify-content: space-between"
           >
             <div
-              v-for="(ele, edx) in key.current"
-              :key="edx"
-              class="leaf"
-              :class="[
-                ele.sex === '2' &&
-                idx !== treeData.length - 1 &&
-                findChildWidthId(key.id)
-                  ? 'tree-after'
-                  : '',
-                (ele.sex === '1' && idx !== 0) ||
-                (key.parent !== undefined && key.current.length === 1) ||
-                (key.current.length === 1 && idx !== 0)
-                  ? 'tree-before'
-                  : '',
-                key.current.length === 1 && idx !== 0 && ele.be_alive !== '2'
-                  ? 'no-border'
-                  : '',
-                ele.be_alive === '2' ? 'dashed' : 'solid'
-              ]"
+              v-for="(key, kdx) in t1"
+              :key="kdx"
+              :data-node="
+                key.id + '-' + (key.parent !== undefined ? key.parent : '')
+              "
+              :class="['tree-node']"
+              :id="key.id"
             >
-              {{ ele.user_name }}
               <div
-                v-if="ele.sex === '2' || ele.claim === '1'"
-                class="icon-wrapper"
+                v-for="(ele, edx) in key.current"
+                :key="edx"
+                class="leaf"
+                :class="[
+                  ele.sex === '2' &&
+                  idx !== treeData.length - 1 &&
+                  findChildWidthId(key.id)
+                    ? 'tree-after'
+                    : '',
+                  (ele.sex === '1' && idx !== 0) ||
+                  !ele.isWife && idx !== 0 ? 'tree-before' : '',
+                  ele.isWife && kdx + 1 < t1.length  && t1[kdx + 1].current.length === 2 ? 'mr-sm' : '',
+                  ele.be_alive === '2' ? 'dashed' : 'solid'
+                ]"
               >
-                <img v-if="ele.sex === '2'" :src="sexImg" class="sex-img" />
-                <span v-if="ele.claim === '1'" class="required">*</span>
-              </div>
-              <div
-                class="action-wrapper"
-                :style="{
-                  marginTop:
-                    key.current.length === 1 &&
-                    idx !== 0 &&
-                    ele.be_alive !== '2'
-                      ? '-1px'
-                      : ''
-                }"
-              >
+                {{ ele.user_name }}
                 <div
-                  v-if="userType === '2' || userType === '3' || userType === '4'"
-                  class="pie"
+                  v-if="ele.sex === '2' || ele.claim === '1'"
+                  class="icon-wrapper"
                 >
-                  <div class="line1"></div>
-                  <div class="line2"></div>
-                  <div class="line3"></div>
-                  <div class="first" @click="handleViewDetail(ele)">
-                    详情
-                  </div>
-                  <div class="second" @click="handleEdit(ele)">
-                    编辑
-                  </div>
-                  <div class="thired" @click="handleAdd(ele)">
-                    添加
-                  </div>
+                  <img v-if="ele.sex === '2' && !ele.isWife" :src="sexImg" class="sex-img" />
+                  <span v-if="ele.claim === '1'" class="required">*</span>
                 </div>
                 <div
-                  v-if="userType === '0' || userType === '1'"
-                  class="claim"
-                  @click="handleClaim(ele)"
+                  class="action-wrapper"
+                  :style="{
+                    marginTop:
+                      key.current.length === 1 &&
+                      idx !== 0 &&
+                      ele.be_alive !== '2'
+                        ? '-1px'
+                        : ''
+                  }"
                 >
-                  认领
+                  <div
+                    v-if="userType === '2' || userType === '3' || userType === '4'"
+                    class="pie"
+                  >
+                    <div class="line1"></div>
+                    <div class="line2"></div>
+                    <div class="line3"></div>
+                    <div class="first" @click="handleViewDetail(ele)">
+                      详情
+                    </div>
+                    <div class="second" @click="handleEdit(ele)">
+                      编辑
+                    </div>
+                    <div class="thired" @click="handleAdd(ele)">
+                      添加
+                    </div>
+                  </div>
+                  <div
+                    v-if="userType === '0' || userType === '1'"
+                    class="claim"
+                    @click="handleClaim(ele)"
+                  >
+                    认领
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          
         </div>
       </div>
     </div>
@@ -126,24 +128,48 @@ export default {
       this.data.forEach(item => {
         let parent = []
         item.children.forEach(key => {
-          if (key.parent !== undefined && parent.indexOf(key.parent) === -1) {
-            parent.push(key.parent)
-          }
+          key.forEach(ele => {
+            if (ele.parent !== undefined && parent.indexOf(ele.parent) === -1) {
+              parent.push(ele.parent)
+            }
+          })
+        })
+        parent = parent.filter(v => {
+          return v !== ''
         })
         item.test = []
         if (parent.length === 0) {
           item.test = [item.children]
         } else {
-          parent.forEach(p => {
+          item.children.forEach(key => {
             let arr = []
-            item.children.forEach(key => {
-              if (key.parent === p) {
-                arr.push(key)
-              }
+            parent.forEach(p => {
+              key.forEach(ele => {
+                if (ele.parent === p) {
+                  arr.push(ele)
+                }
+              })
             })
-            item.test.push(arr)
+            item.test.push([arr])
           })
         }
+        item.children.forEach(c1 => {
+          c1.forEach(c2 => {
+            if (c2.husband) {
+              item.test.forEach(t1 =>{
+                t1.forEach(t2 => {
+                  t2.forEach(t3 => {
+                    t3.current.forEach(cur1 => {
+                      if (cur1.user_id === c2.husband && item.test.length !== 1) {
+                        t2.push(c2)
+                      }
+                    })
+                  })
+                })
+              })
+            }
+          })
+        })
         res.push(item)
       })
       return res
@@ -182,6 +208,7 @@ export default {
     },
 
     handleDrawConnectLine() {
+      
       this.clearConnectLine()
       this.$nextTick(() => {
         const node = document.querySelectorAll('.tree-node')
@@ -221,9 +248,12 @@ export default {
       let flag = false
       this.treeData.forEach(item => {
         item.children.forEach(key => {
-          if (key.parent === id) {
-            flag = true
-          }
+          key.forEach(ele => {
+            if (ele.parent === id) {
+              flag = true
+            }
+          })
+          
         })
       })
       return flag
@@ -258,12 +288,12 @@ export default {
     align-items: center;
 
     .level {
-      width: 120px;
+      width: 5%;
       flex: 1;
     }
 
     .wrapper {
-      width: 90%;
+      width: 95%;
       display: flex;
     }
 
@@ -426,5 +456,8 @@ export default {
   .solid {
     border-bottom: 1px solid #000;
   }
+}
+.mr-sm {
+  margin-right: 10px
 }
 </style>

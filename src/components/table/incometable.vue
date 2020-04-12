@@ -8,6 +8,7 @@
 							v-model="searchForm.family_id"
 							filterable
 							placeholder="请选择"
+							clearable
 						>
 							<el-option
 								v-for="item in familyOpts"
@@ -27,6 +28,7 @@
 							value-format="yyyy-MM-dd"
 							start-placeholder="开始日期"
 							end-placeholder="结束日期"
+							clearable
 						>
 						</el-date-picker>
 					</el-form-item>
