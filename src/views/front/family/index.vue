@@ -113,7 +113,7 @@ export default {
   methods: {
     handleQuery() {
       let params = {}
-      params.eldest_son_flag = this.$router.query ? this.$router.query.eldest_son_flag : '1'
+      // params.eldest_son_flag = this.$router.query ? this.$router.query.eldest_son_flag : '1'
       params.surname = this.search.surname
       params.prov_code = this.search.area[0] || ''
       params.city_code = this.search.area[1] || ''

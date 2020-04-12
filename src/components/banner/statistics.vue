@@ -45,6 +45,9 @@ export default {
           area_code: '',
           city_code: '',
           prov_code: '',
+          city_name: '',
+          area_name: '',
+          prov_name: '',
           areaName: '',
           people: 0
         }
@@ -72,7 +75,7 @@ export default {
   },
   computed: {
     title () {
-      return '搜索结果：' + this.detail.areaName + ' 包含其他' + this.detail.count + '棵“' + this.detail.surname + '”姓家谱树 、' + this.detail.people + ' 人'
+      return '搜索结果：' + this.detail.prov_name + this.detail.city_name + this.detail.area_name + ' 包含其他' + this.detail.count + '棵“' + this.detail.surname + '”姓家谱树 、' + this.detail.userCount + ' 人'
     }
   },
   created () {
@@ -86,7 +89,6 @@ export default {
   methods: {
     handleQuery() {
       let params = {}
-      params.eldest_son_flag = '0'
       params.surname = this.detail.surname
       params.area_code = this.detail.area_code
       params.city_code = this.detail.city_code

@@ -182,13 +182,15 @@ export default {
   methods: {
     queryUserTree () {
       Family.queryUserTree({tree_user_id: this.userInfo.tree_user_id}).then(res => {
-        this.statistics.count = res.data.countTree
-        this.statistics.surname = res.data.surname
-        this.statistics.area_code = res.data.area_code
-        this.statistics.areaName = res.data.areaName
-        this.statistics.people = res.data.people
-        this.statistics.prov_code = res.data.prov_code
-        this.statistics.city_code = res.data.city_code
+        if (res.code === '000000' && res.data) {
+          this.statistics.count = res.data.countTree
+          this.statistics.surname = res.data.surname
+          this.statistics.area_code = res.data.area_code
+          this.statistics.areaName = res.data.areaName
+          this.statistics.people = res.data.people
+          this.statistics.prov_code = res.data.prov_code
+          this.statistics.city_code = res.data.city_code
+        }
       })
     },
     getFamilyInfo(familyId) {
@@ -353,9 +355,9 @@ export default {
       this.show.editModal = true
       this.getCurrentUser(prop)
     },
-    handleAddNode(prop) {
+    handleAddNode(prop, nextCharacterName) {
       this.show.addModal = true
-      this.getCurrentUser(prop)
+      this.getCurrentUser(prop, nextCharacterName)
     },
     handleClaim (prop, userType) {
       if (userType === '0') {
@@ -365,12 +367,13 @@ export default {
       this.show.claimModal = true
       this.getCurrentUser(prop)
     },
-    getCurrentUser(prop) {
+    getCurrentUser(prop, nextCharacterName) {
       Family.familyQueryUser({ user_id: prop.user_id }).then(res => {
         if (res.data) {
           this.currentUser = Object.assign({}, res.data, {
             mother_id: prop.mother_id,
-            isWife: prop.isWife
+            isWife: prop.isWife,
+            nextCharacterName: nextCharacterName
           })
         } else {
           this.$message.error(res.message)

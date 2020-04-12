@@ -119,10 +119,10 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item label="银行名称" prop="bank">
-					<el-input v-model="waveForm.bank" :readonly="true"/>
+					<el-input v-model="waveForm.bank" :disabled="waveForm.bank ? true : false"/>
 				</el-form-item>
 				<el-form-item label="银行卡号" prop="card">
-					<el-input v-model="waveForm.card" :readonly="true"/>
+					<el-input v-model="waveForm.card" :disabled="waveForm.card ? true : false"/>
 				</el-form-item>
 				<el-form-item label="工资金额" prop="trans_amt">
 					<el-input v-model="waveForm.trans_amt" />

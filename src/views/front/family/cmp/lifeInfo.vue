@@ -44,10 +44,10 @@
 						</div>
 					</div>
 					<el-table :data="tableData" class="table" style="width: 100%">
-						<el-table-column align="left" prop="date" label="日期">
+						<el-table-column align="left" prop="record_date" label="日期">
 							<template slot-scope="scope">
 								<el-date-picker
-									v-model="scope.row.date"
+									v-model="scope.row.record_date"
 									type="date"
 									placeholder="选择日期"
 									class="input"
@@ -213,7 +213,15 @@ export default {
 			}
 			Family.familyQueryEducation(params).then(res => {
 				if (res.data) {
-					this.tableData = res.data
+					let idx = 0
+					this.tableData = res.data.map(v => {
+						idx = idx + 1
+						v.idx = idx
+						v.record_date = v.date
+						delete v.date
+						return v
+					})
+					this.idx = idx + 1
 				}
 			})
 		},
@@ -273,13 +281,13 @@ export default {
 			this.selectTag = []
 			this.tableData = [
 				{
-					date: '',
+					record_date: '',
 					education: '',
 					school_name: '',
 					idx: 0
 				},
 				{
-					date: '',
+					record_date: '',
 					education: '',
 					school_name: '',
 					idx: 1

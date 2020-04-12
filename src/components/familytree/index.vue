@@ -75,7 +75,7 @@
                     <div class="second" @click="handleEdit(ele)">
                       编辑
                     </div>
-                    <div class="thired" @click="handleAdd(ele)">
+                    <div class="thired" @click="handleAdd(ele, idx)">
                       添加
                     </div>
                   </div>
@@ -264,8 +264,13 @@ export default {
     handleEdit(ele) {
       this.$emit('onEdit', ele)
     },
-    handleAdd(ele) {
-      this.$emit('onAdd', ele)
+    handleAdd(ele, idx) {
+      let nextCharacterName = ''
+      if (idx + 1 < this.treeData.length) {
+        nextCharacterName = this.treeData[idx + 1].level
+      }
+      console.log(nextCharacterName)
+      this.$emit('onAdd', ele, nextCharacterName)
     },
     handleClaim (ele) {
       this.$emit('onClaim', ele, this.userType)

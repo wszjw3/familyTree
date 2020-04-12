@@ -86,15 +86,19 @@ export default {
       manageData: [],
       myManage: [],
       myFmilyDetail: {
-        isShow: true,
+        isShow: false,
         count: 0,
         surname: '',
-        areaCode: '',
-        areaName: '',
+        area_code: '',
+        city_code: '',
+        prov_code: '',
+        city_name: '',
+        area_name: '',
+        prov_name: '',
         people: 0
       },
       myFmilyStatistics: {
-        isShow: true,
+        isShow: false,
         family_number: '',
         death_number: '',
         beath_number: '',
@@ -103,7 +107,7 @@ export default {
   },
   watch: {
     $router (val) {
-			this.activeName = val.currentRoute.query.active
+      this.activeName = val.currentRoute.query.active
 		},
 		activeName (val, oldVal) {
 			val !== oldVal && this.$router.push({
@@ -112,6 +116,8 @@ export default {
 					active: val
 				}
       })
+      this.myFmilyStatistics.isShow = val === 'thired'
+      this.myFmilyDetail.isShow = val === 'thired'
 		}
   },
   created () {
@@ -167,11 +173,14 @@ export default {
         }
       })
       Family.queryUserTree({tree_user_id: this.treeUserId}).then(res => {
+        this.myFmilyDetail.isShow = true
         this.myFmilyDetail.count = res.data.countTree
         this.myFmilyDetail.surname = res.data.surname
         this.myFmilyDetail.area_code = res.data.area_code
-        this.myFmilyDetail.areaName = res.data.areaName
-        this.myFmilyDetail.people = res.data.people
+        this.myFmilyDetail.area_name = res.data.area_name
+        this.myFmilyDetail.prov_name = res.data.prov_name
+        this.myFmilyDetail.city_name = res.data.city_name
+        this.myFmilyDetail.userCount = res.data.userCount
         this.myFmilyDetail.prov_code = res.data.prov_code
         this.myFmilyDetail.city_code = res.data.city_code
       })

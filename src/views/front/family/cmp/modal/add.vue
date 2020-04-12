@@ -37,7 +37,8 @@
             :disabled="
               scope.row.relation === 'mother' ||
               scope.row.relation === 'grandmother' ||
-              scope.row.relation === 'spouse'
+              scope.row.relation === 'spouse' ||
+              (scope.row.relation === 'child' && userInfo.nextCharacterName !== '')
             "
             @input="val => {handleCharacterNameInput(val, scope.row.relation)}"
           ></el-input>
@@ -460,6 +461,7 @@ export default {
           break
         case 'child':
           obj.relation_desc = '子女'
+          obj.character_name = this.userInfo.nextCharacterName
           this.tableData.forEach(item => {
             if (item.relation === 'child' && item.character_name !== '') {
               obj.character_name = item.character_name

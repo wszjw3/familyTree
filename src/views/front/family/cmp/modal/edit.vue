@@ -2,7 +2,7 @@
   <el-dialog title="成员信息变更：" :visible.sync="isShow" width="80%" center>
     <el-table :data="tableData" style="width: 100%; overflow: auto">
       <el-table-column align="center" prop="surname" min-width="90">
-        <template slot-scope="scope">
+        <template>
           变更人物
         </template>
       </el-table-column>

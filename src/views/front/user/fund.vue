@@ -52,8 +52,7 @@
         <el-table-column prop="time" label="时间"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="phone" label="手机号码"></el-table-column>
-        <el-table-column prop="pay_mode" label="支付方式"></el-table-column>
-        <el-table-column prop="type" label="类型"></el-table-column>
+        <el-table-column prop="pay_mode_desc" label="支付方式"></el-table-column>
         <el-table-column prop="trans_amt" label="金额（元）"></el-table-column>
         <el-table-column prop="remain_amt" label="剩余修谱总额"></el-table-column>
       </el-table>
@@ -164,6 +163,17 @@ export default {
       Family.familyFundIncomeFind(params).then(res => {
         if (res.code === '000000') {
           this.fundInfo = res.data
+          this.fundInfo.donate = res.data.donate.map(v => {
+            if (v.pay_mode === '0') {
+              v.pay_mode_desc = '微信支付'
+            } else if (v.pay_mode === '1') {
+              v.pay_mode_desc = '支付宝支付'
+            } else {
+              v.pay_mode_desc = '线下支付'
+              
+            }
+            return v
+          })
           this.records = res.pageNumber
         }
       })
