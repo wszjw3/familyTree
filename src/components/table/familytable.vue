@@ -47,7 +47,7 @@
     </el-table-column>
     <el-table-column prop="people_number" label="家谱总人数/个" min-width="120" align="center">
     </el-table-column>
-    <el-table-column prop="score" label="家谱树繁荣度/分" min-width="120" align="center">
+    <el-table-column prop="family_prosperity" label="家谱树繁荣度/分" min-width="120" align="center">
     </el-table-column>
   </el-table>
   <el-col :span="24" class="toolbar">
@@ -85,7 +85,6 @@ export default {
       }],
       subAccountList: [],
       currentPage: 1,
-      total: 0,
       records: 0,
       familyOpts: []
     }
@@ -127,8 +126,7 @@ export default {
         console.log(content)
         this.subAccountList = []
         if (content && content.data && content.data.length > 0) {
-          this.total = content.pageNumber
-          this.records = content.pageNumber
+          this.records = parseInt(content.pageContent)
           this.subAccountList = content.data ? content.data : []
         } else {
           this.subAccountList = []

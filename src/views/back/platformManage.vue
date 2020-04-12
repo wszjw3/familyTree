@@ -1,38 +1,38 @@
 <template>
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="stretch">
-      <el-tab-pane label="基金处理" name="first" class="table-item">
+      <el-tab-pane lazy label="基金处理" name="first" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基金处理</div>
         <el-tabs type="border-card">
-          <el-tab-pane label="收支明细">
+          <el-tab-pane lazy label="收支明细">
             <income-table /> 
           </el-tab-pane>
-          <el-tab-pane label="资金支出">
+          <el-tab-pane lazy label="资金支出">
             <foundout-table />
           </el-tab-pane>
         </el-tabs>
       </el-tab-pane>
-      <el-tab-pane label="家谱树列表" name="second" class="table-item">
+      <el-tab-pane lazy label="家谱树列表" name="second" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 家谱列表</div>
 
         <family-table></family-table>
       </el-tab-pane>
-      <el-tab-pane label="管理员列表" name="third" class="table-item">
+      <el-tab-pane lazy label="管理员列表" name="third" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 家谱列表</div>
 
         <familymanage-table></familymanage-table>
       </el-tab-pane>
-      <el-tab-pane label="标签管理" name="fourth" class="table-item">
+      <el-tab-pane lazy label="标签管理" name="fourth" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 标签管理</div>
 
         <tag-table></tag-table>
       </el-tab-pane>
-      <el-tab-pane label="百家姓维护" name="fifth" class="table-item">
+      <el-tab-pane lazy label="百家姓维护" name="fifth" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 百家姓维护</div>
 
         <surname-table></surname-table>
       </el-tab-pane>
-      <el-tab-pane label="基础设置" name="sixth" class="table-item">
+      <el-tab-pane lazy label="基础设置" name="sixth" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基础设置</div>
         <div style="width:400px;margin:50px;">
           <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="150px" label-position="left">

@@ -10,7 +10,7 @@
     </el-form>
   </el-col>
 
-  <div class="name-table" v-for="names in subList" :key="names.initials">
+  <div class="name-table" v-for="(names, idx) in subList" :key="names.initials + '_' + idx">
     <div class="name-left">{{names.initials}}</div>
     <div class="name-right">
       <span v-for="sur in names.initials_data" :key="sur.surname">{{sur.surname}}</span>

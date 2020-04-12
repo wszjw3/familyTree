@@ -260,6 +260,7 @@ export default {
 			})
 		},
 		getTableData() {
+			this.records = 0
 			this.loading = true
 			const params = {
 				family_id: this.searchForm.family_id,
@@ -301,7 +302,6 @@ export default {
 		},
 		handleSearch() {
 			this.currentPage = 1
-			this.records = 0
 			this.getTableData()
 		},
 		reset() {
@@ -367,6 +367,8 @@ export default {
 						card: '',
 						trans_amt: ''
 					}
+					this.currentPage = 1
+					this.getTableData()
 				} else {
 					this.$message.error(res.message)
 				}
