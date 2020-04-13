@@ -32,7 +32,7 @@
 
         <surname-table></surname-table>
       </el-tab-pane>
-      <el-tab-pane lazy label="基础设置" name="sixth" class="table-item">
+      <el-tab-pane label="基础设置" name="sixth" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基础设置</div>
         <div style="width:400px;margin:50px;">
           <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="150px" label-position="left">
@@ -107,6 +107,11 @@ export default {
 			})
 		}
   },
+  computed: {
+    userName () {
+      return this.$store.getters.getBackToken.user_name
+    }
+  },
   created () {
     const token = JSON.parse(localStorage.getItem('backToken'))
     if (token) {
@@ -114,16 +119,13 @@ export default {
     } else {
       this.$router.push('/login')
     }
+    this.handleQueryBaseSetup()
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event)
-      if(tab.name === 'sixth') {
-        this.handleQueryBaseSetup()
-      }
-    },
     handleQueryBaseSetup() {
-      Manage.baseSetupFind().then(content => {
+      Manage.baseSetupFind({
+        login_name: this.userName
+      }).then(content => {
         if(content.code && content.code === '000000') {
             this.baseForm = content.data
         } else {
@@ -138,7 +140,7 @@ export default {
       this.$refs['baseForm'].validate((valid) => {
         console.log(valid)
         if (valid) {
-          var params = this.baseForm
+          var params = Object.assign({}, this.baseForm, {login_name: this.userName})
           Manage.baseSetup(params).then(content => {
             console.log(content)
             if(content.code && content.code === '000000') {

@@ -29,8 +29,8 @@ export default {
     return http.post(URL + '/Backend/baseSetup', params)
   },
   //基础数据查询
-  baseSetupFind() {
-    return http.post(URL + '/Backend/baseSetupFind')
+  baseSetupFind(params) {
+    return http.post(URL + '/Backend/baseSetupFind', params)
   },
   //  百家姓维护
   surnameOpertion(params) {

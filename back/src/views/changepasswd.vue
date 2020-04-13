@@ -6,6 +6,9 @@
       :rules="passwdFormRules"
       label-width="150px"
     >
+      <el-form-item label="用户名：">
+        <el-input type="text" v-model="userName" readonly></el-input>
+      </el-form-item>
       <el-form-item label="原密码：" prop="passwd">
         <el-input type="password" v-model="passwdForm.passwd" show-password></el-input>
       </el-form-item>
@@ -51,6 +54,11 @@ export default {
 			},
     }
   },
+  computed: {
+    userName () {
+      return this.$store.getters.getBackToken.user_name
+    }
+  },
   created () {
     const token = JSON.parse(localStorage.getItem('backToken'))
     if (token) {
@@ -64,6 +72,7 @@ export default {
 			this.$refs['passwdForm'].validate(valid => {
 				if (valid) {
 					Manage.manageLoginPasswdUpd({
+            login_name: this.userName,
             login_passwd: md5(this.passwdForm.passwd),
             new_passwd: md5(this.passwdForm.new_passwd),
           }).then((res) => {
