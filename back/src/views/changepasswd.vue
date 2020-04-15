@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     userName () {
-      return this.$store.getters.getBackToken.user_name
+      return this.$store.getters.getBackToken.FAMILY_USER
     }
   },
   created () {

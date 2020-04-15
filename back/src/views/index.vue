@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="stretch">
+    <el-tabs v-model="activeName" :stretch="stretch">
       <el-tab-pane lazy label="基金处理" name="first" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基金处理</div>
         <el-tabs type="border-card">
           <el-tab-pane lazy label="收支明细">
-            <income-table /> 
+            <income-table />
           </el-tab-pane>
           <el-tab-pane lazy label="资金支出">
             <foundout-table />
@@ -35,23 +35,45 @@
       <el-tab-pane label="基础设置" name="sixth" class="table-item">
         <div class="tab-pane-tit">根深叶茂/ 基础设置</div>
         <div style="width:400px;margin:50px;">
-          <el-form :model="baseForm" :rules="baseFormRules" ref="baseForm" label-width="150px" label-position="left">
+          <el-form
+            :model="baseForm"
+            :rules="baseFormRules"
+            ref="baseForm"
+            label-width="150px"
+            label-position="left"
+          >
             <el-form-item label="抽成比例：" prop="scale">
-              <el-input type="text" v-model="baseForm.scale" placeholder="请输入" clearable></el-input>
+              <el-input
+                type="text"
+                v-model="baseForm.scale"
+                placeholder="请输入"
+                clearable
+              ></el-input>
             </el-form-item>
             <el-form-item label="抽成银行卡名称:" prop="bank_name">
-              <el-input type="text" v-model="baseForm.bank_name" placeholder="请填写至支行" clearable></el-input>
+              <el-input
+                type="text"
+                v-model="baseForm.bank_name"
+                placeholder="请填写至支行"
+                clearable
+              ></el-input>
             </el-form-item>
             <el-form-item label="抽成银行卡账号:" prop="bank_no">
-              <el-input type="text" v-model="baseForm.bank_no" placeholder="请填写至支行" clearable></el-input>
+              <el-input
+                type="text"
+                v-model="baseForm.bank_no"
+                placeholder="请填写至支行"
+                clearable
+              ></el-input>
             </el-form-item>
-          </el-form>   
+          </el-form>
           <div slot="footer" class="dialog-footer">
-              <el-button @click.native="handleQueryBaseSetup">取消</el-button>
-              <el-button type="primary" @click.native="handleBaseSetupSubmit">保存</el-button>
-            </div>   
+            <el-button @click.native="handleQueryBaseSetup">取消</el-button>
+            <el-button type="primary" @click.native="handleBaseSetupSubmit"
+              >保存</el-button
+            >
+          </div>
         </div>
-        
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -64,9 +86,7 @@ import SurnameTable from '@/components/table/surnametable'
 import FamilymanageTable from '@/components/table/familymanagetable'
 import IncomeTable from '@/components/table/incometable'
 import FoundoutTable from '@/components/table/foundouttable'
-import {
-  Manage
-} from '@/api'
+import { Manage } from '@/api'
 export default {
   name: 'platformManage',
   components: {
@@ -82,37 +102,38 @@ export default {
       activeName: this.$router.currentRoute.query.active || 'second',
       stretch: false,
       baseForm: {
-        scale:'',
+        scale: '',
         bank_name: '',
         bank_no: '',
         operation: '0'
       },
-      baseFormRules:{
-        scale:[{ required: true, message: '抽成比例', trigger: 'blur' }],
-        bank_name:[{ required: true, message: '银行卡名称', trigger: 'blur' }],
-        bank_no:[{ required: true, message: '银行卡账号', trigger: 'blur' }]
+      baseFormRules: {
+        scale: [{ required: true, message: '抽成比例', trigger: 'blur' }],
+        bank_name: [{ required: true, message: '银行卡名称', trigger: 'blur' }],
+        bank_no: [{ required: true, message: '银行卡账号', trigger: 'blur' }]
       }
     }
   },
   watch: {
-    $router (val) {
-			this.activeName = val.currentRoute.query.active
-		},
-		activeName (val, oldVal) {
-			val !== oldVal && this.$router.push({
-				path: '/',
-				query: {
-					active: val
-				}
-			})
-		}
-  },
-  computed: {
-    userName () {
-      return this.$store.getters.getBackToken.user_name
+    $router(val) {
+      this.activeName = val.currentRoute.query.active
+    },
+    activeName(val, oldVal) {
+      val !== oldVal &&
+        this.$router.push({
+          path: '/',
+          query: {
+            active: val
+          }
+        })
     }
   },
-  created () {
+  computed: {
+    userName() {
+      return this.$store.getters.getBackToken.FAMILY_USER
+    }
+  },
+  created() {
     const token = JSON.parse(localStorage.getItem('backToken'))
     if (token) {
       this.$store.dispatch('setBackToken', token)
@@ -126,24 +147,30 @@ export default {
       Manage.baseSetupFind({
         login_name: this.userName
       }).then(content => {
-        if(content.code && content.code === '000000') {
-            this.baseForm = content.data
+        if (content.code && content.code === '000000') {
+          this.baseForm = {
+            scale: content.data.SCALE,
+            bank_name: content.data.BANK_NAME,
+            bank_no: content.data.BANK_NO
+          }
         } else {
           this.$message.error({
-            message: `${content.message?','+content.message:''}`
+            message: `${content.message ? ',' + content.message : ''}`
           })
         }
       })
     },
     handleBaseSetupSubmit() {
       console.log(this.baseForm)
-      this.$refs['baseForm'].validate((valid) => {
+      this.$refs['baseForm'].validate(valid => {
         console.log(valid)
         if (valid) {
-          var params = Object.assign({}, this.baseForm, {login_name: this.userName})
+          var params = Object.assign({}, this.baseForm, {
+            login_name: this.userName
+          })
           Manage.baseSetup(params).then(content => {
             console.log(content)
-            if(content.code && content.code === '000000') {
+            if (content.code && content.code === '000000') {
               this.$message({
                 type: 'success',
                 message: '保存成功'
@@ -151,7 +178,7 @@ export default {
               this.handleQueryBaseSetup()
             } else {
               this.$message.error({
-                message: `${content.message?','+content.message:''}`
+                message: `${content.message ? ',' + content.message : ''}`
               })
             }
           })
@@ -166,15 +193,14 @@ export default {
 </script>
 
 <style lang="less">
-
 .tab-pane-tit {
-    font-family: '微软雅黑 Bold', '微软雅黑';
-    font-weight: 700;
-    font-style: normal;
-    color: #363636;
-    height: 60px;
-    line-height: 60px;
-    border-bottom: 1px solid #eee;
+  font-family: '微软雅黑 Bold', '微软雅黑';
+  font-weight: 700;
+  font-style: normal;
+  color: #363636;
+  height: 60px;
+  line-height: 60px;
+  border-bottom: 1px solid #eee;
 }
 .el-table .warning-row {
   background-color: #f2f2f2;

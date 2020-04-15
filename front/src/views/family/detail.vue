@@ -1,15 +1,15 @@
 <template>
-	<div>
-    <statistics v-if="$router.currentRoute.path !== '/'" :detail="statistics"/>
+  <div>
+    <statistics v-if="$router.currentRoute.path !== '/'" :detail="statistics" @changed="reload()"/>
 
-		<el-row class="mt-lg">
-			<el-col :span="18" style="position: relative">
-				<el-breadcrumb class="header" separator=">">
+    <el-row class="mt-lg">
+      <el-col :span="18" style="position: relative">
+        <el-breadcrumb class="header" separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ title }}</el-breadcrumb-item>
         </el-breadcrumb>
-        <div id="export"> 
-          <p class="text-bold">{{title}}</p>
+        <div id="export">
+          <p class="text-bold">{{ title }}</p>
           <div class="desc">
             <div>
               ——&nbsp;&nbsp;&nbsp;&nbsp;健在
@@ -35,46 +35,86 @@
             @onClaim="handleClaim"
           ></family-tree>
         </div>
-        
-			</el-col>
-			<el-col :span="6" class="family-info">
-				<p>
-					<el-button class="btn" size="small" @click="handleDonateHistroy"
-						>捐献记录</el-button
-					>
-					<el-button class="btn" type="success" size="small" @click="handleDonate"
-						>捐赠</el-button
-					>
-          <el-button class="btn" v-if="$router.currentRoute.query.from === 'manage'" type="success" size="small" @click="handleTransfor"
-						>管理员转让</el-button
-					>
-					<el-button class="btn" type="primary" size="small" @click="exportToPDF">导出家谱树</el-button>
-					<el-button class="btn" type="primary" size="small" @click="handleShare"
-						>分享</el-button
-					>
-				</p>
-				<div v-if="!isShowNodeDetail">
-					<h2 class="familytree-info-title">家谱树信息</h2>
-					<div
-						v-for="(item, idx) in familytreeInfo"
-						:key="'familytreeInfo_' + idx"
-						class="familytree-item"
-					>
-						<span>{{ item.label + '： ' }}</span>
-						<span>{{ item.name }}</span>
-					</div>
-				</div>
-				<life-info v-else :info="nodeDetail" @success="handleLifeinfoSaved"/>
-			</el-col>
-		</el-row>
-		<edit-modal v-model="show.editModal" :userInfo="currentUser" @success="reload()"/>
-		<add-modal v-model="show.addModal" :userInfo="currentUser" :surName="title.charAt(1, 1)" @success="reload()" />
-		<claim-modal v-model="show.claimModal" :userInfo="currentUser"  @success="reload()"/>
-		<donate-modal v-model="show.donateModal"/>
-		<transfor-modal v-if="userType === '3'" v-model="show.transforModal" :info="treeInfo"/>
-		<donate-histroy-modal v-model="show.donateHistroyModal" :info="treeInfo"/>
-    <input class="hidden" id="hidden" type="text" v-model="href">
-	</div>
+      </el-col>
+      <el-col :span="6" class="family-info">
+        <p>
+          <el-button class="btn" size="small" @click="handleDonateHistroy"
+            >捐献记录</el-button
+          >
+          <el-button
+            class="btn"
+            type="success"
+            size="small"
+            @click="handleDonate"
+            >捐赠</el-button
+          >
+          <el-button
+            class="btn"
+            v-if="$router.currentRoute.query.from === 'manage'"
+            type="success"
+            size="small"
+            @click="handleTransfor"
+            >管理员转让</el-button
+          >
+          <el-button
+            class="btn"
+            type="primary"
+            size="small"
+            @click="exportToPDF"
+            >导出家谱树</el-button
+          >
+          <el-button
+            class="btn"
+            type="primary"
+            size="small"
+            @click="handleShare"
+            >分享</el-button
+          >
+        </p>
+        <div v-if="!isShowNodeDetail">
+          <h2 class="familytree-info-title">家谱树信息</h2>
+          <div
+            v-for="(item, idx) in familytreeInfo"
+            :key="'familytreeInfo_' + idx"
+            class="familytree-item"
+          >
+            <span>{{ item.label + '： ' }}</span>
+            <span>{{ item.name }}</span>
+          </div>
+        </div>
+        <life-info v-else :info="nodeDetail" @success="handleLifeinfoSaved" />
+      </el-col>
+    </el-row>
+    <edit-modal
+      v-model="show.editModal"
+      :userInfo="currentUser"
+      @success="reload()"
+    />
+    <add-modal
+      v-model="show.addModal"
+      :userInfo="currentUser"
+      :surName="title.charAt(1, 1)"
+      @success="reload()"
+    />
+    <claim-modal
+      v-model="show.claimModal"
+      :userInfo="currentUser"
+      @success="reload()"
+    />
+    <donate-modal v-model="show.donateModal" :familyId="this.familyId" />
+    <transfor-modal
+      v-if="userType === '3'"
+      v-model="show.transforModal"
+      :info="treeInfo"
+      :familyId="this.familyId"
+    />
+    <donate-histroy-modal
+      v-model="show.donateHistroyModal"
+      :info="treeInfo"
+      :familyId="this.familyId"
+    />
+    <input class="hidden" id="hidden" type="text" v-model="href" />
+  </div>
 </template>
 
 <script>
@@ -164,28 +204,33 @@ export default {
         area_name: '',
         prov_name: '',
         people: 0
-      }
+      },
+      familyId: ''
     }
   },
   computed: {
     title() {
       return this.familytreeInfo.length > 0 ? this.familytreeInfo[0].name : ''
     },
-    userInfo () {
+    userInfo() {
       return this.$store.getters.getToken
     },
-    userType () {
+    userType() {
       return this.userInfo.user_type
     }
   },
   mounted() {
-    this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
+    this.$router.currentRoute.query &&
+      this.$router.currentRoute.query.familyId &&
+      this.getFamilyInfo(this.$router.currentRoute.query.familyId)
     this.getTreeData()
     this.queryUserTree()
   },
   methods: {
-    queryUserTree () {
-      Family.queryUserTree({tree_user_id: this.userInfo.tree_user_id}).then(res => {
+    queryUserTree() {
+      Family.queryUserTree({
+        family_id: this.familyId || this.$router.currentRoute.query.familyId
+      }).then(res => {
         if (res.code === '000000' && res.data) {
           this.statistics.count = res.data.countTree
           this.statistics.surname = res.data.surname
@@ -247,7 +292,10 @@ export default {
     getTreeData() {
       let id = 0
       let params = {}
-      if (this.$router.currentRoute.query && this.$router.currentRoute.query.familyId) {
+      if (
+        this.$router.currentRoute.query &&
+        this.$router.currentRoute.query.familyId
+      ) {
         params.family_id = this.$router.currentRoute.query.familyId
         params.isMyTree = false
       } else {
@@ -258,6 +306,7 @@ export default {
         if (!res.data) {
           return
         }
+        this.familyId = res.data[0].family_id
         this.$emit('loaded', res.data)
         if (!this.$router.currentRoute.query.familyId) {
           this.getFamilyInfo(res.data[0].family_id)
@@ -319,7 +368,6 @@ export default {
                 children.push(child)
               }
             })
-            
           })
         })
         children.forEach(child => {
@@ -354,7 +402,9 @@ export default {
           return
         }
         this.isShowNodeDetail = true
-        this.nodeDetail = Object.assign({}, res.data, {user_id: user_id})
+        this.nodeDetail = Object.assign({}, res.data, {
+          user_id: user_id
+        })
       })
     },
     handleEditNode(prop) {
@@ -365,7 +415,7 @@ export default {
       this.show.addModal = true
       this.getCurrentUser(prop, nextCharacterName)
     },
-    handleClaim (prop, userType) {
+    handleClaim(prop, userType) {
       if (userType === '0') {
         this.$router.push('/login')
         return
@@ -386,72 +436,71 @@ export default {
         }
       })
     },
-    handleDonate () {
+    handleDonate() {
       this.show.donateModal = true
     },
-    handleDonateHistroy () {
+    handleDonateHistroy() {
       this.show.donateHistroyModal = true
     },
-    handleShare () {
+    handleShare() {
       if (!document.execCommand('copy')) {
-          this.$alert('sorry, 手动复制吧')
+        this.$alert('sorry, 手动复制吧')
       } else {
-          let inputEle = document.getElementById('hidden')
-          inputEle.select()
-          document.execCommand('copy')
-          this.$alert('网页链接已复制，快去粘贴分享')
+        let inputEle = document.getElementById('hidden')
+        inputEle.select()
+        document.execCommand('copy')
+        this.$alert('网页链接已复制，快去粘贴分享')
       }
     },
-    handleTransfor () {
+    handleTransfor() {
       this.show.transforModal = true
       this.getFamilyInfo()
     },
-    handleLifeinfoSaved () {
-      this.handleViewNode({user_id: this.currentNodeUser})
+    handleLifeinfoSaved() {
+      this.handleViewNode({ user_id: this.currentNodeUser })
     },
-    exportToPDF () {
+    exportToPDF() {
       // eslint-disable-next-line no-undef
-      html2canvas(
-        document.getElementById('export')
-        ).then(canvas => {
-            var contentWidth = canvas.width
-            var contentHeight = canvas.height
+      html2canvas(document.getElementById('export')).then(canvas => {
+        var contentWidth = canvas.width
+        var contentHeight = canvas.height
 
-            //一页pdf显示html页面生成的canvas高度
-            var pageHeight = contentWidth / 592.28 * 841.89
-            //未生成pdf的html页面高度
-            var leftHeight = contentHeight
-            //pdf页面偏移
-            var position = 0
-            //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
-            var imgWidth = 595.28
-            var imgHeight = 592.28 / contentWidth * contentHeight
+        //一页pdf显示html页面生成的canvas高度
+        var pageHeight = (contentWidth / 592.28) * 841.89
+        //未生成pdf的html页面高度
+        var leftHeight = contentHeight
+        //pdf页面偏移
+        var position = 0
+        //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
+        var imgWidth = 595.28
+        var imgHeight = (592.28 / contentWidth) * contentHeight
 
-            var pageData = canvas.toDataURL('image/jpeg', 1.0)
-            var pdf = new jsPDF('', 'pt', 'a4')
+        var pageData = canvas.toDataURL('image/jpeg', 1.0)
+        var pdf = new jsPDF('', 'pt', 'a4')
 
-            //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
-            //当内容未超过pdf一页显示的范围，无需分页
-            if (leftHeight < pageHeight) {
-                pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
-            } else {
-                while (leftHeight > 0) {
-                    pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
-                    leftHeight -= pageHeight
-                    position -= 841.89
-                    //避免添加空白页
-                    if (leftHeight > 0) {
-                        pdf.addPage()
-                    }
-                }
+        //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+        //当内容未超过pdf一页显示的范围，无需分页
+        if (leftHeight < pageHeight) {
+          pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
+        } else {
+          while (leftHeight > 0) {
+            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+            leftHeight -= pageHeight
+            position -= 841.89
+            //避免添加空白页
+            if (leftHeight > 0) {
+              pdf.addPage()
             }
-          const name = this.familytreeInfo[0].name
-            pdf.save(name + '.pdf')
+          }
         }
-      )
+        const name = this.familytreeInfo[0].name
+        pdf.save(name + '.pdf')
+      })
     },
-    reload () {
-      this.$router.currentRoute.query && this.$router.currentRoute.query.familyId && this.getFamilyInfo(this.$router.currentRoute.query.familyId)
+    reload() {
+      this.$router.currentRoute.query &&
+        this.$router.currentRoute.query.familyId &&
+        this.getFamilyInfo(this.$router.currentRoute.query.familyId)
       this.getTreeData()
       this.queryUserTree()
       this.$refs.tree.interval()
@@ -462,23 +511,23 @@ export default {
 
 <style lang="less" scoped>
 .familytree-info-title {
-	border-left: 3px solid red;
-	padding: 5px;
+  border-left: 3px solid red;
+  padding: 5px;
 }
 .familytree-item {
-	padding: 5px 0;
+  padding: 5px 0;
 }
 
 .required {
-	color: red;
+  color: red;
 }
 .family-info {
-	max-height: 80vh;
-	overflow-y: auto;
-	overflow-x: hidden;
+  // max-height: 80vh;
+  // overflow-y: auto;
+  // overflow-x: hidden;
 }
 .text-bold {
-  font-weight: 600
+  font-weight: 600;
 }
 
 .desc {
@@ -512,7 +561,7 @@ export default {
   z-index: -1;
   position: fixed;
   top: 0;
-  left: 0
+  left: 0;
 }
 .mt-lg {
   margin-top: 20px;

@@ -8,7 +8,7 @@
         人
       </template>
       <template v-if="statistics.isShow">
-        当前家谱树枝繁叶茂，已收录 
+        当前家谱树枝繁叶茂，已收录
         <span class="num">{{statistics.family_number}}</span>
         人，近3个月 死亡
         <span class="num">{{statistics.death_number}}</span>
@@ -106,8 +106,8 @@ export default {
       this.handleQuery()
     },
     hideModal () {
-      debugger
       this.isShow = false
+      this.$emit('changed')
     }
   }
 }
@@ -115,7 +115,8 @@ export default {
 
 <style scoped lang="less">
 .banner-statistics {
-    padding: 20px 250px;
+    padding: 20px 0;
+    text-align: center;
     background-color: #000;
     color: #fff;
     font-size: 24px;

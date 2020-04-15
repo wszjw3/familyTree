@@ -1,6 +1,5 @@
 import http from '../utils/http'
 
-
 let URL = ''
 if ('true' !== process.env.VUE_APP_USE_MOCK) {
   URL = process.env.VUE_APP_BASE_FAMILY
@@ -147,5 +146,8 @@ export default {
   },
   familyStatisticsFind(params) {
     return http.post(URL + '/currency/familyStatisticsFind', params)
+  },
+  deleteEducation(params) {
+    return http.post(URL + '/tree/deleteEducation', params)
   }
 }

@@ -40,11 +40,11 @@ export default {
   },
   methods: {
     handleClick (item) {
-      this.$emit('jump')
       this.$router.push({
-        path: '/family/detail', 
+        path: '/family/detail',
         query: {familyId: item.family_id}
       })
+      this.$emit('jump')
     }
   },
 }

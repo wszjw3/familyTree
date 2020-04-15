@@ -37,9 +37,14 @@
                   findChildWidthId(key.id)
                     ? 'tree-after'
                     : '',
-                  (ele.sex === '1' && idx !== 0) ||
-                  !ele.isWife && idx !== 0 ? 'tree-before' : '',
-                  ele.isWife && kdx + 1 < t1.length  && t1[kdx + 1].current.length === 2 ? 'mr-sm' : '',
+                  (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
+                    ? 'tree-before'
+                    : '',
+                  ele.isWife &&
+                  kdx + 1 < t1.length &&
+                  t1[kdx + 1].current.length === 2
+                    ? 'mr-sm'
+                    : '',
                   ele.be_alive === '2' ? 'dashed' : 'solid'
                 ]"
               >
@@ -48,7 +53,11 @@
                   v-if="ele.sex === '2' || ele.claim === '1'"
                   class="icon-wrapper"
                 >
-                  <img v-if="ele.sex === '2' && !ele.isWife" :src="sexImg" class="sex-img" />
+                  <img
+                    v-if="ele.sex === '2' && !ele.isWife"
+                    :src="sexImg"
+                    class="sex-img"
+                  />
                   <span v-if="ele.claim === '1'" class="required">*</span>
                 </div>
                 <div
@@ -63,7 +72,9 @@
                   }"
                 >
                   <div
-                    v-if="userType === '2' || userType === '3' || userType === '4'"
+                    v-if="
+                      userType === '2' || userType === '3' || userType === '4'
+                    "
                     class="pie"
                   >
                     <div class="line1"></div>
@@ -76,7 +87,7 @@
                       编辑
                     </div>
                     <div class="thired" @click="handleAdd(ele, idx)">
-                      {{ele.sex === '1' ? '添加' : ''}}
+                      {{ ele.sex === '1' ? '添加' : '' }}
                     </div>
                   </div>
                   <div
@@ -90,7 +101,6 @@
               </div>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
@@ -117,7 +127,7 @@ export default {
     }
   },
   computed: {
-    userType () {
+    userType() {
       return this.$store.getters.getToken.user_type
     },
     treeData() {
@@ -156,11 +166,14 @@ export default {
         item.children.forEach(c1 => {
           c1.forEach(c2 => {
             if (c2.husband) {
-              item.test.forEach(t1 =>{
+              item.test.forEach(t1 => {
                 t1.forEach(t2 => {
                   t2.forEach(t3 => {
                     t3.current.forEach(cur1 => {
-                      if (cur1.user_id === c2.husband && item.test.length !== 1) {
+                      if (
+                        cur1.user_id === c2.husband &&
+                        item.test.length !== 1
+                      ) {
                         t2.push(c2)
                       }
                     })
@@ -176,6 +189,7 @@ export default {
     }
   },
   mounted() {
+    NodeList.prototype.forEach = Array.prototype.forEach
     this.$nextTick(() => {
       window.onresize = () => {
         this.interval()
@@ -208,8 +222,7 @@ export default {
     },
 
     handleDrawConnectLine() {
-      
-      this.clearConnectLine()
+      // this.clearConnectLine()
       this.$nextTick(() => {
         const node = document.querySelectorAll('.tree-node')
         let dataset = []
@@ -253,7 +266,6 @@ export default {
               flag = true
             }
           })
-          
         })
       })
       return flag
@@ -275,7 +287,7 @@ export default {
       console.log(nextCharacterName)
       this.$emit('onAdd', ele, nextCharacterName)
     },
-    handleClaim (ele) {
+    handleClaim(ele) {
       this.$emit('onClaim', ele, this.userType)
     }
   }
@@ -401,7 +413,7 @@ export default {
           }
         }
         .claim {
-          color: #1890FF;
+          color: #1890ff;
           cursor: pointer;
           width: 100%;
           text-align: center;
@@ -466,6 +478,6 @@ export default {
   }
 }
 .mr-sm {
-  margin-right: 10px
+  margin-right: 10px;
 }
 </style>
