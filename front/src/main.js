@@ -9,6 +9,7 @@ import 'babel-polyfill'
 import './assets/icon/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'nprogress/nprogress.css'
+import './assets/theme/index.css'
 import Mock from './mock'
 import statistics from '@/components/banner/statistics'
 

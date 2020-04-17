@@ -2,18 +2,24 @@
 <section>
  
   <div class="login-container clearfix">
-    <div class="login-left"><img src="@/assets/imgs/family.png" alt=""></div>
+    <div class="container-top">
+      <div class="container-top-left">
+        <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
+      </div>
+      <div  class="container-top-right" @click="toindex()">返回首页</div>
+    </div>
     <div class="registerForm-container">
       <div class="registerForm-top">注册</div>
-      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-width="100px" label-position="left" >
+      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-width="100px" label-position="top" >
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <el-form-item prop="nickname" label="用户名：">
+        <div class="loginformlable">用户名</div>
+        <el-form-item prop="nickname">
           <el-input v-model="registerForm.nickname" placeholder="用户名为4-16为数字，字母，拼音组合" name="nickname" type="text"  />
         </el-form-item>
-
-        <el-form-item label="真实姓名：">
+        <div class="loginformlable">真实姓名</div>
+        <el-form-item>
           <el-col :span="11">
             <el-form-item prop="surname">
               <el-input v-model="registerForm.surname" placeholder="姓" name="surname" type="text" auto-complete="on" />
@@ -27,26 +33,31 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-
-         <el-form-item prop="sex" label="性别：">
+        <div class="loginformlable">性别</div>
+         <el-form-item prop="sex">
           <el-radio-group v-model="registerForm.sex">
             <el-radio label="1">男</el-radio>
             <el-radio label="2">女</el-radio>
           </el-radio-group>
         </el-form-item>
-
-        <el-form-item prop="password" label="密码：">
+        
+        <div class="loginformlable">密码</div>
+        <el-form-item prop="password">
           <el-input :type="passwordType" v-model="registerForm.password" placeholder="请输入密码" name="password" auto-complete="on" />
         </el-form-item>
-        <el-form-item prop="confirm_password" label="确认密码：">
+
+        <div class="loginformlable">确认密码</div>
+        <el-form-item prop="confirm_password">
           <el-input :type="passwordType" v-model="registerForm.confirm_password" placeholder="请输入密码" name="password" auto-complete="on" />
         </el-form-item>
 
-        <el-form-item prop="phone" label="手机号：">
+        <div class="loginformlable">手机号</div>
+        <el-form-item prop="phone">
           <el-input  v-model="registerForm.phone" placeholder="请输入手机号" name="phone" auto-complete="on" />
         </el-form-item>
 
-        <el-form-item prop="verification" label="验证码：">
+        <div class="loginformlable">验证码</div>
+        <el-form-item prop="verification">
           <el-input v-model="registerForm.verification" auto-complete="on">
             <el-button size="mini" @click="sendCode()" slot="append" :disabled="registerForm.disabled">{{registerForm.disabled?`${registerForm.time}s重新发送`:'发送验证码'}}</el-button>
           </el-input>
@@ -57,7 +68,7 @@
           {{resultMessage}}
         </div>
 
-        <el-button class="submit-register" :loading="loading" type="primary"  @click.native.prevent="handleRegister" style="font-size:20px;background-color:#FF0000;">注&nbsp;&nbsp;册</el-button>
+        <el-button class="submit-register" :loading="loading" type="primary"  @click.native.prevent="handleRegister" style="font-size:20px;">注&nbsp;&nbsp;册</el-button>
         
       </el-form>
     </div>
@@ -159,6 +170,11 @@ export default {
   created() {
   },
   methods: {
+    toindex() {
+      this.$router.push({
+        path: '/'
+      })
+    },
     //发送验证码
     sendCode() {
       // var a=this.$refs.form2.validateField("validateGraphForm2")
@@ -249,11 +265,24 @@ a {
 .login-container {
     width: 100%;
     height: 100%;
+    background:rgba(239,243,245,1);
     border-top: 1px solid #dddddd;
     border-bottom: 1px solid #dddddd;
     // background-image: url("@/assets/imgs/family.png");
     background-size: cover;
     background-repeat: no-repeat;
+    .container-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 1200px;
+      margin: auto;
+      margin-top: 14px;
+      .container-top-img {
+        width: 120px;
+        height: 58px;
+      }
+    }
     .login-left {
       float:left;
       height: 100%;
@@ -264,18 +293,16 @@ a {
     }
     .registerForm-container {
         width: 30%;
-        margin-right: 8%;
-        float: right;
+        margin: auto;
         position: relative;
-        margin-top: 50px;
-        margin-bottom: 80px;
         background-color: white;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding: 10px 30px;
         .registerForm-top {
-          text-align: center;
-          font-size: 28px;
-          color: #FF0000;
+          text-align: left;
+          font-size: 34px;
+          color:rgba(52,73,94,1);
+          font-weight:500;
+          color:rgba(52,73,94,1);
         }
         .errorMsgBox {
             color: rgb(245, 108, 108);
@@ -286,6 +313,9 @@ a {
             width: 85%;
             overflow: hidden;
             margin: 1rem auto 0;
+            .loginformlable {
+              margin-bottom: 8px;
+            }
             .submit-register {
                 margin-bottom: 25px;
                 width: 100%;
