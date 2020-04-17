@@ -1,6 +1,6 @@
 <template>
   <el-breadcrumb separator="/">
-    <el-breadcrumb-item v-for="item in list" :key="item.code" :to="item.path">{{item.name}}</el-breadcrumb-item>
+    <el-breadcrumb-item class="el-breadcrumb" v-for="item in list" :key="item.code" :to="item.path">{{item.name}}</el-breadcrumb-item>
   </el-breadcrumb>
 </template>
 
@@ -52,11 +52,10 @@
 
 <style scoped>
   .el-breadcrumb {
-    font-size: 14px;
-    margin-bottom: 10px;
-    padding-bottom: 20px !important;
-    border-bottom: 1px solid #eee;
-    color: #333;
+    font-size:20px;
+    font-weight:500;
+    color:rgba(52,73,94,1);
+    line-height:28px;
   }
 
 </style>

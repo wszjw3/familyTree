@@ -1,11 +1,11 @@
 <template>
   <el-dialog title="管理员转让" :visible.sync="isShow" width="60%">
-    <div>
+    <p style="margin-top: -20px">
       待转让家谱树
       <span style="magrin-left: 20px;">
         {{ info.family_name }}
       </span>
-    </div>
+    </p>
     <div class="mt-lg">
       接收方管理员帐号：
       <el-input class="mt-md" v-model="account" placeholder="请输入"></el-input>
@@ -15,8 +15,8 @@
       <el-input class="mt-md" v-model="name" placeholder="请输入"></el-input>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="reset">取消</el-button>
-      <el-button type="primary" @click="confirm">确认转让</el-button>
+      <el-button class="btn cancel" @click="reset">取消</el-button>
+      <el-button class="btn confirm" @click="confirm">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -98,5 +98,24 @@ export default {
 }
 .mt-md {
   margin-top: 16px;
+}
+.btn {
+  border-radius:4px;
+  font-weight: 600px;
+  background:rgba(87,208,146,1);
+  border: 1px solid rgba(87,208,146,1);
+  color: #fff;
+  font-size: 16px;
+}
+.confirm {
+  background:rgba(87,208,146,1);
+  border: 1px solid rgba(87,208,146,1);
+  color: #fff;
+}
+
+.cancel {
+  background:rgba(232,235,238,1);
+  border: 1px solid transparent;
+  color: rgba(87,208,146,1);;
 }
 </style>

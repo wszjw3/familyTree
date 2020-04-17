@@ -1,21 +1,14 @@
 <template>
-  <el-container :style="{height: winHeight}" ref="container">
-    <el-header>
-      <layout-header></layout-header>
-    </el-header>
-    <el-container>
-      <!-- <el-aside width="auto" :style="{height: mainHeight}">
-        <layout-sidebar></layout-sidebar>
-      </el-aside> -->
-      <el-main :style="{height: mainHeight}">
-        <!--  style="background: #f0f2f5;" -->
-        <!-- <layout-breadcrumb></layout-breadcrumb> -->
-        <transition name="fade" mode="out-in">
-          <router-view></router-view>
-        </transition>
-      </el-main>
-    </el-container>
-  </el-container>
+  <div>
+    <layout-header></layout-header>
+    <!--  style="background: #f0f2f5;" -->
+    <!-- <layout-breadcrumb></layout-breadcrumb> -->
+    <div class="body">
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,7 +36,7 @@
     },
     mounted() {
       window.onresize = () => {
-        
+
         let height = window.innerHeight || Math.min(document.documentElement.clientHeight, document.body.clientHeight)
         //document.body.parentNode.style.overflowY = 'hidden'
         this.winHeight = height + 'px'
@@ -55,27 +48,10 @@
 
 </script>
 
-<style lang="less">
-  .el-header {
-    background-color: #fff;
-  }
+<style lang="less" scoped>
 
-  .el-aside {
-    background-color: #eee;
-  }
-
-  .cur-pointer {
-    cursor: pointer !important;
-  }
-
-  .toolbar {
-    // background: #f2f2f2;
-    padding: 10px;
-    margin: 10px 0;
-  }
-
-  .toolbar .el-form-item {
-    margin-bottom: 10px;
-  }
+.body {
+  padding-top: 80px;
+}
 
 </style>

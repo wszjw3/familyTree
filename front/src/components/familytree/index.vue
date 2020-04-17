@@ -45,21 +45,18 @@
                   t1[kdx + 1].current.length === 2
                     ? 'mr-sm'
                     : '',
-                  ele.be_alive === '2' ? 'dashed' : 'solid'
+                  ele.be_alive === '2' ? 'bg-grey' : 'border-green'
                 ]"
               >
+                <img
+                  v-if="ele.sex === '2' && !ele.isWife"
+                  src="@/assets/imgs/girl.png"
+                />
+                <img
+                  v-if="ele.claim === '1'"
+                  src="@/assets/imgs/claim.png"
+                />
                 {{ ele.user_name }}
-                <div
-                  v-if="ele.sex === '2' || ele.claim === '1'"
-                  class="icon-wrapper"
-                >
-                  <img
-                    v-if="ele.sex === '2' && !ele.isWife"
-                    :src="sexImg"
-                    class="sex-img"
-                  />
-                  <span v-if="ele.claim === '1'" class="required">*</span>
-                </div>
                 <div
                   class="action-wrapper"
                   :style="{
@@ -75,18 +72,14 @@
                     v-if="
                       userType === '2' || userType === '3' || userType === '4'
                     "
-                    class="pie"
                   >
-                    <div class="line1"></div>
-                    <div class="line2"></div>
-                    <div class="line3"></div>
-                    <div class="first" @click="handleViewDetail(ele)">
+                    <div class="action-item" @click="handleViewDetail(ele)">
                       详情
                     </div>
-                    <div class="second" @click="handleEdit(ele)">
+                    <div class="action-item" @click="handleEdit(ele)">
                       编辑
                     </div>
-                    <div class="thired" @click="handleAdd(ele, idx)">
+                    <div class="action-item" @click="handleAdd(ele, idx)">
                       {{ ele.sex === '1' ? '添加' : '' }}
                     </div>
                   </div>
@@ -251,7 +244,7 @@ export default {
             div.style.width =
               fromX > toX ? fromX - toX + 'px' : toX - fromX + 'px'
             div.style.height = '1px'
-            div.style.borderTop = '1px solid #000'
+            div.style.borderTop = '1px dashed #000'
             document.getElementById('tree').appendChild(div)
           }
         }
@@ -308,8 +301,15 @@ export default {
     align-items: center;
 
     .level {
-      width: 5%;
-      flex: 1;
+      width:30px;
+      height:30px;
+      margin-right: 30px;
+      line-height:30px;
+      background:rgba(52,73,94,1);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
     }
 
     .wrapper {
@@ -317,6 +317,12 @@ export default {
       display: flex;
     }
 
+    .tree-node {
+      background:rgba(255,255,255,1);
+      box-shadow:-2px 4px 10px 0px rgba(51, 36, 36, 0.08);
+      border-radius:4px;
+      padding: 3px 2px;
+    }
     .leaf {
       height: 40px;
       line-height: 40px;
@@ -324,6 +330,13 @@ export default {
       display: inline-block;
       position: relative;
       text-align: center;
+      margin: 0 2px;
+      border-radius: 4px;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
 
       .icon-wrapper {
         display: inline-block;
@@ -349,74 +362,16 @@ export default {
         display: none;
         position: absolute;
         z-index: 99;
-        background-color: #fff;
         top: 40px;
         left: 0;
         width: 100%;
-        .pie {
-          border: 1px solid #000;
-          border-radius: 50%;
-          width: 80px;
-          height: 80px;
-          margin-left: 10px;
-          position: relative;
+        background:rgba(25,43,61,1);
+        box-shadow:-2px 4px 10px 0px rgba(0,0,0,0.08);
+        border-radius:4px;
+        color: #fff;
 
-          .line1 {
-            width: 1px;
-            height: 40px;
-            position: absolute;
-            top: 0;
-            left: 39px;
-            background-color: #000;
-          }
-
-          .line2 {
-            width: 1px;
-            height: 40px;
-            position: absolute;
-            top: 30px;
-            left: 23px;
-            transform: rotate(55deg);
-            background-color: #000;
-          }
-
-          .line3 {
-            width: 1px;
-            height: 40px;
-            position: absolute;
-            top: 30px;
-            left: 57px;
-            background-color: #000;
-            transform: rotate(125deg);
-          }
-          .first {
-            position: absolute;
-            cursor: pointer;
-            left: 5px;
-            top: 10px;
-          }
-
-          .second {
-            position: absolute;
-            cursor: pointer;
-            right: 5px;
-            top: 10px;
-            color: red;
-          }
-
-          .thired {
-            position: absolute;
-            cursor: pointer;
-            left: 25px;
-            bottom: 0px;
-            color: #1890ff;
-          }
-        }
-        .claim {
-          color: #1890ff;
-          cursor: pointer;
-          width: 100%;
-          text-align: center;
+        .action-item {
+          cursor: pointer
         }
       }
     }
@@ -435,8 +390,8 @@ export default {
       width: 1px;
       position: absolute;
       left: 50%;
-      top: 100%;
-      border-left: 1px solid #000;
+      top: calc(100% + 8px);
+      border-left: 1px dashed #000;
     }
   }
   .tree-before {
@@ -448,7 +403,7 @@ export default {
       position: absolute;
       left: 50%;
       bottom: 100%;
-      border-left: 1px solid #000;
+      border-left: 1px dashed #000;
     }
   }
   .tree-child {
@@ -479,5 +434,11 @@ export default {
 }
 .mr-sm {
   margin-right: 10px;
+}
+.bg-grey {
+  background:rgba(239,243,245,1);
+}
+.border-green {
+  border:1px solid rgba(34,187,35,0.2);
 }
 </style>

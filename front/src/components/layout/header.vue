@@ -1,41 +1,29 @@
 <template>
-<div>
+<div class="fixed">
   <div class="page-header clearfix">
-    <div class="page-logo" @click="$router.push('/')">
-      <img src="@/assets/imgs/family-logo.png" class="logo">根深叶茂
+    <div class="flex">
+      <router-link class="page-logo" :to="{path: '/'}">
+        <img src="@/assets/imgs/family-logo.png" class="logo">
+      </router-link>
+      <div class="router-area">
+        <router-link :class="['link', currentPath === '/' ? 'active' : '']" :to="{path: '/'}">首页</router-link>
+        <router-link :class="['link', currentPath === '/rank' ? 'active' : '']" :to="{path: '/rank'}">排名</router-link>
+        <router-link v-if="userType === '3'" :class="['link', currentPath === '/myManage' ? 'active' : '']" :to="{path: '/myManage'}">我管理的家谱</router-link>
+        <router-link v-if="userType === '2'" :class="['link', currentPath === '/myFamily' ? 'active' : '']" :to="{path: '/myFamily'}"我的家谱</router-link>
+      </div>
     </div>
-    <div class="page-nav">
+    <div class="user-info">
+      <el-button class="create-btn" @click="navigateToCreate">创建新家谱</el-button>
 
-    </div>
-    <div class="fr">
-      <ul class="nav-bar">
-        <li class="nav-bar-item" style="display:flex;justify-content: space-between;align-items:center;">
-          <el-button type="success" @click="navigateToCreate">创建新家谱</el-button>
-
-          <router-link v-if="userName" class="nav-desc" to="/user/index">
-            <i class="el-icon-user-solid userIcon" style="margin-right: 10px;"></i>
-            <span>{{userName}}</span>
-
-          </router-link>
-          <div v-if="!userName" class="cursor-pointer" @click="handleLogin">
-            <span>[登录]</span>
-          </div>
-          <div v-else class="cursor-pointer" @click="handleLogOut">
-            <span>[退出]</span>
-          </div>
-
-
-
-
-          <!-- <el-dropdown @command="handleCommand">
-            <a class="nav-bar-item-link">我的账户</a>
-            <el-dropdown-menu slot="dropdown" style="margin-top: -2px;transform-origin: center top 0px;">
-              <el-dropdown-item command="accountInfo">查看账户信息</el-dropdown-item>
-              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown> -->
-        </li>
-      </ul>
+      <router-link v-if="userName" class="link" to="/user/index">
+        {{userName}}
+      </router-link>
+      <a v-if="!userName" class="link cursor-pointer" @click="handleLogin">
+        登录
+      </a>
+      <a v-else class="link cursor-pointer" @click="handleLogOut">
+        退出
+      </a>
     </div>
   </div>
 </div>
@@ -51,6 +39,12 @@ export default {
   computed: {
     userName () {
       return this.$store.getters.getToken.user_name
+    },
+    userType () {
+      return this.$store.getters.getToken.user_type
+    },
+    currentPath () {
+      return this.$route.path
     }
   },
   methods: {
@@ -71,74 +65,58 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.fixed {
+  background-color: rgba(239,243,245,1);
+  position: fixed;
+  z-index: 9;
+  width: 100%;
+}
 .page-header {
-  background-color: #fff;
   height: 60px;
   line-height: 60px;
   width: 100%;
-  z-index: 10;
-  border-bottom: 1px solid rgba(204, 204, 204, 1);
-}
+  display: flex;
+  position: relative;
 
-.page-header .page-logo {
-  float: left;
-  font-weight: 650;
-  font-style: normal;
-  font-size: 28px;
-  padding-left: 20px;
-  cursor: pointer;
-  .logo {
-    width: 3.5rem;
-    vertical-align: middle;
-    margin-right: 0.6rem;
+  .page-logo {
+    height: 100%;
+    cursor: pointer;
   }
-}
 
-.page-header .page-nav {
-  float: left;
-  height: 60px;
-}
-
-.page-header .fr {
-  float: right;
-}
-
-.page-header .nav-bar {
-  height: 60px;
-  margin: 0px;
-}
-
-.page-header .nav-bar .nav-bar-item {
-  display: inline-block;
-  margin-right: 30px !important;
-  .nav-desc {
-    width: 143px;
+  .flex {
+    flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 30px;
-    text-decoration: none;
-    color: #000
   }
-   .userIcon {
-     color:#409EFF;
-     font-size: 30px;
-   }
-}
 
-.page-header .nav-bar .nav-bar-item .nav-bar-item-link {
-  display: block;
-  padding: 0 20px;
-  height: 60px;
-  line-height: 60px;
-  cursor: pointer;
-}
+  .router-area {
+    margin-left: 70px;
+  }
 
-.page-header .nav-bar .nav-bar-item .nav-bar-item-link:hover {
-  background-color: #435060;
-}
+  .user-info {
+    position: absolute;
+    right: 90px;
 
-.cursor-pointer {
-  cursor: pointer;
+    .create-btn {
+      margin-right: 31px;
+      width:110px;
+      height:40px;
+      background-color: #57D092;
+      color: #fff;
+      border: none;
+    }
+  }
+
+  .link {
+    font-size:16px;
+    font-weight:600;
+    color:rgba(52,73,94,1);
+    line-height:22px;
+    margin-right: 31px;
+    text-decoration: none;
+  }
+
+  .active {
+    color: rgba(87,208,146,1);
+  }
 }
 </style>

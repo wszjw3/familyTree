@@ -48,7 +48,7 @@ export const demoRouter = {
     path: '/',
     view: '/',
     component: () =>
-      import( /* webpackChunkName: "main" */ '@/views/index.vue'),
+      import( /* webpackChunkName: "main" */ '@/views/family/index.vue'),
     meta: {
       requiresAuth: false,
       resourceCode: ['user']
@@ -110,6 +110,26 @@ export const demoRouter = {
     view: '/user/task',
     component: () =>
       import( /* webpackChunkName: "main" */ '@/views/user/task.vue'),
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    name: '排名',
+    path: '/rank',
+    view: '/rank',
+    component: () =>
+      import( /* webpackChunkName: "main" */ '@/views/rank.vue'),
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    name: '我管理的家谱',
+    path: '/myManage',
+    view: '/myManage',
+    component: () =>
+      import( /* webpackChunkName: "main" */ '@/views/mymanage.vue'),
     meta: {
       requiresAuth: false,
     }

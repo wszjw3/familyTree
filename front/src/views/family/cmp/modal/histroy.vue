@@ -1,48 +1,53 @@
 <template>
-  <el-dialog :title="computedTitle" :visible.sync="isShow" width="60%">
-    <el-tabs v-model="active">
-      <el-tab-pane label="捐献流水" name="first">
-        <el-table :data="histroy.data">
-          <el-table-column prop="time" label="时间"></el-table-column>
-          <el-table-column prop="user_name" label="姓名"></el-table-column>
-          <el-table-column prop="donate_amt" label="捐献金额"></el-table-column>
-          <el-table-column
-            prop="donate_sum_amt"
-            label="总捐献金额"
-          ></el-table-column>
-        </el-table>
-        <el-pagination
-          style="float:right"
-          @current-change="handleCurrentChange('histroy')"
-          :current-page="histroy.page"
-          layout="prev, pager, next"
-          :total="histroy.records"
-        >
-        </el-pagination>
-      </el-tab-pane>
-      <el-tab-pane label="捐献排名" name="second">
-        <el-table :data="rank.data">
-          <el-table-column prop="idx" label="排名"></el-table-column>
-          <el-table-column prop="user_name" label="姓名"></el-table-column>
-          <el-table-column
-            prop="donate_sumnumber"
-            label="捐献次数"
-          ></el-table-column>
-          <el-table-column
-            prop="donate_amt"
-            label="捐献总金额"
-          ></el-table-column>
-        </el-table>
-        <el-pagination
-          style="float:right"
-          @current-change="handleCurrentChange('rank')"
-          :current-page="rank.page"
-          layout="prev, pager, next"
-          :total="rank.records"
-        >
-        </el-pagination>
-      </el-tab-pane>
-    </el-tabs>
+  <el-dialog title="捐献记录" :visible.sync="isShow" width="60%">
+    <p style="margin-top: -20px">{{computedTitle}}</p>
+    <div>
+      <span :class="['tab', activeTab === '1' ? 'tab-active' : '']" @click="handleTabChange('1')">未处理</span>
+      <span :class="['tab', activeTab === '2' ? 'tab-active' : '']" @click="handleTabChange('2')">已处理</span>
+    </div>
+    <div v-show="activeTab === '1'" style="margin-bottom: 50px">
+      <el-table :data="histroy.data" :header-cell-style="{backgroundColor: 'rgba(248,250,252,1)', color: 'rgba(52,73,94,1)'}">
+        <el-table-column prop="time" label="时间"></el-table-column>
+        <el-table-column prop="user_name" label="姓名"></el-table-column>
+        <el-table-column prop="donate_amt" label="捐献金额"></el-table-column>
+        <el-table-column
+          prop="donate_sum_amt"
+          label="总捐献金额"
+        ></el-table-column>
+      </el-table>
+      <el-pagination
+        style="float:right; margin-top: 20px"
+        @current-change="handleCurrentChange('histroy')"
+        :current-page="histroy.page"
+        background
+        layout="prev, pager, next"
+        :total="histroy.records"
+      >
+      </el-pagination>
+    </div>
+    <div v-show="activeTab === '2'" style="margin-bottom: 50px">
+      <el-table :data="rank.data" :header-cell-style="{backgroundColor: 'rgba(248,250,252,1)', color: 'rgba(52,73,94,1)'}">
+        <el-table-column prop="idx" label="排名"></el-table-column>
+        <el-table-column prop="user_name" label="姓名"></el-table-column>
+        <el-table-column
+          prop="donate_sumnumber"
+          label="捐献次数"
+        ></el-table-column>
+        <el-table-column
+          prop="donate_amt"
+          label="捐献总金额"
+        ></el-table-column>
+      </el-table>
+      <el-pagination
+        style="float:right; margin-top: 20px"
+        @current-change="handleCurrentChange('rank')"
+        :current-page="rank.page"
+        layout="prev, pager, next"
+        background
+        :total="rank.records"
+      >
+      </el-pagination>
+    </div>
   </el-dialog>
 </template>
 
@@ -65,7 +70,7 @@ export default {
   data() {
     return {
       isShow: this.value,
-      active: 'first',
+      activeTab: '1',
       histroy: {
         data: [],
         page: 1,
@@ -85,7 +90,7 @@ export default {
     },
     computedTitle() {
       return (
-        '捐献记录     当前已有' +
+        '当前已有' +
         this.statistics.recordnumber +
         '人捐赠，捐赠总基金 ¥ :' +
         this.statistics.trans_amt
@@ -104,6 +109,9 @@ export default {
   },
 
   methods: {
+    handleTabChange (tab) {
+      this.activeTab = tab
+    },
     reset() {
       this.isShow = false
       this.histroy = {
@@ -230,5 +238,23 @@ export default {
     cursor: pointer;
     text-align: center;
   }
+}
+.tab {
+  width:110px;
+  height:40px;
+  line-height:40px;
+  text-align: center;
+  background:rgba(232,235,238,1);
+  border-radius:4px;
+  margin-right: 10px;
+  display: inline-block;
+  font-size:14px;
+  font-weight:500;
+  color: rgba(52,73,94,1);
+  cursor: pointer;
+}
+.tab-active {
+  border:2px solid rgba(52,152,219,1);
+  color:rgba(52,152,219,1);
 }
 </style>

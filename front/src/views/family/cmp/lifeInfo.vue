@@ -111,13 +111,12 @@
           </div>
           <div class="operation">
             <el-button
-              style="width: 140px"
               type="primary"
               @click="handleConfirm"
               :disabled="confirming"
               >确认修改</el-button
             >
-            <el-button style="width: 140px" @click="handleCancel"
+            <el-button  @click="handleCancel"
               >取消</el-button
             >
           </div>
@@ -360,7 +359,6 @@ export default {
       height: 24px;
       line-height: 24px;
       padding-left: 10px;
-      border-left: 4px solid red;
     }
   }
 

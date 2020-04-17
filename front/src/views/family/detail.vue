@@ -1,88 +1,89 @@
 <template>
   <div>
-    <statistics v-if="$router.currentRoute.path !== '/'" :detail="statistics" @changed="reload()"/>
-
-    <el-row class="mt-lg">
-      <el-col :span="18" style="position: relative">
-        <el-breadcrumb class="header" separator=">">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ title }}</el-breadcrumb-item>
-        </el-breadcrumb>
-        <div id="export">
-          <p class="text-bold">{{ title }}</p>
-          <div class="desc">
-            <div>
-              ——&nbsp;&nbsp;&nbsp;&nbsp;健在
-            </div>
-            <div>
-              ------&nbsp;&nbsp;&nbsp;&nbsp;已故
-            </div>
-            <div class="items-center">
-              <img :src="sexImg" class="sex-img" />
-              女儿
-            </div>
-            <div class="items-center" style="margin-top: -10px">
-              <span class="required">*</span>
-              已认领
+    <el-row :gutter="20" style="margin-bottom: 50px">
+      <el-col :span="18" id="export">
+        <div class="elcol">
+          <div class="relative">
+            <p class="title">{{ title }}</p>
+            <div class="absolute-right">
+              <span class="desc">
+                <img src="@/assets/imgs/alive.png">
+                健在
+              </span>
+              <span class="desc">
+                <img src="@/assets/imgs/dead.png">
+                已故
+              </span>
+              <span class="desc">
+                <img src="@/assets/imgs/girl.png">
+                女儿
+              </span>
+              <span class="desc">
+                <img src="@/assets/imgs/claim.png">
+                已认领
+              </span>
             </div>
           </div>
-          <family-tree
-            ref="tree"
-            :data="treeData"
-            @onView="handleViewNode"
-            @onEdit="handleEditNode"
-            @onAdd="handleAddNode"
-            @onClaim="handleClaim"
-          ></family-tree>
+
+          <el-breadcrumb class="header" separator=">">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ title }}</el-breadcrumb-item>
+          </el-breadcrumb>
+          <div>
+            <family-tree
+              ref="tree"
+              :data="treeData"
+              @onView="handleViewNode"
+              @onEdit="handleEditNode"
+              @onAdd="handleAddNode"
+              @onClaim="handleClaim"
+            ></family-tree>
+          </div>
+
         </div>
       </el-col>
-      <el-col :span="6" class="family-info">
-        <p>
-          <el-button class="btn" size="small" @click="handleDonateHistroy"
-            >捐献记录</el-button
-          >
-          <el-button
-            class="btn"
-            type="success"
-            size="small"
-            @click="handleDonate"
-            >捐赠</el-button
-          >
-          <el-button
-            class="btn"
-            v-if="$router.currentRoute.query.from === 'manage'"
-            type="success"
-            size="small"
-            @click="handleTransfor"
-            >管理员转让</el-button
-          >
-          <el-button
-            class="btn"
-            type="primary"
-            size="small"
-            @click="exportToPDF"
-            >导出家谱树</el-button
-          >
-          <el-button
-            class="btn"
-            type="primary"
-            size="small"
-            @click="handleShare"
-            >分享</el-button
-          >
-        </p>
-        <div v-if="!isShowNodeDetail">
-          <h2 class="familytree-info-title">家谱树信息</h2>
-          <div
-            v-for="(item, idx) in familytreeInfo"
-            :key="'familytreeInfo_' + idx"
-            class="familytree-item"
-          >
-            <span>{{ item.label + '： ' }}</span>
-            <span>{{ item.name }}</span>
+      <el-col :span="6">
+        <div class="elcol">
+          <div v-if="!isShowNodeDetail">
+            <h2 class="familytree-info-title">家谱树信息</h2>
+            <div
+              v-for="(item, idx) in familytreeInfo"
+              :key="'familytreeInfo_' + idx"
+              class="familytree-item"
+            >
+              <span class="label">{{ item.label + '： ' }}</span>
+              <span class="name">{{ item.name }}</span>
+            </div>
           </div>
+          <life-info v-else :info="nodeDetail" @success="handleLifeinfoSaved" />
+
+          <p v-if="!isShowNodeDetail" class="no-margin">
+            <el-button class="btn history"  @click="handleDonateHistroy"
+              >捐献记录</el-button
+            >
+            <el-button
+              class="btn donate"
+              @click="handleDonate"
+              >捐赠</el-button
+            >
+            <el-button
+              class="btn transfor"
+              v-if="$router.currentRoute.query.from === 'manage'"
+              @click="handleTransfor"
+              >管理员转让</el-button
+            >
+            <el-button
+              class="btn export"
+              @click="exportToPDF"
+              >导出家谱树</el-button
+            >
+            <el-button
+              class="btn share"
+              @click="handleShare"
+              >分享</el-button
+            >
+          </p>
         </div>
-        <life-info v-else :info="nodeDetail" @success="handleLifeinfoSaved" />
       </el-col>
     </el-row>
     <edit-modal
@@ -511,11 +512,22 @@ export default {
 
 <style lang="less" scoped>
 .familytree-info-title {
-  border-left: 3px solid red;
-  padding: 5px;
+  padding: 5px 0;
+  font-size: 20px;
+  font-weight: 600;
 }
 .familytree-item {
   padding: 5px 0;
+  display: flex;
+
+  .label {
+    color: #ddd;
+    flex: 1
+  }
+
+  .name {
+    text-align: right;
+  }
 }
 
 .required {
@@ -526,21 +538,32 @@ export default {
   // overflow-y: auto;
   // overflow-x: hidden;
 }
+
+.elcol {
+  background:rgba(255,255,255,1);
+  box-shadow:-2px 4px 10px 0px rgba(0,0,0,0.08);
+  border-radius:4px;
+  padding: 5px 8px;
+}
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  border: 1px dashed #333333;
+  display: inline-block;
+}
 .text-bold {
   font-weight: 600;
 }
 
 .desc {
-  display: inline-block;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  border: 1px solid #000;
-  padding: 10px 10px 0 10px;
-  .sex-img {
-    width: 26px;
-    height: 26px;
-    margin-right: 14px;
+  font-size:14px;
+  font-weight:500;
+  color:rgba(52,73,94,1);
+  margin: 0 10px;
+
+  img {
+    width: 17px;
+    height: 17px;;
   }
 }
 .required {
@@ -556,7 +579,28 @@ export default {
 }
 .btn {
   margin: 5px;
+  width: 120px;
+  height: 34px;
+  border-radius:4px;
+  font-size:14px;
+  font-weight:500;
+  border: none;
+
 }
+
+.history,
+.donate {
+  background:rgba(34,187,35,0.2);
+  color:rgba(87,208,146,1);
+}
+
+.export,
+.transfor,
+.share {
+  background:rgba(87,208,146,1);;
+  color:#fff;
+}
+
 .hidden {
   z-index: -1;
   position: fixed;
@@ -565,5 +609,19 @@ export default {
 }
 .mt-lg {
   margin-top: 20px;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute-right {
+  top: 30px;
+  position: absolute;
+  right: 10px;
+}
+
+.no-margin {
+  margin: 0
 }
 </style>

@@ -1,60 +1,77 @@
 <template>
-  <div>
-    <!-- <div class="header">
-      <div class="header-title">
-        <h2>
-          根深叶茂
-        </h2>
-      </div>
-      <el-button type="success">创建新家谱</el-button>
-      <div v-if="isLogin" class="user-container">
-        <span class="username">{{userName}}</span>
-        <span class="exit">[退出]</span>
-      </div>
-    </div> -->
-
-    <div class="search-container">
-      <h3>开始您的寻根问祖之旅 请按条件进行筛选后，输入姓名搜索</h3>
-      <div class="search-block">
-        按条件选择：
-        <div class="inline-block ml-md border">
-          <span class="text-faded">
-            按姓氏：
-          </span>
-          {{nameDis}}
+  <div class="search-view">
+    <div class="header">
+      <div class="name-wrapper">
+        <div
+          v-for="(item, idx) in nameArray"
+          :key="idx"
+          :class="idx % 2 === 0 ? 'name-faded' : 'name-white'"
+        >
+          {{item}}
         </div>
-        <div class="inline-block ml-md border">
-          <span class="text-faded">
-            按地区：
-          </span>
-          {{areaDis}}
+      </div>
+      <div class="bg-wrapper">
+        <img :src="bgImage"/>
+      </div>
+      <div class="search-container">
+        <div class="title">
+          <p>开始您的寻根问祖之旅 </p>
+          <p>请按条件进行筛选后，输入姓名搜索</p>
         </div>
-        <div class="inline-block ml-md">
-          <el-input v-model="search.text" placeholder="请输入姓名" @keydown.enter="handleQuery">
+        <div class="search-form">
+          <p>
+            按姓氏
+          </p>
+          <el-select
+            v-model="search.surname"
+            style="width: 379px"
+            placeholder="请选择"
+            filterable
+            clearable
+          >
+            <el-option-group
+              v-for="group in surnameOpts"
+              :key="group.label"
+              :label="group.label">
+              <el-option
+                v-for="item in group.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-option-group>
+          </el-select>
+          <p>
+            按地区
+          </p>
+          <city-picker
+            class="input"
+            style="width: 379px"
+            v-model="search.area"
+            placeholder="地区"
+          />
+          <el-input
+            v-model="search.text"
+            placeholder="请输入姓名"
+            @keydown.enter="handleQuery"
+            style="width: 379px; margin-top: 20px"
+          >
             <i
               slot="suffix"
               class="el-input__icon el-icon-search"
               @click="handleQuery"
             ></i>
           </el-input>
+          <el-button class="search-btn" @click="handleQuery">搜索</el-button>
         </div>
       </div>
-      <div class="search-block border-bottom-ddd">
-        <div style="height: 30px;line-height: 30px">
-          按姓氏选择：
-        </div>
-        <div class="ml-md inline-block" style="flex: 1">
-          <LetterCmp v-model="search.surname" @input="handleQuery" @change="handleNameChange" />
-        </div>
-      </div>
-      <div class="search-block">
-        <div style="height: 50px;line-height: 50px">
-          按地区选择：
-        </div>
-        <div class="ml-md inline-block" style="flex: 1">
-          <AreaCmp v-model="search.area" @input="handleQuery" @change="handleAreaChange"/>
-        </div>
-      </div>
+    </div>
+    <div class="statistics">
+      已收录全国共
+      {{statistics.tree}}
+      棵家谱树，总计
+      {{statistics.people}}
+      人
     </div>
     <div class="result">
       <div v-if="result.length === 0 && searched" class="no-result">
@@ -74,19 +91,19 @@
 </template>
 
 <script>
-import { Family } from '@/api'
-import LetterCmp from '@/components/search/letter'
-import AreaCmp from '@/components/search/area'
+import { Family, Manage } from '@/api'
+import CityPicker from '@/components/city-picker/index.vue'
 import ResultCmp from './result'
+import bgImage from '@/assets/imgs/family_index_bg.png'
 export default {
   name: 'search',
   components: {
-    LetterCmp,
-    AreaCmp,
-    ResultCmp
+    ResultCmp,
+    CityPicker
   },
   data() {
     return {
+      bgImage,
       nameDis: '',
       areaDis: '',
       search: {
@@ -95,10 +112,20 @@ export default {
         text: ''
       },
       result: [],
-      searched: false
+      searched: false,
+      surnameOpts: [],
+      statistics: {
+        tree: '',
+        people: ''
+      }
     }
   },
   computed: {
+    nameArray() {
+      return [
+        '赵','周','吴','郑','王','冯','钱','孙','陈','褚','卫','蒋','沈','韩','杨','朱','秦','许'
+      ]
+    },
     treeCount() {
       return this.result.length
     },
@@ -110,7 +137,36 @@ export default {
       return count
     }
   },
+  created () {
+    this.getSurnameOpts()
+    this.getStatistics()
+  },
   methods: {
+    getStatistics () {
+      Family.familyTreeStatistics().then(res => {
+        if (res.data) {
+          this.statistics.tree = res.data.statistics_number
+          this.statistics.people = res.data.people_number
+        }
+      })
+    },
+    getSurnameOpts () {
+      Manage.surnameFind().then(res => {
+        if (res.data) {
+          this.surnameOpts = res.data.map(v => {
+            let obj = {}
+            obj.label = v.initials
+            obj.options = v.initials_data.map(v => {
+              return {
+                label: v.surname,
+                value: v.surname
+              }
+            })
+            return obj
+          })
+        }
+      })
+    },
     handleQuery() {
       let params = {}
       // params.eldest_son_flag = this.$router.query ? this.$router.query.eldest_son_flag : '1'
@@ -146,95 +202,148 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  padding: 4px 8px;
-  overflow: hidden;
-  position: relative;
-  min-height: 35px;
+.search-view {
+  width: 1163px;
+  .header {
+    position: relative;
+    height: 655px;
 
-  .header-title {
-    flex: 1;
-    min-width: 1px;
-    max-width: 100%;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 400;
-  }
-}
-.user-container {
-  .username {
-    font-size: 14px;
-    margin-left: 20px;
-  }
-  .exit {
-    margin-left: 20px;
-  }
-}
-.banner {
-  padding: 20px 80px;
-  background-color: #000;
-  color: #fff;
-  font-size: 24px;
-  font-weight: 600;
+    .name-wrapper {
+      width: 474px;
+      height: 234px;
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      .name-faded,
+      .name-white {
+        width: 79px;
+        height: 78px;
+        line-height: 78px;
+        font-size: 78px;
+        display: inline-block;
+      }
+      .name-faded {
+        color: #EFF3F5;
+        background:rgba(255,255,255,1);
+      }
 
-  .num {
-    font-size: 32px;
-    color: #7fbc5d;
-  }
-}
-.search-container {
-  .search-block {
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-  }
-}
-.inline-block {
-  display: inline-block;
-}
-.ml-md {
-  margin-left: 10px;
-}
-.mt-md {
-  margin-top: 10px;
-}
-.search-block {
-  display: flex;
-}
-.border-bottom-ddd {
-  border-bottom: 1px solid #ddd;
-}
-.result {
-  .no-result {
-    text-align: center;
-    .routerLink {
-      cursor: pointer;
-      font-size: 14px;
-      color: #000;
-      text-decoration: none;
-      a {
-        color: #169bd5;
-        text-decoration: underline;
+      .name-white {
+        color: #fff;
+        background: rgba(239,243,245,1);
+      }
+    }
+
+    .bg-wrapper {
+      width:689px;
+      height:655px;
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 0
+    }
+
+    .search-container {
+      width:574px;
+      height:451px;
+      padding-left: 40px;
+      background:rgba(255,255,255,1);
+      z-index: 2;
+      position: absolute;
+      left: 0;
+      bottom: -32px;
+
+      .title {
+        height:66px;
+        line-height:33px;
+        p {
+          font-size:24px;
+          font-weight:600;
+          color:rgba(52,73,94,1);
+        }
+      }
+
+      .search-form {
+        margin-top: 50px;
+        p {
+          height:20px;
+          font-size:14px;
+          font-weight:600;
+          color:rgba(52,73,94,1);
+          line-height:20px;
+        }
+        .search-btn {
+          width:376px;
+          height:44px;
+          background:rgba(87,208,146,1);
+          border: none;
+          border-radius:4px;
+          color: #fff;
+          margin-top: 20px;
+          font-size: 16px;
+        }
       }
     }
   }
-}
-.celebrity {
-  color: #000;
-  text-decoration: none;
-}
-.border {
-  border: 1px solid rgba(201, 201, 201, 1);
-  width: 200px;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 10px;
-  border-radius: 4px;
-}
-.text-faded {
-  color: #AEAEAE;
-  margin-right: 10px;
+  .inline-block {
+    display: inline-block;
+  }
+  .ml-md {
+    margin-left: 10px;
+  }
+  .mt-md {
+    margin-top: 10px;
+  }
+  .search-block {
+    display: flex;
+  }
+  .border-bottom-ddd {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .statistics {
+    width:564px;
+    height:54px;
+    margin: 50px 0;
+    padding-left: 30px;
+    line-height: 54px;
+    background:rgba(87,208,146,1);
+    color: #fff;
+    border-radius:4px;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .result {
+    margin-bottom: 100px;
+    .no-result {
+      text-align: center;
+      .routerLink {
+        cursor: pointer;
+        font-size: 14px;
+        color: #000;
+        text-decoration: none;
+        a {
+          color: #169bd5;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  .celebrity {
+    color: #000;
+    text-decoration: none;
+  }
+  .border {
+    border: 1px solid rgba(201, 201, 201, 1);
+    width: 200px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    border-radius: 4px;
+  }
+  .text-faded {
+    color: #AEAEAE;
+    margin-right: 10px;
+  }
 }
 </style>
