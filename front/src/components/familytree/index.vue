@@ -6,7 +6,7 @@
       </div>
       <div
         class="wrapper"
-        :class="idx === 0 ? 'justify-center' : 'justify-between'"
+        :class="(idx === 0 || item.test.length === 1 )? 'justify-center' : 'justify-between'"
       >
         <div
           v-for="(t, tdx) in item.test"
@@ -212,6 +212,8 @@ export default {
           clearInterval(fn)
         }
       }, 300)
+          console.log(this.treeData)
+
     },
 
     handleDrawConnectLine() {
