@@ -8,7 +8,7 @@
       </div>
       <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
-    <div class="container-box">
+    <div class="container-box" style="margin-bottom: 90px;">
       <div class="login-left"><img src="@/assets/imgs/name.png" alt=""></div>
       <div class="loginForm-container">
         <div class="loginForm-top">登录</div>
@@ -204,6 +204,9 @@ a {
       .container-top-img {
         width: 120px;
         height: 58px;
+      }
+      .container-top-right {
+        font-size: 16px;
       }
     }
 

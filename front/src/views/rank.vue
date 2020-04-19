@@ -97,7 +97,7 @@ export default {
 
 <style scoped lang="less">
 .statistics {
-  width:1180px;
+  width:100%;
   height:58px;
   line-height:58px;
   background:rgba(79,198,124, 0.25);

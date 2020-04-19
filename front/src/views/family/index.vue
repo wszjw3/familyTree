@@ -204,6 +204,7 @@ export default {
 <style lang="less" scoped>
 .search-view {
   width: 1163px;
+  margin: auto;
   .header {
     position: relative;
     height: 655px;

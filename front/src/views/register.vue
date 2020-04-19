@@ -282,6 +282,9 @@ a {
         width: 120px;
         height: 58px;
       }
+      .container-top-right {
+        font-size: 16px;
+      }
     }
     .login-left {
       float:left;
