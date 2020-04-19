@@ -11,12 +11,12 @@
         <div
           v-for="(t, tdx) in item.test"
           :key="tdx"
-          style="display: flex; justify-content: space-between"
+          style="display: flex; justify-content: space-between;"
         >
           <div
             v-for="(t1, t1dx) in t"
             :key="t1dx"
-            style="display: flex; justify-content: space-between"
+            style="display: flex; justify-content: space-between;"
           >
             <div
               v-for="(key, kdx) in t1"
@@ -439,6 +439,6 @@ export default {
   background:rgba(239,243,245,1);
 }
 .border-green {
-  border:1px solid rgba(34,187,35,0.2);
+  border:1px solid rgba(34,187,35,1);
 }
 </style>
