@@ -9,7 +9,7 @@
         <router-link :class="['link', currentPath === '/' ? 'active' : '']" :to="{path: '/'}">首页</router-link>
         <router-link :class="['link', currentPath === '/rank' ? 'active' : '']" :to="{path: '/rank'}">排名</router-link>
         <router-link v-if="userType === '3'" :class="['link', currentPath === '/myManage' ? 'active' : '']" :to="{path: '/myManage'}">我管理的家谱</router-link>
-        <router-link v-if="userType === '2'" :class="['link', currentPath === '/myFamily' ? 'active' : '']" :to="{path: '/myFamily'}"我的家谱</router-link>
+        <router-link v-if="userType === '2'" :class="['link', currentPath === '/myFamily' ? 'active' : '']" :to="{path: '/myFamily'}">我的家谱</router-link>
       </div>
     </div>
     <div class="user-info">
@@ -80,7 +80,6 @@ export default {
 
   .page-logo {
     height: 100%;
-    cursor: pointer;
   }
 
   .flex {

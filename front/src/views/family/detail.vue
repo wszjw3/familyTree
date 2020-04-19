@@ -606,6 +606,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
+  display: none;
 }
 .mt-lg {
   margin-top: 20px;
