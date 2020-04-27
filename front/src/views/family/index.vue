@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { Family, Manage } from '@/api'
+import { Family } from '@/api'
 import CityPicker from '@/components/city-picker/index.vue'
 import ResultCmp from './result'
 import bgImage from '@/assets/imgs/family_index_bg.png'
@@ -151,7 +151,7 @@ export default {
       })
     },
     getSurnameOpts () {
-      Manage.surnameFind().then(res => {
+      Family.surnameFind().then(res => {
         if (res.data) {
           this.surnameOpts = res.data.map(v => {
             let obj = {}

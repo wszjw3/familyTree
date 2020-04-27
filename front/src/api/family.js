@@ -74,9 +74,6 @@ export default {
   familyQueryEducation(params) {
     return http.post(URL + '/tree/queryEducation', params)
   },
-  familyQueryOptions(params) {
-    return http.post(URL + '/Backend/familyTreeDropDownFind', params)
-  },
   familyClaim(params) {
     return http.post(URL + '/tree/claim', params)
   },
@@ -149,5 +146,8 @@ export default {
   },
   deleteEducation(params) {
     return http.post(URL + '/tree/deleteEducation', params)
+  },
+  surnameFind(params) {
+    return http.post(URL + '/currency/surnameFind', params)
   }
 }
