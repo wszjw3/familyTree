@@ -72,17 +72,18 @@
                     </el-option>
                   </el-select>
                 </el-col>
-                <el-col :span="24">
+                <!-- <el-col :span="24">
                   <p class="label">是否在世</p>
                   <el-radio v-model="item.be_alive" label="1">是</el-radio>
                   <el-radio v-model="item.be_alive" label="2">否</el-radio>
-                </el-col>
+                </el-col> -->
                 <el-col :span="12">
                   <p class="label">出生日期</p>
                   <el-date-picker
                     class="full-width"
                     v-model="item.brith_time"
                     type="date"
+                    editable
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd"
                     format="yyyy-MM-dd"
@@ -95,6 +96,7 @@
                     class="full-width"
                     v-model="item.death_time"
                     type="date"
+                    editable
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd"
                     format="yyyy-MM-dd"
@@ -103,15 +105,12 @@
                   </el-date-picker>
                 </el-col>
                 <el-col :span="12">
-                  <p class="label">地址</p>
-                  <el-input class="full-width" v-model="item.address"></el-input>
-                </el-col>
-                <el-col :span="12">
                   <p class="label">结婚时间</p>
                   <el-date-picker
                     class="full-width"
                     v-model="item.marry_time"
                     type="date"
+                    editable
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd"
                     format="yyyy-MM-dd"
@@ -154,34 +153,34 @@ export default {
       location: [],
       family_tree_address: '',
       tableData: [
-        {
-          relation: 'grandfather',
-          relation_desc: '祖父',
-          surname: '',
-          character_name: '',
-          fame: '',
-          sex: '1',
-          be_alive: '',
-          brith_time: '',
-          death_time: '',
-          address: '',
-          marry_time: '',
-          family_name: '',
-        },
-        {
-          relation: 'grandmother',
-          relation_desc: '祖母',
-          surname: '',
-          character_name: '',
-          fame: '',
-          sex: '2',
-          be_alive: '',
-          brith_time: '',
-          death_time: '',
-          address: '',
-          marry_time: '',
-          family_name: '',
-        },
+        // {
+        //   relation: 'grandfather',
+        //   relation_desc: '祖父',
+        //   surname: '',
+        //   character_name: '',
+        //   fame: '',
+        //   sex: '1',
+        //   // be_alive: '',
+        //   brith_time: '',
+        //   death_time: '',
+        //   address: '',
+        //   marry_time: '',
+        //   family_name: '',
+        // },
+        // {
+        //   relation: 'grandmother',
+        //   relation_desc: '祖母',
+        //   surname: '',
+        //   character_name: '',
+        //   fame: '',
+        //   sex: '2',
+        //   // be_alive: '',
+        //   brith_time: '',
+        //   death_time: '',
+        //   address: '',
+        //   marry_time: '',
+        //   family_name: '',
+        // },
         {
           relation: 'father',
           relation_desc: '父亲',
@@ -189,7 +188,7 @@ export default {
           character_name: '',
           fame: '',
           sex: '1',
-          be_alive: '',
+          // be_alive: '',
           brith_time: '',
           death_time: '',
           address: '',
@@ -203,7 +202,7 @@ export default {
           character_name: '',
           fame: '',
           sex: '2',
-          be_alive: '',
+          // be_alive: '',
           brith_time: '',
           death_time: '',
           address: '',
@@ -217,7 +216,7 @@ export default {
           character_name: '',
           fame: '',
           sex: '',
-          be_alive: '',
+          // be_alive: '',
           brith_time: '',
           death_time: '',
           address: '',
@@ -386,7 +385,7 @@ export default {
       }
       if (this.family_tree_address === '') {
         flag = false
-        this.$message.error('地址不能为空')
+        this.$message.error('家庭住址不能为空')
         return flag
       }
       try {
@@ -434,7 +433,7 @@ export default {
         position: relative;
         font-size: 18px;
         font-weight: 600;
-        border: 1px dashed #333333;
+        // border: 1px dashed #333333;
         display: inline-block;
       }
       .desc {

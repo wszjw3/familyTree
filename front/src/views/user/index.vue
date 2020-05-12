@@ -25,11 +25,8 @@
     </div>
     <div v-show="activeTab === '1'" class="table-item">
       <el-row>
-        <el-col :span="6">
-          基本资料
-        </el-col>
-        <el-col :span="18">
-          <el-form ref="basicForm" :model="basicForm" :rules="basicFormRules">
+        <el-col :span="24">
+          <el-form class="form" ref="basicForm" :model="basicForm" :rules="basicFormRules">
             <el-form-item label="姓：" prop="user_surname">
               <el-input type="text" v-model="basicForm.user_surname"></el-input>
             </el-form-item>
@@ -69,11 +66,8 @@
       class="table-item"
     >
       <el-row>
-        <el-col :span="6">
-          银行卡号
-        </el-col>
-        <el-col :span="18">
-          <el-form ref="bankForm" :model="bankForm" :rules="bankFormRules">
+        <el-col :span="24">
+          <el-form class="form" ref="bankForm" :model="bankForm" :rules="bankFormRules">
             <el-form-item label="银行卡号：" prop="bank_code">
               <el-input type="text" v-model="bankForm.bank_code"></el-input>
             </el-form-item>
@@ -98,11 +92,8 @@
     </div>
     <div v-show="activeTab === '3'" class="table-item">
       <el-row>
-        <el-col :span="6">
-          银行卡号
-        </el-col>
-        <el-col :span="18">
-          <el-form ref="contactForm" :model="contactForm" :rules="contactFormRules">
+        <el-col :span="24">
+          <el-form class="form" ref="contactForm" :model="contactForm" :rules="contactFormRules">
             <el-form-item label="手机号码：" prop="phone">
               <el-input type="text" v-model="contactForm.phone"></el-input>
             </el-form-item>
@@ -133,12 +124,10 @@
     </div>
     <div v-show="activeTab === '4'" class="table-item">
       <el-row>
-        <el-col :span="6">
-          密码设置
-        </el-col>
-        <el-col :span="18">
+        <el-col :span="24">
           <el-form
             ref="passwdForm"
+            class="form"
             :model="passwdForm"
             :rules="passwdFormRules"
           >
@@ -452,7 +441,7 @@ export default {
 
 <style scoped lang="less">
 .operation {
-  text-align: right;
+  // text-align: right;
 
   .btn confirm,
   .btn cancel {
@@ -484,6 +473,9 @@ export default {
 .tab-active {
   border: 2px solid #57d092;
   color: #57d092;
+}
+.form {
+  width: 50%
 }
 .btn {
   width: 100px;

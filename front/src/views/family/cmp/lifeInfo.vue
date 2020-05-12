@@ -8,17 +8,17 @@
       <div class="desc">
         <img :src="info.tree_user_img ? info.tree_user_img : avatar" />
         <div>
+          <span>{{ info.name }}</span>
+
+        </div>
+        <div class="mt-md">
           <span v-if="info.brith_time">生于{{ info.brith_time }}</span>
           <span v-if="info.death_time">死于{{ info.death_time }}</span>
-          <p>{{ info.address }}</p>
+          <p>出生地址：{{ info.address }}</p>
         </div>
       </div>
       <div class="clear-both">
         <template v-if="status === 'view'">
-          <div class="mt-sm mb-md">
-            {{ info.labelName ? info.labelName + '：' + info.name : info.name }}
-          </div>
-          <div class="mt-md mb-md">{{ info.family_tree_name }}</div>
           <div
             v-for="(item, idx) in info.familyLifeTimeHisList"
             :key="idx"
@@ -32,8 +32,7 @@
           </div>
         </template>
         <template v-else>
-          <div class="mt-sm mb-md">{{ info.name }}</div>
-          <div>
+          <div class="mt-md">
             我的标签：
           </div>
           <div class="tag-wrapper">
@@ -47,12 +46,64 @@
               {{ item.label_name }}
             </div>
           </div>
-          <el-table :data="tableData" class="table" style="width: 100%">
+          <div class="mt-md">
+            <p>教育经历</p>
+            <div
+              v-for="(item, idx) in tableData"
+              :key="idx"
+              class="flex"
+            >
+              <div style="width: 33%">{{item.record_date}}</div>
+              <div style="width: 33%; text-align: center">{{item.academic}}</div>
+              <div style="width: 33%; text-align: right">
+                {{item.school_name}}
+                <img :src="closePng" style="cursor: pointer;margin-left: 5px" @click="handleDelete(item)">
+              </div>
+            </div>
+
+            <div class="add-cloumn" @click="handleShowModal">
+              继续添加
+            </div>
+          </div>
+          <div class="card">
+            <span class="float-left">个人照片：</span>
+            <div class="img-upload" @click="handleChooseImage">
+              <template v-if="!uploadImg">
+                +
+              </template>
+              <img v-else :src="uploadImg" alt="" class="fit" />
+            </div>
+          </div>
+          <div class="operation">
+            <el-button
+              type="primary"
+              @click="handleConfirm"
+              :disabled="confirming"
+              >确认修改</el-button
+            >
+            <el-button  @click="handleCancel"
+              >取消</el-button
+            >
+          </div>
+        </template>
+      </div>
+    </div>
+    <input
+      class="hidden"
+      type="file"
+      accept="image/*"
+      id="file"
+      @input="getImage"
+    />
+    <el-dialog title="编辑教育经历" :visible.sync="academicModal" width="90%" center>
+
+          <el-table :data="addRowData" class="table" style="width: 100%">
             <el-table-column align="left" prop="record_date" label="日期">
               <template slot-scope="scope">
                 <el-date-picker
                   v-model="scope.row.record_date"
                   type="date"
+                  editable
                   placeholder="选择日期"
                   class="input"
                   value-format="yyyy-MM-dd"
@@ -89,53 +140,27 @@
                 ></el-input>
               </template>
             </el-table-column>
-            <el-table-column align="left" prop="action" label="操作" width="60">
+            <el-table-column align="center">
               <template slot-scope="scope">
-                <span class="action" @click="handleDelete(scope.row)"
-                  >删除</span
-                >
+                <el-button class="btn donate" @click="handleDeleteModalColumn(scope)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <div class="add-cloumn" @click="handleAddColumn">
-            继续添加
+
+          <div style="text-align: center; margin-top: 20px">
+            <el-button class="btn" @click="handleCancelAddColumn">取消</el-button>
+            <el-button class="btn donate" @click="handleAddColumn">继续添加</el-button>
+            <el-button class="btn donate" @click="handleSaveModal">保存</el-button>
           </div>
-          <div class="card">
-            <span class="float-left">个人照片：</span>
-            <div class="img-upload" @click="handleChooseImage">
-              <template v-if="!uploadImg">
-                +
-              </template>
-              <img v-else :src="uploadImg" alt="" class="fit" />
-            </div>
-          </div>
-          <div class="operation">
-            <el-button
-              type="primary"
-              @click="handleConfirm"
-              :disabled="confirming"
-              >确认修改</el-button
-            >
-            <el-button  @click="handleCancel"
-              >取消</el-button
-            >
-          </div>
-        </template>
-      </div>
-    </div>
-    <input
-      class="hidden"
-      type="file"
-      accept="image/*"
-      id="file"
-      @input="getImage"
-    />
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import avatar from '@/assets/imgs/avatar.png'
+import closePng from '@/assets/imgs/close_red.png'
 import { Family } from '@/api'
+import man from '@/assets/imgs/avatar_man.png'
+import women from '@/assets/imgs/avatar_women.png'
 
 export default {
   name: 'lifeInfo',
@@ -146,12 +171,14 @@ export default {
   },
   data() {
     return {
-      avatar,
+      closePng,
+      avatar: man,
       status: 'view',
       tags: [],
       selectTag: [],
       idx: 0,
       tableData: [],
+      addRowData: [],
       education: [
         {
           label: '小学',
@@ -183,11 +210,13 @@ export default {
         }
       ],
       uploadImg: this.info.tree_user_img ? this.info.tree_user_img : '',
-      confirming: false
+      confirming: false,
+      academicModal: false
     }
   },
   watch: {
     info() {
+      this.avatar = this.info.sex === '1' ? man : women
       this.handleCancel()
     }
   },
@@ -255,15 +284,40 @@ export default {
         })
       }
     },
-    handleAddColumn() {
-      this.tableData.push({
-        record_date: '',
-        record_name: '',
-        school_name: '',
-        idx: this.idx,
-        certificate_id: ''
-      })
+    handleShowModal () {
+      this.addRowData = [
+        {
+          record_date: '',
+          academic: '',
+          school_name: ''
+        }
+      ]
+      this.academicModal = true
+    },
+    handleAddColumn () {
+      this.addRowData.push({
+          record_date: '',
+          academic: '',
+          school_name: ''
+        })
+    },
+    handleDeleteModalColumn (scope) {
+      this.addRowData.splice(scope.$index, 1)
+    },
+    handleSaveModal() {
+      this.tableData = this.tableData.concat(this.addRowData)
       this.idx++
+      this.academicModal = false
+    },
+    handleCancelAddColumn () {
+      this.academicModal = false
+      this.addRowData = [
+        {
+          record_date: '',
+          academic: '',
+          school_name: ''
+        }
+      ]
     },
     handleConfirm() {
       this.confirming = true
@@ -344,6 +398,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.flex {
+  display: flex;
+}
+.space-between {
+  justify-content: space-between;
+}
 .node-detail {
   .toolbar-wrapper {
     border-bottom: 1px solid #ddd;
@@ -388,9 +448,8 @@ export default {
     }
   }
   .tag-wrapper {
-    margin-left: 60px;
     .tag {
-      width: 75px;
+      width: 65px;
       height: 33px;
       line-height: 33px;
       text-align: center;
@@ -456,5 +515,23 @@ export default {
 .fit {
   width: 100%;
   height: 100%;
+}
+
+.text-center {
+  text-align: center
+}
+.btn {
+	margin: 5px;
+	width: 120px;
+	height: 34px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 500;
+	border: none;
+}
+
+.donate {
+	background: rgba(87, 208, 146, 1);
+	color: #fff;
 }
 </style>

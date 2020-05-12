@@ -49,8 +49,12 @@
                 ]"
               >
                 <img
-                  v-if="ele.sex === '2' && !ele.isWife"
+                  v-if="ele.sex === '2'"
                   src="@/assets/imgs/girl.png"
+                />
+                <img
+                  v-if="ele.sex === '1'"
+                  src="@/assets/imgs/man.png"
                 />
                 <img
                   v-if="ele.claim === '1'"
@@ -101,8 +105,7 @@
 </template>
 
 <script>
-// import json from './example.json'
-import sexImg from '@/assets/imgs/sex.png'
+import * as jsPDF from 'jspdf'
 export default {
   name: 'FamilyTree',
   props: {
@@ -115,7 +118,6 @@ export default {
   },
   data() {
     return {
-      sexImg,
       hoverNode: {}
     }
   },
@@ -307,7 +309,7 @@ export default {
       height:30px;
       margin-right: 30px;
       line-height:30px;
-      background:rgba(52,73,94,1);
+      background:#57d092;
       border-radius: 50%;
       color: #fff;
       font-size: 14px;
@@ -324,6 +326,7 @@ export default {
       box-shadow:-2px 4px 10px 0px rgba(51, 36, 36, 0.08);
       border-radius:4px;
       padding: 3px 2px;
+      white-space: nowrap;
     }
     .leaf {
       height: 40px;
@@ -367,7 +370,7 @@ export default {
         top: 40px;
         left: 0;
         width: 100%;
-        background:rgba(25,43,61,1);
+        background:#57d092;
         box-shadow:-2px 4px 10px 0px rgba(0,0,0,0.08);
         border-radius:4px;
         color: #fff;

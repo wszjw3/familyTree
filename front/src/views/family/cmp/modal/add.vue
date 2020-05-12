@@ -1,12 +1,10 @@
 <template>
-  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="80%" center>
+  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="90%" center>
     <el-table
       class="add-table"
       :data="tableData"
       style="width: 100%; overflow: auto"
     >
-      <el-table-column align="center" prop="relation_desc" min-width="50">
-      </el-table-column>
       <el-table-column align="center" prop="surname" min-width="90">
         <template slot="header">
           <span class="required">* </span>
@@ -70,7 +68,7 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="brith_time" min-width="150">
+      <!-- <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
           <span class="required">* </span>
           是否在世
@@ -79,7 +77,7 @@
           <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
           <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column align="center" prop="brith_time" min-width="150">
         <template slot="header">
           出生日期
@@ -88,6 +86,7 @@
           <el-date-picker
             v-model="scope.row.brith_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
@@ -106,6 +105,7 @@
           <el-date-picker
             v-model="scope.row.death_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
@@ -113,15 +113,6 @@
             @change="val => {handleDeathTimeChanged(val, scope.row)}"
           >
           </el-date-picker>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="address" min-width="200">
-        <template slot="header">
-          <span class="required">* </span>
-          通讯地址
-        </template>
-        <template slot-scope="scope">
-          <el-input v-model="scope.row.address"></el-input>
         </template>
       </el-table-column>
       <el-table-column
@@ -134,6 +125,7 @@
           <el-date-picker
             v-model="scope.row.marry_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
@@ -178,9 +170,9 @@
       <span @click="handleAdd('spouse')" :class="userInfo.isWife || spouseDisabled ? 'disabled' : ''">
         添加配偶
       </span>
-      <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
+      <!-- <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
         添加兄妹
-      </span>
+      </span> -->
       <span @click="handleAdd('child')">
         添加子女
       </span>
@@ -444,7 +436,7 @@ export default {
           obj.relation_desc = '父亲'
           obj.sex = '1'
           obj.marry_time = marry_time
-          
+
           break
         case 'mother':
           obj.relation_desc = '母亲'
@@ -465,7 +457,7 @@ export default {
           this.tableData.forEach(item => {
             if (item.relation === 'child' && item.character_name !== '') {
               obj.character_name = item.character_name
-            } 
+            }
           })
       }
       this.tableData.push(obj)
@@ -503,10 +495,10 @@ export default {
         this.$message.error('性别不能为空')
         return
       }
-      if (!obj.be_alive) {
-        this.$message.error('是否在世不能为空')
-        return
-      }
+      // if (!obj.be_alive) {
+      //   this.$message.error('是否在世不能为空')
+      //   return
+      // }
       if (!obj.address) {
         this.$message.error('地址不能为空')
         return

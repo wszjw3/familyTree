@@ -1,25 +1,12 @@
 <template>
-  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="80%" center>
+  <el-dialog title="成员信息变更：" :visible.sync="isShow" width="90%" center>
     <el-table :data="tableData" style="width: 100%; overflow: auto">
-      <el-table-column align="center" prop="surname" min-width="90">
-        <template>
-          变更人物
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="surname" min-width="90">
-        <template slot="header">
-          <span class="required">* </span>
-          姓
-        </template>
+      <el-table-column align="center" prop="surname" min-width="90" label="姓">
         <template slot-scope="scope">
           <el-input v-model="scope.row.surname" disabled></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="fame" min-width="90">
-        <template slot="header">
-          <span class="required">* </span>
-          名
-        </template>
+      <el-table-column align="center" prop="fame" min-width="90" label="名">
         <template slot-scope="scope">
           <el-input v-model="scope.row.fame"></el-input>
         </template>
@@ -34,11 +21,7 @@
           <el-input v-model="scope.row.character_name"></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="sex" min-width="120">
-        <template slot="header">
-          <span class="required">* </span>
-          性别
-        </template>
+      <el-table-column align="center" prop="sex" min-width="120" label="性别">
         <template slot-scope="scope">
           <el-select v-model="scope.row.sex" placeholder="请选择" disabled>
             <el-option
@@ -51,24 +34,18 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="be_alive" min-width="150">
-        <template slot="header">
-          <span class="required">* </span>
-          是否在世
-        </template>
+      <!-- <el-table-column align="center" prop="be_alive" min-width="150" label="是否在世">
         <template slot-scope="scope">
           <el-radio v-model="scope.row.be_alive" label="1">是</el-radio>
           <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
         </template>
-      </el-table-column>
-      <el-table-column align="center" prop="brith_time" min-width="150">
-        <template slot="header">
-          出生日期
-        </template>
+      </el-table-column> -->
+      <el-table-column align="center" prop="brith_time" min-width="150" label="出生日期">
         <template slot-scope="scope">
           <el-date-picker
             v-model="scope.row.brith_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
@@ -88,6 +65,7 @@
           <el-date-picker
             v-model="scope.row.death_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
@@ -96,15 +74,6 @@
             @change="val => {handleDeathTimeChanged(val, scope.row)}"
           >
           </el-date-picker>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="address" min-width="200">
-        <template slot="header">
-          <span class="required">* </span>
-          地址
-        </template>
-        <template slot-scope="scope">
-          <el-input v-model="scope.row.address"></el-input>
         </template>
       </el-table-column>
       <el-table-column
@@ -117,6 +86,7 @@
           <el-date-picker
             v-model="scope.row.marry_time"
             type="date"
+            editable
             style="width: 140px"
             placeholder="选择日期"
             value-format="yyyy-MM-dd"

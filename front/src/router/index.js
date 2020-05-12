@@ -34,6 +34,16 @@ export default new Router({
     meta: {
       requiresAuth: false
     }
+  },
+  {
+    name: '导出',
+    path: '/export',
+    view: '/export',
+    component: () =>
+      import( /* webpackChunkName: "main" */ '@/views/family/export.vue'),
+    meta: {
+      requiresAuth: false,
+    }
   }]
 })
 //非登录路由列表，
