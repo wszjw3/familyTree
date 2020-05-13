@@ -6,7 +6,7 @@
     </div>
     <div class="content">
       <div class="desc">
-        <img :src="info.tree_user_img ? info.tree_user_img : avatar" />
+        <img :src="info.tree_user_img ? info.tree_user_img : avatar" style="cursor:pointer" @click="handleChooseImage" />
         <div>
           <span>{{ info.name }}</span>
 
@@ -65,7 +65,7 @@
               继续添加
             </div>
           </div>
-          <div class="card">
+          <!-- <div class="card">
             <span class="float-left">个人照片：</span>
             <div class="img-upload" @click="handleChooseImage">
               <template v-if="!uploadImg">
@@ -73,7 +73,7 @@
               </template>
               <img v-else :src="uploadImg" alt="" class="fit" />
             </div>
-          </div>
+          </div> -->
           <div class="operation">
             <el-button
               type="primary"
@@ -220,6 +220,9 @@ export default {
       this.handleCancel()
     }
   },
+  computed () {
+    
+  },
   created() {
     this.getLabel()
   },
@@ -331,7 +334,7 @@ export default {
         })
       })
       params.label_list = label_list
-      params.tree_user_img = this.uploadImg
+      // params.tree_user_img = this.uploadImg
       params.record_list = this.tableData
       params.user_id = this.info.user_id
       // params.user_id = '1019'
@@ -391,7 +394,18 @@ export default {
       const self = this
       reads.onload = function() {
         self.uploadImg = this.result
+        Family.addUserImg({
+          user_id: self.info.user_id,
+          tree_user_img: self.uploadImg
+        }).then(res => {
+          if (res.code === '000000') {
+            self.info.tree_user_img = self.uploadImg
+            self.uploadImg = ''
+            self.$message('上传成功')
+          }
+        })
       }
+      
     }
   }
 }

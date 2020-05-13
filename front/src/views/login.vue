@@ -27,16 +27,6 @@
           <el-form-item prop="password">
             <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin"  show-password/>
           </el-form-item>
-          <div class="loginformlable loginformlablemargin">验证码</div>
-          <el-form-item prop="graphLoginCode">
-            <el-input v-model="loginForm.graphLoginCode" placeholder="请输入图形验证码">
-              <template slot="append">
-                <el-tooltip class="item" effect="dark" content="点击刷新" placement="bottom">
-                  <img style="width:4rem;" @click="getGraph()" :src='loginForm.graphUrl' />
-                </el-tooltip>
-              </template>
-            </el-input>
-          </el-form-item>
           <div class="errorMsgBox">
             {{resultMessage}}
           </div>
@@ -98,11 +88,6 @@ export default {
           required: true,
           trigger: 'blur',
           validator: validatePassword
-        }],
-        graphLoginCode: [{
-          required: true,
-          trigger: 'blur',
-          message: '请输入图形验证码'
         }]
       },
       passwordType: 'password',
@@ -114,9 +99,6 @@ export default {
   },
   mounted() {
     this.$np.done()
-  },
-  created() {
-    this.getGraph()
   },
   methods: {
     toindex() {
@@ -131,12 +113,6 @@ export default {
         this.passwordType = 'password'
       }
     },
-    //获取图片验证码
-    getGraph() {
-
-      this.$set(this.loginForm,'graphUrl',Family.showgraph())
-
-    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -150,8 +126,7 @@ export default {
           const params = {
             nickname: this.loginForm.nickname,
             // passwd: this.loginForm.password,
-            passwd: md5(this.loginForm.password),
-            check_code: this.loginForm.graphLoginCode
+            passwd: md5(this.loginForm.password)
           }
 
           Family.login(params).then((res) => {

@@ -21,12 +21,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="最近登陆时间：">
+        <!-- <el-form-item label="最近登陆时间：">
           <el-select v-model="searchForm.score" filterable placeholder="请选择" clearable>
             <el-option v-for="item in scoreOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary"  @click="searchFormSubmit()">搜索</el-button>
         </el-form-item>
@@ -194,6 +194,7 @@ export default {
         family_name: '',
         manage_phone: ''
       }
+      this.resetDialogVisible = false
     },
     querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants

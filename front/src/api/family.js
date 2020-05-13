@@ -149,5 +149,8 @@ export default {
   },
   surnameFind(params) {
     return http.post(URL + '/currency/surnameFind', params)
+  },
+  addUserImg(params) {
+    return http.post(URL + '/tree/addUserImg', params)
   }
 }
