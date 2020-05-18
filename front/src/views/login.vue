@@ -97,9 +97,6 @@ export default {
       resultMessage: ''
     }
   },
-  mounted() {
-    this.$np.done()
-  },
   methods: {
     toindex() {
       this.$router.push({

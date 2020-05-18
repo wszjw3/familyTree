@@ -17,6 +17,9 @@
           <p>出生地址：{{ info.address }}</p>
         </div>
       </div>
+      <div class="mt-md">
+        {{info.labelName}}
+      </div>
       <div class="clear-both">
         <template v-if="status === 'view'">
           <div

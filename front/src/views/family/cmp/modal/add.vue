@@ -454,6 +454,7 @@ export default {
         case 'child':
           obj.relation_desc = '子女'
           obj.character_name = this.userInfo.nextCharacterName
+          obj.mother_id = this.motherOptions[0].value
           this.tableData.forEach(item => {
             if (item.relation === 'child' && item.character_name !== '') {
               obj.character_name = item.character_name
@@ -474,7 +475,7 @@ export default {
     validate() {
       let flag = true
       this.tableData.forEach(item => {
-        if (!item.surname || !item.fame || !item.sex || !item.be_alive || !item.address) {
+        if (!item.surname || !item.fame || !item.sex) {
           flag = false
         }
         flag === false && this.handleTip(item)
