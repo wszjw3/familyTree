@@ -34,12 +34,12 @@
           <el-table-column label="" prop="relation_desc" width="60"></el-table-column>
           <el-table-column label="姓" width="100">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.fame"></el-input>
+              <el-input v-model="scope.row.surname"></el-input>
             </template>  
           </el-table-column>
           <el-table-column label="名" width="100">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.surname"></el-input>
+              <el-input v-model="scope.row.fame"></el-input>
             </template> 
           </el-table-column>
           <el-table-column label="字辈" width="100">
@@ -71,7 +71,7 @@
             <template slot-scope="scope">
               <el-date-picker
                 style="width: 90%"
-                v-model="scope.brith_time"
+                v-model="scope.row.brith_time"
                 type="date"
                 editable
                 placeholder="选择日期"
@@ -84,7 +84,7 @@
             <template slot-scope="scope">
               <el-date-picker
                 style="width: 90%"
-                v-model="scope.death_time"
+                v-model="scope.row.death_time"
                 type="date"
                 editable
                 placeholder="选择日期"
@@ -97,7 +97,7 @@
             <template slot-scope="scope">
               <el-date-picker
                 style="width: 90%"
-                v-model="scope.death_time"
+                v-model="scope.row.marry_time"
                 type="date"
                 editable
                 placeholder="选择日期"
@@ -105,7 +105,7 @@
                 format="yyyy-MM-dd"
                 @change="
                   (value) => {
-                    handleChangeMarryTime(value, item)
+                    handleChangeMarryTime(value, scope.row)
                   }
                 "
               />
@@ -232,10 +232,10 @@ export default {
   methods: {
     handleChangeMarryTime(value, row) {
       if (row.relation === 'father') {
-        this.tableData[3].marry_time = value
-      }
-      if (row.relation === 'grandfather') {
         this.tableData[1].marry_time = value
+      }
+      if (row.relation === 'mother') {
+        this.tableData[0].marry_time = value
       }
     },
     cancel() {

@@ -1,10 +1,11 @@
 <template>
-  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="90%" center>
+  <el-dialog title="添加家谱树成员" :visible.sync="isShow" width="95%" center>
     <el-table
       class="add-table"
       :data="tableData"
       style="width: 100%; overflow: auto"
     >
+      <el-table-column prop="relation_desc" width="60"></el-table-column>
       <el-table-column align="center" prop="surname" min-width="90">
         <template slot="header">
           <span class="required">* </span>
@@ -173,7 +174,7 @@
       <!-- <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
         添加兄妹
       </span> -->
-      <span @click="handleAdd('child')">
+      <span @click="handleAdd('child')" :class="childDisabled ? 'disabled' : ''">
         添加子女
       </span>
     </div>
@@ -252,6 +253,22 @@ export default {
         }
       })
       return flag
+    },
+    childDisabled () {
+      let res = false
+      let spouseNum = 0
+      this.tableData.forEach(item => {
+        if (item.relation === 'spouse') {
+          spouseNum++
+        }
+      })
+      if (this.motherOptions.length === 0 && spouseNum === 0) {
+        res = true
+      }
+      if (this.motherOptions.length === 0 && spouseNum > 1) {
+        res = true
+      }
+      return res
     }
   },
   watch: {
@@ -380,7 +397,10 @@ export default {
       if (type !== 'child' && this.userInfo.isWife) {
         return
       }
-      if (this.spouseDisabled) {
+      if (type === 'spouse' && this.spouseDisabled) {
+        return
+      }
+      if (type === 'child' && this.childDisabled) {
         return
       }
       const relation = [
@@ -436,7 +456,7 @@ export default {
         case 'child':
           obj.relation_desc = '子女'
           obj.character_name = this.userInfo.nextCharacterName
-          obj.mother_id = this.motherOptions[0].value
+          obj.mother_id = this.motherOptions.length > 0 ? this.motherOptions[0].value : ''
           this.tableData.forEach(item => {
             if (item.relation === 'child' && item.character_name !== '') {
               obj.character_name = item.character_name
@@ -456,12 +476,24 @@ export default {
     },
     validate() {
       let flag = true
+      let spouseNum = 0
       this.tableData.forEach(item => {
         if (!item.surname || !item.fame || !item.sex) {
           flag = false
         }
+        if (item.relation === 'spouse') {
+          spouseNum++
+        }
         flag === false && this.handleTip(item)
       })
+
+      if (spouseNum > 1) {
+        this.tableData.forEach(item => {
+          if (item.relation === 'child' && item.mother_id === '') {
+            flag === false && this.handleTip(item)
+          }
+        })
+      }
 
       return flag
     },
@@ -478,12 +510,8 @@ export default {
         this.$message.error('性别不能为空')
         return
       }
-      // if (!obj.be_alive) {
-      //   this.$message.error('是否在世不能为空')
-      //   return
-      // }
-      if (!obj.address) {
-        this.$message.error('地址不能为空')
+      if (!obj.mother_id) {
+        this.$message.error('请选择母亲')
         return
       }
     },
@@ -538,7 +566,7 @@ export default {
 .disabled {
   background-color: #ddd;
   color: #fff;
-  cursor: inherit;
+  cursor: not-allowed!important;
 }
 .operation {
   width: 80%;

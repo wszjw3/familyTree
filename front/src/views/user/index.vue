@@ -37,7 +37,7 @@
               <el-radio v-model="basicForm.sex" label="1">男</el-radio>
               <el-radio v-model="basicForm.sex" label="2">女</el-radio>
             </el-form-item>
-            <el-form-item label="所在地区：" prop="area">
+            <el-form-item label="出生地区：" prop="area">
               <city-picker v-model="basicForm.area" placeholder="请选择省市区" />
             </el-form-item>
             <el-form-item label="详细地址：" prop="address">
