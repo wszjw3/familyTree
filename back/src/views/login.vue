@@ -19,7 +19,7 @@
             <router-link class="forgetPwd" :to="{ path: '/resetPassWord' }">忘记密码？</router-link>
           </div>
           <el-form-item prop="password">
-            <el-input :type="passwordType" v-model="loginForm.password" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin"  show-password/>
+            <el-input :type="passwordType" v-model="loginForm.login_passwd" placeholder="请输入密码" name="password" auto-complete="on" @keyup.enter.native="handleLogin"  show-password/>
           </el-form-item>
           <div class="errorMsgBox">
             {{resultMessage}}
@@ -27,7 +27,6 @@
           <el-button :loading="loading" type="primary"  @click.native.prevent="handleLogin" style="font-size:20px;">登&nbsp;&nbsp;录</el-button>
           <el-form-item>
             <el-checkbox v-model="loginForm.checked" style="color:#57D092;">记住用户名</el-checkbox>
-            <router-link class="forgetPwd" :to="{ path: '/register' }"><span style="color:#000;">没有账号？</span><span style="color:#57D092;">立即注册</span></router-link>
           </el-form-item>
           
         </el-form>

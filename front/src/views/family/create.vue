@@ -30,102 +30,88 @@
         </div>
       </div>
       <div class="content">
-        <div v-for="(item, idx) in tableData" :key="idx" class="column">
-          <el-row>
-            <el-col :span="10">
-              <p class="relation-desc">
-                {{ item.relation_desc }}
-              </p>
-            </el-col>
-            <el-col :span="14">
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <p class="label">姓</p>
-                  <el-input class="full-width" v-model="item.surname"></el-input>
-                </el-col>
-                <el-col :span="12">
-                  <p class="label">名</p>
-                  <el-input class="full-width" v-model="item.fame"></el-input>
-                </el-col>
-                <el-col :span="12">
-                  <p class="label">字辈</p>
-                  <el-input
-                    class="full-width"
-                    v-model="item.character_name"
-                    :disabled="item.relation === 'mother' || item.relation === 'grandmother'"
-                  />
-                </el-col>
-                <el-col :span="12">
-                  <p class="label">性别</p>
-                  <el-select
-                    class="full-width"
-                    v-model="item.sex"
-                    placeholder="请选择"
-                    :disabled="item.relation_desc !== '孩子'"
-                  >
-                    <el-option
-                      v-for="sex in sexOptions"
-                      :key="sex.value"
-                      :label="sex.label"
-                      :value="sex.value"
-                    >
-                    </el-option>
-                  </el-select>
-                </el-col>
-                <!-- <el-col :span="24">
-                  <p class="label">是否在世</p>
-                  <el-radio v-model="item.be_alive" label="1">是</el-radio>
-                  <el-radio v-model="item.be_alive" label="2">否</el-radio>
-                </el-col> -->
-                <el-col :span="12">
-                  <p class="label">出生日期</p>
-                  <el-date-picker
-                    class="full-width"
-                    v-model="item.brith_time"
-                    type="date"
-                    editable
-                    placeholder="选择日期"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy-MM-dd"
-                    :picker-options="pickerOptions[item.relation].brith_time"
-                  />
-                </el-col>
-                <el-col :span="12">
-                  <p class="label">死亡日期</p>
-                  <el-date-picker
-                    class="full-width"
-                    v-model="item.death_time"
-                    type="date"
-                    editable
-                    placeholder="选择日期"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy-MM-dd"
-                    :picker-options="pickerOptions[item.relation].death_time"
-                  >
-                  </el-date-picker>
-                </el-col>
-                <el-col :span="12">
-                  <p class="label">结婚时间</p>
-                  <el-date-picker
-                    class="full-width"
-                    v-model="item.marry_time"
-                    type="date"
-                    editable
-                    placeholder="选择日期"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy-MM-dd"
-                    @change="
-                      (value) => {
-                        handleChangeMarryTime(value, item)
-                      }
-                    "
-                  >
-                  </el-date-picker>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
-        </div>
+        <el-table :data="tableData">
+          <el-table-column label="" prop="relation_desc" width="60"></el-table-column>
+          <el-table-column label="姓" width="100">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.fame"></el-input>
+            </template>  
+          </el-table-column>
+          <el-table-column label="名" width="100">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.surname"></el-input>
+            </template> 
+          </el-table-column>
+          <el-table-column label="字辈" width="100">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.character_name"
+                :disabled="scope.row.relation === 'mother' || scope.row.relation === 'grandmother'"
+              />
+            </template> 
+          </el-table-column>
+          <el-table-column label="性别" width="120">
+            <template slot-scope="scope">
+              <el-select
+                v-model="scope.row.sex"
+                placeholder="请选择"
+                :disabled="scope.row.relation_desc !== '孩子'"
+              >
+                <el-option
+                  v-for="sex in sexOptions"
+                  :key="sex.value"
+                  :label="sex.label"
+                  :value="sex.value"
+                >
+                </el-option>
+              </el-select>
+            </template> 
+          </el-table-column>
+          <el-table-column label="出生日期">
+            <template slot-scope="scope">
+              <el-date-picker
+                style="width: 90%"
+                v-model="scope.brith_time"
+                type="date"
+                editable
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+              />
+            </template> 
+          </el-table-column>
+          <el-table-column label="死亡日期">
+            <template slot-scope="scope">
+              <el-date-picker
+                style="width: 90%"
+                v-model="scope.death_time"
+                type="date"
+                editable
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+              />
+            </template> 
+          </el-table-column>
+          <el-table-column label="结婚时间">
+            <template slot-scope="scope">
+              <el-date-picker
+                style="width: 90%"
+                v-model="scope.death_time"
+                type="date"
+                editable
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                @change="
+                  (value) => {
+                    handleChangeMarryTime(value, item)
+                  }
+                "
+              />
+            </template> 
+          </el-table-column>
+        </el-table>
         <div class="footer">
           <el-button class="cancel" @click="cancel">取消</el-button>
           <el-button class="confirm" type="primary" @click="handleSave"
@@ -238,90 +224,6 @@ export default {
           value: '2',
         },
       ]
-    },
-    pickerOptions() {
-      return {
-        grandfather: {
-          brith_time: {
-            disabledDate: (time) => {
-              if (this.tableData[0].death_time != '') {
-                return time.getTime() > this.tableData[0].death_time
-              }
-            },
-          },
-          death_time: {
-            disabledDate: (time) => {
-              if (this.tableData[0].brith_time != '') {
-                return time.getTime() < this.tableData[0].brith_time
-              }
-            },
-          },
-        },
-        grandmother: {
-          brith_time: {
-            disabledDate: (time) => {
-              if (this.tableData[1].death_time != '') {
-                return time.getTime() > this.tableData[1].death_time
-              }
-            },
-          },
-          death_time: {
-            disabledDate: (time) => {
-              if (this.tableData[1].brith_time != '') {
-                return time.getTime() < this.tableData[1].brith_time
-              }
-            },
-          },
-        },
-        father: {
-          brith_time: {
-            disabledDate: (time) => {
-              if (this.tableData[2].death_time != '') {
-                return time.getTime() > this.tableData[2].death_time
-              }
-            },
-          },
-          death_time: {
-            disabledDate: (time) => {
-              if (this.tableData[2].brith_time != '') {
-                return time.getTime() < this.tableData[2].brith_time
-              }
-            },
-          },
-        },
-        mother: {
-          brith_time: {
-            disabledDate: (time) => {
-              if (this.tableData[3].death_time != '') {
-                return time.getTime() > this.tableData[3].death_time
-              }
-            },
-          },
-          death_time: {
-            disabledDate: (time) => {
-              if (this.tableData[3].brith_time != '') {
-                return time.getTime() < this.tableData[3].brith_time
-              }
-            },
-          },
-        },
-        boy: {
-          brith_time: {
-            disabledDate: (time) => {
-              if (this.tableData[4].death_time != '') {
-                return time.getTime() > this.tableData[4].death_time
-              }
-            },
-          },
-          death_time: {
-            disabledDate: (time) => {
-              if (this.tableData[4].brith_time != '') {
-                return time.getTime() < this.tableData[4].brith_time
-              }
-            },
-          },
-        },
-      }
     },
     userInfo() {
       return this.$store.getters.getToken

@@ -38,17 +38,22 @@
           <div class="mt-md">
             我的标签：
           </div>
-          <div class="tag-wrapper">
-            <div
+          <el-row :gutter="10">
+            <el-col
+              :span="8"
               v-for="(item, idx) in tags"
               :key="idx"
-              class="tag"
-              :class="selectTag.includes(item.label_id) ? 'active' : ''"
-              @click="handleChooseTag(item)"
             >
-              {{ item.label_name }}
-            </div>
-          </div>
+              <div
+                class="tag"
+                style="width: 100%;margin-top: 10px"
+                :class="selectTag.includes(item.label_id) ? 'active' : ''"
+                @click="handleChooseTag(item)"
+              >
+                {{ item.label_name }}
+              </div>
+            </el-col>  
+          </el-row>
           <div class="mt-md">
             <p>教育经历</p>
             <div
@@ -219,7 +224,11 @@ export default {
   },
   watch: {
     info() {
-      this.avatar = this.info.sex === '1' ? man : women
+      if (this.info.sex === '1') {
+        this.avatar = man
+      } else if (this.info.sex === '2') {
+        this.avatar = women
+      }
       this.handleCancel()
     }
   },
@@ -464,21 +473,17 @@ export default {
       margin-bottom: 20px;
     }
   }
-  .tag-wrapper {
-    .tag {
-      width: 65px;
-      height: 33px;
-      line-height: 33px;
-      text-align: center;
-      background-color: rgba(242, 242, 242, 1);
-      border: 1px solid transparent;
-      display: inline-block;
-      margin: 10px;
-      cursor: pointer;
-    }
-    .active {
-      border: 1px solid rgba(24, 144, 255, 1);
-    }
+  .tag {
+    height: 33px;
+    line-height: 33px;
+    text-align: center;
+    background-color: rgba(242, 242, 242, 1);
+    border: 1px solid transparent;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .active {
+    border: 1px solid rgba(24, 144, 255, 1);
   }
 
   .table {

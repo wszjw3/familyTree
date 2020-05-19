@@ -226,24 +226,6 @@ export default {
         }
       ]
     },
-    pickerOptions() {
-      return {
-        brith_time: {
-          disabledDate: time => {
-            if (this.tableData[0].death_time != '') {
-              return time.getTime() > this.tableData[0].death_time
-            }
-          }
-        },
-        death_time: {
-          disabledDate: time => {
-            if (this.tableData[0].brith_time != '') {
-              return time.getTime() < this.tableData[0].brith_time
-            }
-          }
-        }
-      }
-    },
     hasFather() {
       let flag = false
       this.tableData.forEach(item => {
