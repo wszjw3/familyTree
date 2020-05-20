@@ -2,8 +2,8 @@
   <el-dialog title="捐献记录" :visible.sync="isShow" width="60%">
     <p style="margin-top: -20px">{{computedTitle}}</p>
     <div>
-      <span :class="['tab', activeTab === '1' ? 'tab-active' : '']" @click="handleTabChange('1')">未处理</span>
-      <span :class="['tab', activeTab === '2' ? 'tab-active' : '']" @click="handleTabChange('2')">已处理</span>
+      <span :class="['tab', activeTab === '1' ? 'tab-active' : '']" @click="handleTabChange('1')">捐献流水</span>
+      <span :class="['tab', activeTab === '2' ? 'tab-active' : '']" @click="handleTabChange('2')">捐献排名</span>
     </div>
     <div v-show="activeTab === '1'" style="margin-bottom: 50px">
       <el-table :data="histroy.data" :header-cell-style="{backgroundColor: 'rgba(248,250,252,1)', color: 'rgba(52,73,94,1)'}">

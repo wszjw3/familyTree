@@ -65,7 +65,7 @@
               <div style="width: 33%; text-align: center">{{item.academic}}</div>
               <div style="width: 33%; text-align: right">
                 {{item.school_name}}
-                <img :src="closePng" style="cursor: pointer;margin-left: 5px" @click="handleDelete(item)">
+                <img :src="closePng" style="cursor: pointer;margin-left: 5px" @click="handleDelete(item, idx)">
               </div>
             </div>
 
@@ -279,7 +279,7 @@ export default {
             return v !== value.label_id
           }))
     },
-    handleDelete(row) {
+    handleDelete(row, idx) {
       if (row.curriculum_id) {
         Family.deleteEducation({
           user_id: this.info.user_id,
@@ -294,9 +294,7 @@ export default {
           }
         })
       } else {
-        this.tableData = this.tableData.filter(v => {
-          return v.idx !== row.idx
-        })
+        this.tableData.splice(idx, 1)
       }
     },
     handleShowModal () {
@@ -320,9 +318,18 @@ export default {
       this.addRowData.splice(scope.$index, 1)
     },
     handleSaveModal() {
-      this.tableData = this.tableData.concat(this.addRowData)
-      this.idx++
-      this.academicModal = false
+      let flag = true
+      this.addRowData.forEach(v => {
+        flag = !(Object.values(v).indexOf('') > -1)
+      })
+      if (flag) {
+        this.tableData = this.tableData.concat(this.addRowData)
+        this.idx++
+        this.academicModal = false
+      } else {
+        this.$message.error('请填写完整')
+      }
+      
     },
     handleCancelAddColumn () {
       this.academicModal = false

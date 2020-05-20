@@ -4,7 +4,7 @@
 			<el-col :span="18" id="export">
 				<div class="elcol">
 					<div class="relative">
-						<p class="title">{{ title }}</p>
+						<p class="title" @click="isShowNodeDetail = false">{{ title }}</p>
 						<div class="absolute-right">
 							<span class="desc">
 								<img src="@/assets/imgs/alive.png" />

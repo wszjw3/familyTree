@@ -10,7 +10,7 @@
     </div>
     <div class="registerForm-container">
       <div class="registerForm-top">注册</div>
-      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on" label-width="100px" label-position="top" >
+      <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" label-width="100px" label-position="top" >
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
@@ -22,14 +22,14 @@
         <el-form-item>
           <el-col :span="11">
             <el-form-item prop="surname">
-              <el-input v-model="registerForm.surname" placeholder="姓" name="surname" type="text" auto-complete="on" />
+              <el-input v-model="registerForm.surname" placeholder="姓" name="surname" type="text" />
             </el-form-item>
           </el-col>
           <el-col class="line" :span="2">&nbsp;&nbsp; </el-col>
           
           <el-col :span="11">
             <el-form-item prop="name">
-              <el-input v-model="registerForm.name" placeholder="名" name="name" type="text" auto-complete="on" />
+              <el-input autocomplete="new-password" v-model="registerForm.name" placeholder="名" name="name" type="text" />
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -43,22 +43,22 @@
         
         <div class="loginformlable">密码</div>
         <el-form-item prop="password">
-          <el-input :type="passwordType" v-model="registerForm.password" placeholder="请输入密码" name="password" auto-complete="on" />
+          <el-input autocomplete="new-password" :type="passwordType" v-model="registerForm.password" placeholder="请输入密码" name="password" />
         </el-form-item>
 
         <div class="loginformlable">确认密码</div>
         <el-form-item prop="confirm_password">
-          <el-input :type="passwordType" v-model="registerForm.confirm_password" placeholder="请输入密码" name="password" auto-complete="on" />
+          <el-input autocomplete="new-password" :type="passwordType" v-model="registerForm.confirm_password" placeholder="请输入密码" name="password" />
         </el-form-item>
 
         <div class="loginformlable">手机号</div>
         <el-form-item prop="phone">
-          <el-input  v-model="registerForm.phone" placeholder="请输入手机号" name="phone" auto-complete="on" />
+          <el-input  v-model="registerForm.phone" placeholder="请输入手机号" name="phone" />
         </el-form-item>
 
         <div class="loginformlable">验证码</div>
         <el-form-item prop="verification">
-          <el-input v-model="registerForm.verification" auto-complete="on">
+          <el-input v-model="registerForm.verification">
             <el-button size="mini" @click="sendCode()" slot="append" :disabled="registerForm.disabled">{{registerForm.disabled?`${registerForm.time}s重新发送`:'发送验证码'}}</el-button>
           </el-input>
         </el-form-item>

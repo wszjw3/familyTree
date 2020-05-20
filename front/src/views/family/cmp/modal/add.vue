@@ -17,7 +17,6 @@
       </el-table-column>
       <el-table-column align="center" prop="fame" min-width="90">
         <template slot="header">
-          <span class="required">* </span>
           名
         </template>
         <template slot-scope="scope">
@@ -98,26 +97,6 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="death_time"
-        label="死亡日期"
-        min-width="150"
-      >
-        <template slot-scope="scope">
-          <el-date-picker
-            v-model="scope.row.death_time"
-            type="date"
-            editable
-            style="width: 140px"
-            placeholder="选择日期"
-            value-format="yyyy-MM-dd"
-            format="yyyy-MM-dd"
-            @change="val => {handleDeathTimeChanged(val, scope.row)}"
-          >
-          </el-date-picker>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
         prop="marry_time"
         label="结婚时间"
         min-width="150"
@@ -136,7 +115,27 @@
           </el-date-picker>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="marry_time" min-width="150">
+      <el-table-column
+        align="center"
+        prop="death_time"
+        label="死亡日期"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.death_time"
+            type="date"
+            editable
+            style="width: 140px"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            @change="val => {handleDeathTimeChanged(val, scope.row)}"
+          >
+          </el-date-picker>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="motherOptions.length > 0" align="center" prop="marry_time" min-width="150">
         <template slot-scope="scope" v-if="scope.row.relation === 'child'">
           <el-select v-model="scope.row.mother_id" placeholder="请选择母亲">
             <el-option
@@ -502,18 +501,18 @@ export default {
         this.$message.error('姓不能为空')
         return
       }
-      if (!obj.fame) {
-        this.$message.error('名不能为空')
-        return
-      }
+      // if (!obj.fame) {
+      //   this.$message.error('名不能为空')
+      //   return
+      // }
       if (!obj.sex) {
         this.$message.error('性别不能为空')
         return
       }
-      if (!obj.mother_id) {
-        this.$message.error('请选择母亲')
-        return
-      }
+      // if (!obj.mother_id) {
+      //   this.$message.error('请选择母亲')
+      //   return
+      // }
     },
     handleDeleteRow (idx) {
       this.tableData = this.tableData.filter(v => {

@@ -6,7 +6,6 @@
       <div class="container-top-left">
         <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
       </div>
-      <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
     <div class="container-box" style="margin-bottom: 90px;">
       <div class="login-left"><img src="@/assets/imgs/name.png" alt=""></div>
@@ -134,7 +133,6 @@ export default {
               this.$router.push('/')
             } else {
               this.resultMessage = res.message
-              this.getGraph()
             }
           })
         } else {

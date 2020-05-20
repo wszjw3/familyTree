@@ -50,28 +50,6 @@
             placeholder="选择日期"
             value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
-            :picker-options="pickerOptions.brith_time"
-          >
-          </el-date-picker>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        prop="death_time"
-        label="死亡日期"
-        min-width="150"
-      >
-        <template slot-scope="scope">
-          <el-date-picker
-            v-model="scope.row.death_time"
-            type="date"
-            editable
-            style="width: 140px"
-            placeholder="选择日期"
-            value-format="yyyy-MM-dd"
-            format="yyyy-MM-dd"
-            :picker-options="pickerOptions.death_time"
-            @change="val => {handleDeathTimeChanged(val, scope.row)}"
           >
           </el-date-picker>
         </template>
@@ -95,10 +73,30 @@
           </el-date-picker>
         </template>
       </el-table-column>
+      <el-table-column
+        align="center"
+        prop="death_time"
+        label="死亡日期"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-date-picker
+            v-model="scope.row.death_time"
+            type="date"
+            editable
+            style="width: 140px"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            @change="val => {handleDeathTimeChanged(val, scope.row)}"
+          >
+          </el-date-picker>
+        </template>
+      </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button class="ma-md" @click="cancel">取消</el-button>
-      <el-button class="ma-md" type="primary" @click="confirm">申请修改</el-button>
+      <el-button class="ma-md" type="primary" @click="confirm">{{isManager ? '确认' : '申请修改'}}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -140,23 +138,8 @@ export default {
         }
       ]
     },
-    pickerOptions() {
-      return {
-        brith_time: {
-          disabledDate: time => {
-            if (this.tableData[0].death_time != '') {
-              return time.getTime() > this.tableData[0].death_time
-            }
-          }
-        },
-        death_time: {
-          disabledDate: time => {
-            if (this.tableData[0].brith_time != '') {
-              return time.getTime() < this.tableData[0].brith_time
-            }
-          }
-        }
-      }
+    isManager () {
+      return this.$store.getters.getToken.user_type === '3'
     }
   },
   watch: {

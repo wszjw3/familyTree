@@ -11,7 +11,10 @@
         </div>
 
         <div class="location">
-          <p>所在地</p>
+          <p>
+            <span style="color: red">*</span>
+            家谱树所在区域：
+          </p>
 
           <city-picker
             class="input"
@@ -20,7 +23,10 @@
           />
         </div>
         <div class="tree-address">
-          <p>家谱树地址</p>
+          <p>
+            <span style="color: red">*</span>
+            家谱名称：
+          </p>
 
           <el-input
             class="input"
@@ -32,7 +38,11 @@
       <div class="content">
         <el-table :data="tableData">
           <el-table-column label="" prop="relation_desc" width="60"></el-table-column>
-          <el-table-column label="姓" width="100">
+          <el-table-column width="100">
+            <template slot="header">
+              <span style="color: red">*</span>
+              姓
+            </template>
             <template slot-scope="scope">
               <el-input v-model="scope.row.surname"></el-input>
             </template>  
@@ -50,7 +60,11 @@
               />
             </template> 
           </el-table-column>
-          <el-table-column label="性别" width="120">
+          <el-table-column width="120">
+            <template slot="header">
+              <span style="color: red">*</span>
+              性别
+            </template>
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.sex"
@@ -80,19 +94,6 @@
               />
             </template> 
           </el-table-column>
-          <el-table-column label="死亡日期">
-            <template slot-scope="scope">
-              <el-date-picker
-                style="width: 90%"
-                v-model="scope.row.death_time"
-                type="date"
-                editable
-                placeholder="选择日期"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-              />
-            </template> 
-          </el-table-column>
           <el-table-column label="结婚时间">
             <template slot-scope="scope">
               <el-date-picker
@@ -108,6 +109,19 @@
                     handleChangeMarryTime(value, scope.row)
                   }
                 "
+              />
+            </template> 
+          </el-table-column>
+          <el-table-column label="死亡日期">
+            <template slot-scope="scope">
+              <el-date-picker
+                style="width: 90%"
+                v-model="scope.row.death_time"
+                type="date"
+                editable
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
               />
             </template> 
           </el-table-column>

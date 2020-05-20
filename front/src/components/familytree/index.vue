@@ -305,6 +305,7 @@ export default {
     align-items: center;
 
     .level {
+      min-width: 30px;
       width:30px;
       height:30px;
       margin-right: 30px;

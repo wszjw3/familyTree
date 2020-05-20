@@ -2,7 +2,7 @@
 <div>
   <div class="page-header clearfix">
     <div class="page-logo" @click="$router.push('/')">
-      <img src="@/assets/imgs/family-logo.png" class="logo">家谱管理系统
+      <img src="@/assets/imgs/ancestry.png" class="logo">家谱管理系统
     </div>
     <div class="page-nav">
 
