@@ -88,7 +88,6 @@
                     </div>
                   </div>
                   <div
-                    v-if="userType === '0' || userType === '1'"
                     class="claim"
                     @click="handleClaim(ele)"
                   >

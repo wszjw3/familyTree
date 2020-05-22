@@ -6,7 +6,6 @@
       <div class="container-top-left">
         <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
       </div>
-      <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
     <div class="loginForm-container">
       <div class="loginForm-top">重置密码</div>
@@ -16,11 +15,11 @@
                 </div> -->
         <div class="loginformlable">手机号</div>
         <el-form-item prop="phone" >
-          <el-input type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
+          <el-input autocomplete="new-password" type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
         </el-form-item>
         <div class="loginformlable">验证码</div>
         <el-form-item prop="verification" >
-          <el-input type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on">
+          <el-input autocomplete="new-password" type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on">
             <el-button size="mini" @click="sendCode()" slot="append" :disabled="loginForm.disabled">{{loginForm.disabled?`${loginForm.time}s重新发送`:'发送验证码'}}</el-button>
           </el-input>
         </el-form-item>
@@ -29,12 +28,12 @@
 
         <div class="loginformlable">新密码</div>
         <el-form-item prop="password">
-          <el-input :type="passwordType" v-model="loginForm.password" placeholder="
+          <el-input autocomplete="new-password" :type="passwordType" v-model="loginForm.password" placeholder="
   请设置不少于6位的新密码" name="password" auto-complete="on" />
         </el-form-item>
         <div class="loginformlable">确认密码</div>
         <el-form-item prop="checkPass" >
-          <el-input :type="passwordType" v-model="loginForm.checkPass" placeholder="
+          <el-input autocomplete="new-password" :type="passwordType" v-model="loginForm.checkPass" placeholder="
   请再次输入新密码" name="password" auto-complete="on" />
         </el-form-item>
        

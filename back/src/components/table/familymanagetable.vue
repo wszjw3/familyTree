@@ -85,6 +85,9 @@
             clearable
           ></el-autocomplete>
       </el-form-item>
+      <el-form-item label="管理员手机号：" prop="manage_name">
+        <el-input v-model="resetTag.manage_phone" readonly></el-input>
+      </el-form-item>
       <el-form-item label="所管家谱树名称：" prop="family_name">
         <el-input type="text" v-model="resetTag.family_name" placeholder="标签描述" disabled></el-input>
       </el-form-item>

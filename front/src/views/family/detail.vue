@@ -42,6 +42,7 @@
 							@onEdit="handleEditNode"
 							@onAdd="handleAddNode"
 							@onClaim="handleClaim"
+							@success="handleAddSuccess"
 						></family-tree>
 					</div>
 				</div>
@@ -472,6 +473,9 @@ export default {
 			this.queryUserTree()
 			this.$refs.tree.interval()
 		},
+		handleAddSuccess () {
+			this.$refs.tree.interval()
+		}
 	},
 }
 </script>

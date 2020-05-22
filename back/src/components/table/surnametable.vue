@@ -22,7 +22,7 @@
     <el-form :model="addForm" :rules="addTagRules" ref="addForm" label-width="6rem">
       
       <el-form-item label="请输入：" prop="surname">
-        <el-input type="text" v-model="addForm.surname" placeholder="标签描述" clearable></el-input>
+        <el-input type="text" v-model="addForm.surname" clearable></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">

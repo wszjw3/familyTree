@@ -6,7 +6,6 @@
       <div class="container-top-left">
         <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
       </div>
-      <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
     <div class="registerForm-container">
       <div class="registerForm-top">注册</div>
@@ -14,10 +13,10 @@
         <!-- <div class="title-container">
                   <h3 class="title">管理平台</h3>
                 </div> -->
-        <div class="loginformlable">用户名</div>
+        <!-- <div class="loginformlable">用户名</div>
         <el-form-item prop="nickname">
           <el-input v-model="registerForm.nickname" placeholder="用户名为4-16为数字，字母，拼音组合" name="nickname" type="text"  />
-        </el-form-item>
+        </el-form-item> -->
         <div class="loginformlable">真实姓名</div>
         <el-form-item>
           <el-col :span="11">
@@ -111,7 +110,7 @@ export default {
     }
     return {
       registerForm: {
-        nickname: '',
+        // nickname: '',
         surname: '', //姓 
         name: '', //名
         sex: '',
@@ -125,10 +124,10 @@ export default {
         sendCodeFlag: false
       },
       registerRules: {
-        nickname: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
-        ],
+        // nickname: [
+        //   { required: true, message: '请输入用户名', trigger: 'blur' },
+        //   { min: 4, max: 16, message: '长度在 4 到 16 个数字，字母，拼音组合', trigger: 'blur' }
+        // ],
         surname: [
           { required: true, message: '请输入姓', trigger: 'blur' }
         ],
@@ -221,7 +220,7 @@ export default {
 
         if (valid) {
           const params = {
-            nickname: this.registerForm.nickname,
+            // nickname: this.registerForm.nickname,
             surname: this.registerForm.surname,
             name: this.registerForm.name,
             sex: this.registerForm.sex,
