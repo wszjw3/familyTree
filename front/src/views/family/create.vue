@@ -88,7 +88,7 @@
                 v-model="scope.row.brith_time"
                 type="date"
                 editable
-                placeholder="选择日期"
+                placeholder="例：2020-01-01"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
               />
@@ -101,7 +101,7 @@
                 v-model="scope.row.marry_time"
                 type="date"
                 editable
-                placeholder="选择日期"
+                placeholder="例：2020-01-01"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 @change="
@@ -119,7 +119,7 @@
                 v-model="scope.row.death_time"
                 type="date"
                 editable
-                placeholder="选择日期"
+                placeholder="例：2020-01-01"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
               />

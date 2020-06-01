@@ -4,7 +4,10 @@
   <div class="login-container clearfix">
     <div class="container-top">
       <div class="container-top-left">
-        <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
+        <!-- <img class="container-top-img" src="@/assets/imgs/ancestry.png" > -->
+        <router-link class="ontainer-top-img" :to="{path: '/'}">
+        <img src="@/assets/imgs/family-logo.png" class="logo">
+      </router-link>
       </div>
     </div>
     <div class="container-box" style="margin-bottom: 90px;">
