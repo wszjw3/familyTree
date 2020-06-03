@@ -38,7 +38,7 @@
           >
             <el-form-item label="抽成比例：" prop="scale">
               <el-input
-                type="text"
+                type="number"
                 v-model="baseForm.scale"
                 placeholder="请输入"
                 clearable

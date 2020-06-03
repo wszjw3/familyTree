@@ -319,6 +319,7 @@ export default {
     margin-bottom: 100px;
     .no-result {
       text-align: center;
+      padding-top: 100px;
       .routerLink {
         cursor: pointer;
         font-size: 14px;

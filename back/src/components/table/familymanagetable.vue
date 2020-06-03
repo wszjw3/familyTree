@@ -9,7 +9,6 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入"
             value-key="manage_name"
-            value="manage_id"
             @select="item => {handleSelect('searchForm', item)}"
             clearable
           ></el-autocomplete>

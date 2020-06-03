@@ -58,6 +58,7 @@
                 />
                 <img
                   v-if="ele.claim === '1'"
+                  style="margin-left: 5px"
                   src="@/assets/imgs/claim.png"
                 />
                 {{ ele.user_name }}
@@ -88,6 +89,7 @@
                     </div>
                   </div>
                   <div
+                    v-if="ele.claim === '0'"
                     class="claim"
                     @click="handleClaim(ele)"
                   >

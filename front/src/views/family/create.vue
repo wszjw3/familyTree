@@ -39,7 +39,7 @@
         <el-table :data="tableData">
           <el-table-column label="" prop="relation_desc" width="60"></el-table-column>
           <el-table-column width="100">
-            <template slot="header">
+            <template slot="header" slot-scope="scope">
               <span style="color: red">*</span>
               姓
             </template>
@@ -61,7 +61,7 @@
             </template> 
           </el-table-column>
           <el-table-column width="120">
-            <template slot="header">
+            <template slot="header" slot-scope="scope">
               <span style="color: red">*</span>
               性别
             </template>
