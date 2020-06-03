@@ -115,11 +115,11 @@
 </template>
 
 <script>
-import { Family } from "@/api";
-import { MessageBox } from "element-ui";
-import md5 from "md5";
+import { Family } from '@/api'
+import { MessageBox } from 'element-ui'
+import md5 from 'md5'
 export default {
-  name: "Login",
+  name: 'Register',
   data() {
     // const validateUserNo = (rule, value, callback) => {
     //   if (value === '') {
@@ -151,11 +151,11 @@ export default {
     return {
       registerForm: {
         // nickname: '',
-        surname: "", //姓
-        name: "", //名
-        sex: "",
-        password: "",
-        confirm_password: "",
+        surname: '', //姓
+        name: '', //名
+        sex: '',
+        password: '',
+        confirm_password: '',
         phone: "",
         verification: "",
         time: 0,
@@ -213,7 +213,7 @@ export default {
       // var a=this.$refs.form2.validateField("validateGraphForm2")
       // console.log(a)
       if (this.registerForm.sendCodeFlag) {
-        return;
+        return
       }
       var params = {
         phone: this.registerForm.phone
@@ -267,7 +267,12 @@ export default {
             if (res.code === "000000") {
               this.$alert("注册成功");
               setTimeout(() => {
-                this.$router.push("/login");
+                this.$router.push("/login")
+                this.registerForm.surname = ''
+                this.registerForm.name = ''
+                this.registerForm.phone = ''
+                this.registerForm.password = ''
+
               }, 500);
             } else {
               MessageBox.alert(res.message, "", {
