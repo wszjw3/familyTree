@@ -4,9 +4,11 @@
   <div class="login-container clearfix">
     <div class="container-top">
       <div class="container-top-left">
-        <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
+        <!-- <img class="container-top-img" src="@/assets/imgs/ancestry.png" > -->
+        <router-link class="ontainer-top-img" :to="{path: '/'}">
+        <img src="@/assets/imgs/family-logo.png" class="logo">
+      </router-link>
       </div>
-      <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
     <div class="container-box" style="margin-bottom: 90px;">
       <div class="login-left"><img src="@/assets/imgs/name.png" alt=""></div>
@@ -16,9 +18,9 @@
           <!-- <div class="title-container">
                     <h3 class="title">管理平台</h3>
                   </div> -->
-          <div class="loginformlable loginformlablemargin">用户名</div>
-          <el-form-item prop="nickname">
-            <el-input v-model="loginForm.nickname" placeholder="请输入用户名" name="nickname" type="text" auto-complete="on" />
+          <div class="loginformlable loginformlablemargin">手机号</div>
+          <el-form-item prop="phone">
+            <el-input v-model="loginForm.phone" placeholder="请输入用户名" name="phone" type="text" auto-complete="on" />
           </el-form-item>
           <div class="loginformlable ">
             <div style="margin-bottom: 8px;">登录密码</div>
@@ -71,7 +73,7 @@ export default {
     }
     return {
       loginForm: {
-        nickname: '',
+        phone: '',
         password: '',
         graphLoginCode: '',
         graphId: '',
@@ -79,7 +81,7 @@ export default {
         checked: false
       },
       loginRules: {
-        nickname: [{
+        phone: [{
           required: true,
           trigger: 'blur',
           validator: validateUsername
@@ -121,7 +123,7 @@ export default {
           // this.loading = false
           // })
           const params = {
-            nickname: this.loginForm.nickname,
+            phone: this.loginForm.phone,
             // passwd: this.loginForm.password,
             passwd: md5(this.loginForm.password)
           }
@@ -134,7 +136,6 @@ export default {
               this.$router.push('/')
             } else {
               this.resultMessage = res.message
-              this.getGraph()
             }
           })
         } else {

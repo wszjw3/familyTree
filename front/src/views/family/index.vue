@@ -9,6 +9,13 @@
         >
           {{item}}
         </div>
+        <div class="statistics">
+          已收录全国共
+          {{statistics.tree}}
+          棵家谱树，总计
+          {{statistics.people}}
+          人
+        </div>
       </div>
       <div class="bg-wrapper">
         <img :src="bgImage"/>
@@ -66,13 +73,7 @@
         </div>
       </div>
     </div>
-    <div class="statistics">
-      已收录全国共
-      {{statistics.tree}}
-      棵家谱树，总计
-      {{statistics.people}}
-      人
-    </div>
+    
     <div class="result">
       <div v-if="result.length === 0 && searched" class="no-result">
         <span @click="handleCreate" class="routerLink">
@@ -123,7 +124,7 @@ export default {
   computed: {
     nameArray() {
       return [
-        '赵','周','吴','郑','王','冯','钱','孙','陈','褚','卫','蒋','沈','韩','杨','朱','秦','许'
+        '赵','周','吴','郑','王','冯','钱','孙','陈','褚','卫','蒋'
       ]
     },
     treeCount() {
@@ -207,7 +208,7 @@ export default {
   margin: auto;
   .header {
     position: relative;
-    height: 655px;
+    height: 500px;
 
     .name-wrapper {
       width: 474px;
@@ -219,9 +220,10 @@ export default {
       .name-faded,
       .name-white {
         width: 79px;
-        height: 78px;
-        line-height: 78px;
-        font-size: 78px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        font-size: 50px;
         display: inline-block;
       }
       .name-faded {
@@ -237,7 +239,7 @@ export default {
 
     .bg-wrapper {
       width:689px;
-      height:655px;
+      height:500px;
       display: inline-block;
       position: absolute;
       top: 0;
@@ -245,15 +247,15 @@ export default {
     }
 
     .search-container {
-      width:574px;
-      height:451px;
-      padding-left: 40px;
+      width:454px;
+      height:440px;
+      padding-left: 20px;
       background:rgba(255,255,255,1);
       z-index: 2;
       position: absolute;
       left: 0;
-      bottom: -32px;
-
+      // bottom: -32px;
+      top: 150px;
       .title {
         height:66px;
         line-height:33px;
@@ -303,21 +305,21 @@ export default {
   }
 
   .statistics {
-    width:564px;
-    height:54px;
-    margin: 50px 0;
-    padding-left: 30px;
-    line-height: 54px;
+    width:100%;
+    height:50px;
+    text-align: center;
+    line-height: 50px;
     background:rgba(87,208,146,1);
     color: #fff;
-    border-radius:4px;
     font-size: 24px;
     font-weight: 600;
   }
   .result {
+    margin-top: 130px;
     margin-bottom: 100px;
     .no-result {
       text-align: center;
+      padding-top: 100px;
       .routerLink {
         cursor: pointer;
         font-size: 14px;

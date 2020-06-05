@@ -9,7 +9,6 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入"
             value-key="manage_name"
-            value="manage_id"
             @select="item => {handleSelect('searchForm', item)}"
             clearable
           ></el-autocomplete>
@@ -21,12 +20,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="最近登陆时间：">
+        <el-form-item label="得分：">
           <el-select v-model="searchForm.score" filterable placeholder="请选择" clearable>
             <el-option v-for="item in scoreOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item>
           <el-button type="primary"  @click="searchFormSubmit()">搜索</el-button>
         </el-form-item>
@@ -34,11 +33,11 @@
           <el-button type=""  @click="resetForm('searchForm')">重置</el-button>
         </el-form-item>
       </el-row>
-      <el-row type="flex" class="row-bg" justify="begin">
+      <!-- <el-row type="flex" class="row-bg" justify="begin">
         <el-form-item label="总得分：">
           <el-input v-model="searchForm.total_score" placeholder='请输入' clearable></el-input>
         </el-form-item>
-      </el-row>
+      </el-row> -->
     </el-form>
   </el-col>
   <el-table :data="subList" border  :header-cell-style="{background:'#eef1f6',color:'#606266'}" v-loading="loading" :row-class-name="tableRowClassName">
@@ -84,6 +83,9 @@
             @select="item => {handleSelect('resetTag', item)}"
             clearable
           ></el-autocomplete>
+      </el-form-item>
+      <el-form-item label="管理员手机号：" prop="manage_name">
+        <el-input v-model="resetTag.manage_phone" readonly></el-input>
       </el-form-item>
       <el-form-item label="所管家谱树名称：" prop="family_name">
         <el-input type="text" v-model="resetTag.family_name" placeholder="标签描述" disabled></el-input>
@@ -132,10 +134,10 @@ export default {
         }
       ],
       scoreOptions:[{
-          value: '0',
+          value: '1',
           label: '由高到低'
         }, {
-          value: '1',
+          value: '0',
           label: '由低到高'
         }
       ],

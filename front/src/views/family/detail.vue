@@ -4,7 +4,7 @@
 			<el-col :span="18" id="export">
 				<div class="elcol">
 					<div class="relative">
-						<p class="title">{{ title }}</p>
+						<p class="title" @click="isShowNodeDetail = false">{{ title }}</p>
 						<div class="absolute-right">
 							<span class="desc">
 								<img src="@/assets/imgs/alive.png" />
@@ -42,6 +42,7 @@
 							@onEdit="handleEditNode"
 							@onAdd="handleAddNode"
 							@onClaim="handleClaim"
+							@success="handleAddSuccess"
 						></family-tree>
 					</div>
 				</div>
@@ -409,7 +410,7 @@ export default {
 			this.getCurrentUser(prop, nextCharacterName)
 		},
 		handleClaim(prop, userType) {
-			if (userType === '0') {
+			if (!userType) {
 				this.$router.push('/login')
 				return
 			}
@@ -472,6 +473,9 @@ export default {
 			this.queryUserTree()
 			this.$refs.tree.interval()
 		},
+		handleAddSuccess () {
+			this.$refs.tree.interval()
+		}
 	},
 }
 </script>

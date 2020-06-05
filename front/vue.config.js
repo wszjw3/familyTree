@@ -2,7 +2,7 @@
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
-  publicPath: '',
+  // publicPath: '',
   configureWebpack: (config) => {
     config.entry.app = ['babel-polyfill', './src/main.js']
     //删除console插件

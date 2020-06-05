@@ -3,6 +3,7 @@
     <el-table
       class="add-table"
       :data="tableData"
+      :span-method="arraySpanMethod"
       style="width: 100%; overflow: auto"
     >
       <el-table-column prop="relation_desc" width="60"></el-table-column>
@@ -12,16 +13,18 @@
           姓
         </template>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.surname" :disabled="scope.row.relation !== 'spouse' && scope.row.relation !== 'mother'"></el-input>
+          <el-input
+            v-model="scope.row.surname"
+            :disabled="(scope.row.relation !== 'spouse' && scope.row.relation !== 'mother') || scope.row.saved"
+          ></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="fame" min-width="90">
         <template slot="header">
-          <span class="required">* </span>
           名
         </template>
         <template slot-scope="scope">
-          <el-input v-model="scope.row.fame"></el-input>
+          <el-input v-model="scope.row.fame" :disabled="scope.row.saved"></el-input>
         </template>
       </el-table-column>
       <el-table-column
@@ -37,13 +40,14 @@
               scope.row.relation === 'mother' ||
               scope.row.relation === 'grandmother' ||
               scope.row.relation === 'spouse' ||
-              (scope.row.relation === 'child' && userInfo.nextCharacterName !== '')
+              (scope.row.relation === 'child' && userInfo.nextCharacterName !== '') ||
+              scope.row.saved
             "
             @input="val => {handleCharacterNameInput(val, scope.row.relation)}"
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="sex" min-width="120">
+      <el-table-column align="center" prop="sex" min-width="80">
         <template slot="header">
           <span class="required">* </span>
           性别
@@ -56,7 +60,8 @@
               scope.row.relation === 'current' ||
                 scope.row.relation === 'father' ||
                 scope.row.relation === 'mother' ||
-                scope.row.relation === 'spouse'
+                scope.row.relation === 'spouse' ||
+                scope.row.saved
             "
           >
             <el-option
@@ -85,6 +90,7 @@
         </template>
         <template slot-scope="scope">
           <el-date-picker
+           :disabled="scope.row.saved"
             v-model="scope.row.brith_time"
             type="date"
             editable
@@ -98,32 +104,13 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="death_time"
-        label="死亡日期"
-        min-width="150"
-      >
-        <template slot-scope="scope">
-          <el-date-picker
-            v-model="scope.row.death_time"
-            type="date"
-            editable
-            style="width: 140px"
-            placeholder="选择日期"
-            value-format="yyyy-MM-dd"
-            format="yyyy-MM-dd"
-            @change="val => {handleDeathTimeChanged(val, scope.row)}"
-          >
-          </el-date-picker>
-        </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
         prop="marry_time"
         label="结婚时间"
         min-width="150"
       >
         <template slot-scope="scope">
           <el-date-picker
+           :disabled="scope.row.saved"
             v-model="scope.row.marry_time"
             type="date"
             editable
@@ -136,9 +123,30 @@
           </el-date-picker>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="marry_time" min-width="150">
+      <el-table-column
+        align="center"
+        prop="death_time"
+        label="死亡日期"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-date-picker
+           :disabled="scope.row.saved"
+            v-model="scope.row.death_time"
+            type="date"
+            editable
+            style="width: 140px"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            @change="val => {handleDeathTimeChanged(val, scope.row)}"
+          >
+          </el-date-picker>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="motherOptions.length > 0" align="center" prop="marry_time" width="110">
         <template slot-scope="scope" v-if="scope.row.relation === 'child'">
-          <el-select v-model="scope.row.mother_id" placeholder="请选择母亲">
+          <el-select  :disabled="scope.row.saved" v-model="scope.row.mother_id" placeholder="请选择母亲">
             <el-option
               v-for="item in motherOptions"
               :key="item.value"
@@ -149,9 +157,17 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column align="center">
+      <el-table-column align="center" width="150">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.idx" @click="handleDeleteRow(scope.row.idx)">删除</el-button>
+          <el-row>
+            <el-col :span="12">
+              <el-button size="small" class="save-btn" v-if="!scope.row.saved && scope.row.idx" @click="handleSaveRow(scope.row)">保存</el-button>
+            </el-col>
+            <el-col :span="12">
+
+              <el-button size="small" v-if="!scope.row.saved && scope.row.idx" @click="handleDeleteRow(scope.row.idx)">删除</el-button>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -174,14 +190,14 @@
       <!-- <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
         添加兄妹
       </span> -->
-      <span @click="handleAdd('child')" :class="childDisabled ? 'disabled' : ''">
+      <span @click="handleAdd('child')">
         添加子女
       </span>
     </div>
-    <span slot="footer">
+    <!-- <span slot="footer">
       <el-button class="ma-md" @click="cancel">取消</el-button>
-      <el-button class="ma-md" type="primary" @click="confirm">提交审核</el-button>
-    </span>
+      <el-button class="ma-md" type="primary" @click="confirm">{{this.isManager ? '确认' : '提交审核'}}</el-button>
+    </span> -->
   </el-dialog>
 </template>
 
@@ -215,6 +231,9 @@ export default {
     }
   },
   computed: {
+    isManager () {
+      return this.$store.getters.getToken.user_type === '3'
+    },
     sexOptions() {
       return [
         {
@@ -254,22 +273,22 @@ export default {
       })
       return flag
     },
-    childDisabled () {
-      let res = false
-      let spouseNum = 0
-      this.tableData.forEach(item => {
-        if (item.relation === 'spouse') {
-          spouseNum++
-        }
-      })
-      if (this.motherOptions.length === 0 && spouseNum === 0) {
-        res = true
-      }
-      if (this.motherOptions.length === 0 && spouseNum > 1) {
-        res = true
-      }
-      return res
-    }
+    // childDisabled () {
+    //   let res = false
+    //   let spouseNum = 0
+    //   this.tableData.forEach(item => {
+    //     if (item.relation === 'spouse') {
+    //       spouseNum++
+    //     }
+    //   })
+    //   if (this.motherOptions.length === 0 && spouseNum === 0) {
+    //     res = true
+    //   }
+    //   if (this.motherOptions.length === 0 && spouseNum > 1) {
+    //     res = true
+    //   }
+    //   return res
+    // }
   },
   watch: {
     value(val) {
@@ -282,6 +301,7 @@ export default {
       this.getMotherOptions()
       val.relation_desc = '当前人物'
       val.relation = 'current'
+      val.saved = true
       this.tableData = [val]
       // let obj = {
       //   relation: '',
@@ -374,7 +394,6 @@ export default {
         Family.familyAddUser(params).then(res => {
           if (res.code === '000000') {
             this.$alert('保存成功')
-            this.reset()
             this.$emit('success')
           } else {
             this.$message.error(res.message)
@@ -400,9 +419,9 @@ export default {
       if (type === 'spouse' && this.spouseDisabled) {
         return
       }
-      if (type === 'child' && this.childDisabled) {
-        return
-      }
+      // if (type === 'child' && this.childDisabled) {
+      //   return
+      // }
       const relation = [
         'current',
         'father',
@@ -474,26 +493,15 @@ export default {
         this.handleAdd('mother')
       }
     },
-    validate() {
+    validate(row) {
       let flag = true
-      let spouseNum = 0
-      this.tableData.forEach(item => {
-        if (!item.surname || !item.fame || !item.sex) {
-          flag = false
-        }
-        if (item.relation === 'spouse') {
-          spouseNum++
-        }
-        flag === false && this.handleTip(item)
-      })
-
-      if (spouseNum > 1) {
-        this.tableData.forEach(item => {
-          if (item.relation === 'child' && item.mother_id === '') {
-            flag === false && this.handleTip(item)
-          }
-        })
+      if (!row.surname || !row.fame || !row.sex) {
+        flag = false
       }
+      if (row.relation === 'child' && row.mother_id === '') {
+        flag = false
+      }
+      !flag && this.handleTip(row)
 
       return flag
     },
@@ -502,10 +510,10 @@ export default {
         this.$message.error('姓不能为空')
         return
       }
-      if (!obj.fame) {
-        this.$message.error('名不能为空')
-        return
-      }
+      // if (!obj.fame) {
+      //   this.$message.error('名不能为空')
+      //   return
+      // }
       if (!obj.sex) {
         this.$message.error('性别不能为空')
         return
@@ -513,6 +521,58 @@ export default {
       if (!obj.mother_id) {
         this.$message.error('请选择母亲')
         return
+      }
+    },
+    handleSaveRow (row) {
+      if (this.validate(row)) {
+        let params = {}
+        params.user = {
+          user_id: this.userInfo.user_id
+        }
+        params.father = {}
+        params.mother = {}
+        params.wife = []
+        params.brother = []
+        params.boy = []
+        switch (row.relation) {
+          case 'father':
+            params.father = row
+            this.tableData.forEach(v => {
+              if (v.relation === 'mother') {
+                params.mother = v
+              }
+            })
+            break
+          case 'mother':
+            params.mother = row
+            break
+          case 'spouse':
+            params.wife.push(row)
+            break
+          case 'brother':
+            params.brother.push(row)
+            break
+          case 'child':
+            params.boy.push(row)
+            break
+        }
+        Family.familyAddUser(params).then(res => {
+          if (res.code === '000000') {
+            this.$alert('保存成功')
+            row.saved = true
+            this.tableData.forEach(v => {
+              if (v.relation === 'mother') {
+                this.$set(v, 'saved', true)
+              }
+            })
+            this.getMotherOptions()
+            // this.reset()
+            this.$emit('success')
+            this.$forceUpdate()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
       }
     },
     handleDeleteRow (idx) {
@@ -554,6 +614,14 @@ export default {
     },
     handleDeathTimeChanged (val, row) {
       row.be_alive = new Date(val) < Date.now() && val ? '2' : '1'
+    },
+    arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
+      if (row.relation === 'father' && columnIndex === 9 && !row.saved) {
+        return {
+          rowspan: 2,
+          colspan: 1
+        }
+      }
     }
   }
 }
@@ -587,4 +655,10 @@ export default {
 .ma-md {
   margin: 5px 20px
 }
+
+.save-btn {
+      background-color: #57D092;
+      color: #fff;
+      border: none;
+    }
 </style>

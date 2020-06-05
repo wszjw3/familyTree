@@ -7,7 +7,7 @@
       </span>
     </p>
     <div class="mt-lg">
-      接收方管理员帐号：
+      接收方管理员手机号：
       <el-input class="mt-md" v-model="account" placeholder="请输入"></el-input>
     </div>
     <div class="mt-lg">
@@ -73,7 +73,7 @@ export default {
       let params = {
         user_id: this.userId,
         family_id: this.$router.currentRoute.query.familyId || this.familyId,
-        new_manage_no: this.account,
+        phone: this.account,
         new_manage_name: this.name
       }
       Family.familyManageTransfer(params).then(res => {

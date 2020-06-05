@@ -4,9 +4,11 @@
   <div class="login-container clearfix">
     <div class="container-top">
       <div class="container-top-left">
-        <img class="container-top-img" src="@/assets/imgs/ancestry.png" >
+        <!-- <img class="container-top-img" src="@/assets/imgs/ancestry.png" > -->
+        <router-link class="ontainer-top-img" :to="{path: '/'}">
+        <img src="@/assets/imgs/family-logo.png" class="logo">
+      </router-link>
       </div>
-      <div  class="container-top-right" @click="toindex()">返回首页</div>
     </div>
     <div class="loginForm-container">
       <div class="loginForm-top">重置密码</div>
@@ -16,11 +18,11 @@
                 </div> -->
         <div class="loginformlable">手机号</div>
         <el-form-item prop="phone" >
-          <el-input type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
+          <el-input autocomplete="new-password" type="tel" v-model="loginForm.phone" placeholder="请输入您的手机号" name="phone" auto-complete="on" />
         </el-form-item>
         <div class="loginformlable">验证码</div>
         <el-form-item prop="verification" >
-          <el-input type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on">
+          <el-input autocomplete="new-password" type="text" v-model="loginForm.verification" placeholder="请输入验证码" name="verification" auto-complete="on">
             <el-button size="mini" @click="sendCode()" slot="append" :disabled="loginForm.disabled">{{loginForm.disabled?`${loginForm.time}s重新发送`:'发送验证码'}}</el-button>
           </el-input>
         </el-form-item>
@@ -29,12 +31,12 @@
 
         <div class="loginformlable">新密码</div>
         <el-form-item prop="password">
-          <el-input :type="passwordType" v-model="loginForm.password" placeholder="
+          <el-input autocomplete="new-password" :type="passwordType" v-model="loginForm.password" placeholder="
   请设置不少于6位的新密码" name="password" auto-complete="on" />
         </el-form-item>
         <div class="loginformlable">确认密码</div>
         <el-form-item prop="checkPass" >
-          <el-input :type="passwordType" v-model="loginForm.checkPass" placeholder="
+          <el-input autocomplete="new-password" :type="passwordType" v-model="loginForm.checkPass" placeholder="
   请再次输入新密码" name="password" auto-complete="on" />
         </el-form-item>
        
@@ -53,15 +55,12 @@
 </template>
 
 <script>
-import {
-  Family
-} from '@/api'
+import { Family } from '@/api'
 import md5 from 'md5'
 
 export default {
   name: 'resetPasswd',
   data() {
-    
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -89,46 +88,47 @@ export default {
         time: 0,
         disabled: false,
         isSendCode: false,
-        sendCodeFlag: false
+        sendCodeFlag: false,
       },
       loginRules: {
-        checkPass: [{
-          required: true,
-          trigger: 'blur',
-          validator: validatePassword
-        }],
-        password: [{
-          required: true,
-          trigger: 'blur',
-          validator: validateCheckNewPass
-        }],
-        phone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+        checkPass: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validatePassword,
+          },
         ],
+        password: [
+          {
+            required: true,
+            trigger: 'blur',
+            validator: validateCheckNewPass,
+          },
+        ],
+        phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
         verification: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
+          { required: true, message: '请输入验证码', trigger: 'blur' },
         ],
-        checked:[
-          { required: true, message: '请阅读并同意', trigger: 'change' }
-        ]
+        checked: [
+          { required: true, message: '请阅读并同意', trigger: 'change' },
+        ],
       },
-      intervalid:null,
+      intervalid: null,
       passwordType: 'password',
       loading: false,
       showDialog: false,
       redirect: undefined,
-      resultMessage: ''
+      resultMessage: '',
     }
   },
   mounted() {
     this.$np.done()
   },
-  created() {
-  },
+  created() {},
   methods: {
     toindex() {
       this.$router.push({
-        path: '/'
+        path: '/',
       })
     },
     showPwd() {
@@ -146,7 +146,7 @@ export default {
         return
       }
       var params = {
-        phone: this.loginForm.phone
+        phone: this.loginForm.phone,
       }
       Family.sendVerifyCode(params).then((content) => {
         console.log(content)
@@ -164,20 +164,22 @@ export default {
               clearInterval(this.intervalid)
             }
           }, 1000)
-          
+
           this.$message({
             type: 'success',
-            message: '验证码发送成功'
+            message: '验证码发送成功',
           })
         } else {
-          this.$message.error('' == content.message ? '验证码发送失败' : content.message)
+          this.$message.error(
+            '' == content.message ? '验证码发送失败' : content.message
+          )
           this.loginForm.disabled = false
           this.loginForm.time = 0
         }
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
           // this.loading = true
           // this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
@@ -189,7 +191,7 @@ export default {
           const params = {
             phone: this.loginForm.phone,
             newpasswd: md5(this.loginForm.password),
-            verification: this.loginForm.verification
+            verification: this.loginForm.verification,
           }
 
           Family.resetPasswd(params).then((res) => {
@@ -197,7 +199,7 @@ export default {
             if (res.code === '000000') {
               this.$message({
                 type: 'success',
-                message: '密码修改成功'
+                message: '密码修改成功',
               })
               this.$router.push('/login')
             } else {
@@ -209,102 +211,102 @@ export default {
           return false
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="less" scoped>
 a {
-    text-decoration: none;
-    color: #1a90ff;
+  text-decoration: none;
+  color: #1a90ff;
 }
 .forgetPwd {
-    text-align: center;
-    margin: auto;
-    color:#57D092;
+  text-align: center;
+  margin: auto;
+  color: #57d092;
 }
 .login-container {
-    width: 100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(239, 243, 245, 1);
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  // background-image: url("@/assets/imgs/family.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  .container-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1200px;
+    margin: auto;
+    margin-top: 14px;
+    .container-top-img {
+      width: 120px;
+      height: 58px;
+    }
+    .container-top-right {
+      font-size: 16px;
+    }
+  }
+  .login-left {
+    float: left;
     height: 100%;
-    background:rgba(239,243,245,1);
-    border-top: 1px solid #dddddd;
-    border-bottom: 1px solid #dddddd;
-    // background-image: url("@/assets/imgs/family.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    .container-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 1200px;
-      margin: auto;
-      margin-top: 14px;
-      .container-top-img {
-        width: 120px;
-        height: 58px;
-      }
-      .container-top-right {
-        font-size: 16px;
-      }
+    width: 60%;
+    img {
+      width: 100%;
     }
-    .login-left {
-      float:left;
-      height: 100%;
-      width: 60%;
-      img {
+  }
+  .loginForm-container {
+    width: 30%;
+    margin: auto;
+    position: relative;
+    background-color: white;
+    padding: 10px 30px;
+    .loginForm-top {
+      text-align: left;
+      font-size: 34px;
+      color: rgba(52, 73, 94, 1);
+      font-weight: 500;
+      color: rgba(52, 73, 94, 1);
+    }
+    .errorMsgBox {
+      color: rgb(245, 108, 108);
+      line-height: 1rem;
+      height: 1rem;
+    }
+    .login-form {
+      width: 85%;
+      overflow: hidden;
+      margin: 1rem auto 0;
+      .loginformlable {
+        margin-bottom: 8px;
+      }
+      .submit-buttom {
         width: 100%;
+        height: 51px;
+      }
+      .el-form-item {
+        .el-form-item__content {
+          .el-input {
+            .el-input__inner {
+              height: 51px;
+              line-height: 51px;
+            }
+          }
+        }
       }
     }
-    .loginForm-container {
-        width: 30%;
-        margin:auto;
-        position: relative;
-        background-color: white;
-        padding: 10px 30px;
-        .loginForm-top {
-          text-align: left;
-          font-size: 34px;
-          color:rgba(52,73,94,1);
-          font-weight:500;
-          color:rgba(52,73,94,1);
-        }
-        .errorMsgBox {
-            color: rgb(245, 108, 108);
-            line-height: 1rem;
-            height: 1rem;
-        }
-        .login-form {
-            width: 85%;
-            overflow: hidden;
-            margin: 1rem auto 0;
-            .loginformlable {
-              margin-bottom: 8px;
-            }
-            .submit-buttom {
-                width: 100%;
-                height: 51px;
-            }
-            .el-form-item {
-                .el-form-item__content {
-                    .el-input {
-                        .el-input__inner {
-                            height: 51px;
-                            line-height: 51px;
-                        }
-                    }
-                }
-            }
-        }
-    }
+  }
 }
 
 .clearfix:after,
 .clearfix:before {
-    content: " ";
-    display: table;
+  content: ' ';
+  display: table;
 }
 .clearfix:after {
-    clear: both;
+  clear: both;
 }
 </style>
