@@ -20,7 +20,7 @@
           />
         </div>
         <div class="tree-address">
-          <p>家谱树地址</p>
+          <p>家谱地址</p>
 
           <el-input
             class="input"
