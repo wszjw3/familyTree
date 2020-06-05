@@ -70,6 +70,16 @@ export default {
               })
             })
           })
+          city.forEach(v => {
+            v.children.forEach(i => {
+              if (i.children.length === 0) {
+                i.children.push({
+                  label: i.label,
+                  value: i.value
+                })
+              }
+            })
+          })
           this.options = city
 				}
 			})
