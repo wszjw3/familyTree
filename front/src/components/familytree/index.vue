@@ -168,7 +168,7 @@ export default {
                     t3.current.forEach(cur1 => {
                       if (
                         cur1.user_id === c2.husband &&
-                        item.test.length !== 1
+                        item.test.length !== 0
                       ) {
                         t2.push(c2)
                       }
@@ -319,8 +319,9 @@ export default {
     }
 
     .wrapper {
-      width: 95%;
+      // width: 95%;
       display: flex;
+      flex: 1;
     }
 
     .tree-node {
