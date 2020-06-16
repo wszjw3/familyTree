@@ -359,7 +359,6 @@ export default {
       // params.user_id = '1019'
       Family.familyAddRecord(params).then(res => {
         if (res.code === '000000') {
-          this.$alert('保存成功')
           this.handleCancel()
           this.$emit('success')
           this.confirming = false

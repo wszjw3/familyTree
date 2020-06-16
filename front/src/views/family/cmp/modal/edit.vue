@@ -175,7 +175,6 @@ export default {
         const params = this.tableData[0]
         Family.familyUpdateUser(params).then(res => {
           if (res.code === '000000') {
-            this.$alert('保存成功')
             this.reset()
             this.$emit('success')
           } else {

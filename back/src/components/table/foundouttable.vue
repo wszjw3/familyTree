@@ -356,7 +356,6 @@ export default {
 		confirmWaveOut () {
 			Manage.fundHandleAmount(this.waveForm).then(res => {
 				if (res.code === '000000') {
-					this.$alert('保存成功')
 					this.show.wave = false
 					this.waveForm = {
 						manage_id: '',
@@ -380,7 +379,6 @@ export default {
 			})
 			Manage.repairSpectrumAmount(params).then(res => {
 				if (res.code === '000000') {
-					this.$alert('保存成功')
 					this.show.familytree = false
 					this.familyForm = {
 						family_name: '',

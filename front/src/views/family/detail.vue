@@ -382,8 +382,6 @@ export default {
 						})
 					})
 				})
-				console.log('111111111111111111')
-				console.log(result)
 				this.treeData = result
 			})
 		},
@@ -464,7 +462,7 @@ export default {
 			this.handleViewNode({ user_id: this.currentNodeUser })
 		},
 		exportToPDF() {
-			window.open('#/export?familyId=' + this.$router.currentRoute.query.familyId)
+			window.open('#/export?familyId=' + this.$router.currentRoute.query.familyId + '&family_name=' + this.treeInfo.family_name + '&create_time=' + this.treeInfo.create_time + '&manage_name=' + this.treeInfo.manage_name)
 		},
 		reload() {
 			this.$router.currentRoute.query &&

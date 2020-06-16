@@ -82,7 +82,7 @@
                       详情
                     </div>
                     <div class="action-item" @click="handleEdit(ele)">
-                      编辑
+                      修改
                     </div>
                     <div class="action-item" @click="handleAdd(ele, idx)">
                       {{ ele.sex === '1' ? '添加' : '' }}

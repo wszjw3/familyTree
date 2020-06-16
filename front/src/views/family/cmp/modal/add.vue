@@ -393,7 +393,6 @@ export default {
         })
         Family.familyAddUser(params).then(res => {
           if (res.code === '000000') {
-            this.$alert('保存成功')
             this.$emit('success')
           } else {
             this.$message.error(res.message)
@@ -495,7 +494,7 @@ export default {
     },
     validate(row) {
       let flag = true
-      if (!row.surname || !row.fame || !row.sex) {
+      if (!row.surname || !row.sex) {
         flag = false
       }
       if (row.relation === 'child' && row.mother_id === '') {
@@ -518,7 +517,7 @@ export default {
         this.$message.error('性别不能为空')
         return
       }
-      if (!obj.mother_id) {
+      if (!obj.mother_id && obj.relation === 'child') {
         this.$message.error('请选择母亲')
         return
       }
@@ -558,7 +557,6 @@ export default {
         }
         Family.familyAddUser(params).then(res => {
           if (res.code === '000000') {
-            this.$alert('保存成功')
             row.saved = true
             this.tableData.forEach(v => {
               if (v.relation === 'mother') {

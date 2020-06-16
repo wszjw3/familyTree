@@ -87,7 +87,6 @@ export default {
 					}
 					Family.familyClaim(params).then(res => {
 						if (res.code === '000000') {
-							this.$alert('保存成功')
 							this.reset()
 							this.$emit('success')
 						} else {

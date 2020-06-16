@@ -77,7 +77,6 @@ export default {
             new_passwd: md5(this.passwdForm.new_passwd),
           }).then((res) => {
             if (res.code === '000000') {
-              this.$alert('保存成功')
               this.$store.dispatch('removeBackToken')
               this.$router.push('/login')
             } else {

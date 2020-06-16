@@ -169,10 +169,6 @@ export default {
           Manage.baseSetup(params).then(content => {
             console.log(content)
             if (content.code && content.code === '000000') {
-              this.$message({
-                type: 'success',
-                message: '保存成功'
-              })
               this.handleQueryBaseSetup()
             } else {
               this.$message.error({

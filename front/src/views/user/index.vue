@@ -334,11 +334,12 @@ export default {
                 county: this.basicForm.area[2] ? this.basicForm.area[2] : '',
                 address: this.basicForm.address,
               }).then((res) => {
-                if (res.code === '000000') {
-                  this.$alert('保存成功')
-                } else {
-                  this.$message.error(res.message)
-                }
+                // if (res.code === '000000') {
+                //   this.$alert('保存成功')
+                // } else {
+                //   this.$message.error(res.message)
+                // }
+                res.code !== '000000' && this.$message.error(res.message)
               })
               break
             case 'passwd':
@@ -355,7 +356,6 @@ export default {
                 new_passwd: md5(this.passwdForm.new_passwd),
               }).then((res) => {
                 if (res.code === '000000') {
-                  this.$alert('保存成功')
                   this.$store.dispatch('removeToken')
                   this.$router.push('/login')
                 } else {
@@ -376,11 +376,12 @@ export default {
                   wechart: this.contactForm.wechart,
                   qq: this.contactForm.qq,
                 }).then((res) => {
-                  if (res.code === '000000') {
-                    this.$alert('保存成功')
-                  } else {
-                    this.$message.error(res.message)
-                  }
+                  // if (res.code === '000000') {
+                  //   this.$alert('保存成功')
+                  // } else {
+                  //   this.$message.error(res.message)
+                  // }
+                  res.code !== '000000' && this.$message.error(res.message)
                 })
               } else {
                 this.$message.error('请填写至少一项后再保存')
@@ -392,11 +393,12 @@ export default {
                 bank_no: this.bankForm.bank_code,
                 bank_name: this.bankForm.bank_name,
               }).then((res) => {
-                if (res.code === '000000') {
-                  this.$alert('保存成功')
-                } else {
-                  this.$message.error(res.message)
-                }
+                // if (res.code === '000000') {
+                //   this.$alert('保存成功')
+                // } else {
+                //   this.$message.error(res.message)
+                // }
+                res.code !== '000000' && this.$message.error(res.message)
               })
           }
         }
