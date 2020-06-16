@@ -14,11 +14,11 @@ const getters = {
 const actions = {
   setToken({ commit }, token) {
     commit('SET_TOKEN', { token })
-    localStorage.setItem('token', JSON.stringify(token))
+    sessionStorage.setItem('token', JSON.stringify(token))
   },
   removeToken({ commit }) {
     commit('REMOVE_TOKEN')
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
   },
   createSuccess({ commit }) {
     commit('CREATE_SUCCESS')
@@ -35,7 +35,7 @@ const mutations = {
   },
   CREATE_SUCCESS(state) {
     state.token.user_type = '3'
-    localStorage.setItem('token', JSON.stringify(state.token))
+    sessionStorage.setItem('token', JSON.stringify(state.token))
   }
 }
 

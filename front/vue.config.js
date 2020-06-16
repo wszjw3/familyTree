@@ -25,7 +25,7 @@ module.exports = {
       })
     ]
     //只有打包生产环境才需要将console删除
-    if (process.env.NODE_ENV == 'production') {
+    if (process.env.NODE_ENV === 'production') {
       config.plugins = [...config.plugins, ...plugins]
     }
   }

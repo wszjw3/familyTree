@@ -7,7 +7,7 @@
       style="width: 100%; overflow: auto"
     >
       <el-table-column prop="relation_desc" width="60"></el-table-column>
-      <el-table-column align="center" prop="surname" min-width="90">
+      <el-table-column align="center" prop="surname" min-width="90"  label="姓">
         <template slot="header">
           <span class="required">* </span>
           姓
@@ -19,7 +19,7 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="fame" min-width="90">
+      <el-table-column align="center" prop="fame" min-width="90" label="名">
         <template slot="header">
           名
         </template>
@@ -47,7 +47,7 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="sex" min-width="80">
+      <el-table-column align="center" prop="sex" min-width="80" label="性别">
         <template slot="header">
           <span class="required">* </span>
           性别
@@ -84,7 +84,7 @@
           <el-radio v-model="scope.row.be_alive" label="2">否</el-radio>
         </template>
       </el-table-column> -->
-      <el-table-column align="center" prop="brith_time" min-width="150">
+      <el-table-column align="center" prop="brith_time" min-width="150" label="出生日期">
         <template slot="header">
           出生日期
         </template>
@@ -165,7 +165,7 @@
             </el-col>
             <el-col :span="12">
 
-              <el-button size="small" v-if="!scope.row.saved && scope.row.idx" @click="handleDeleteRow(scope.row.idx)">删除</el-button>
+              <el-button size="small" v-if="!scope.row.saved && scope.row.idx" @click="handleDeleteRow(scope.row.idx)">取消</el-button>
             </el-col>
           </el-row>
         </template>
@@ -513,6 +513,21 @@ export default {
       //   this.$message.error('名不能为空')
       //   return
       // }
+      
+      if(obj.brith_time && obj.marry_time) {
+        if (new Date(obj.brith_time).getTime() > new Date(obj.marry_time).getTime()){
+          this.$message.error('结婚日期不能先于出生日期')
+          return
+        }
+      }
+
+      if(obj.death_time && obj.marry_time) {
+        if (new Date(obj.marry_time).getTime() > new Date(obj.death_time).getTime()){
+          this.$message.error('死亡日期不能先于出生日期')
+          return
+        }
+      }
+
       if (!obj.sex) {
         this.$message.error('性别不能为空')
         return
