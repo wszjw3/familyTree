@@ -2,7 +2,7 @@
   <div class="node-detail">
     <div class="toolbar-wrapper">
       <div class="title">生平信息</div>
-      <el-button size="small" @click="handleEdit()">编辑</el-button>
+      <el-button size="small" @click="handleEdit()">修改</el-button>
     </div>
     <div class="content">
       <div class="desc">
