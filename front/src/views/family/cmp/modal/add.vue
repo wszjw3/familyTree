@@ -201,7 +201,7 @@
       <!-- <span @click="handleAdd('brother')" :class="userInfo.isWife ? 'disabled' : ''">
         添加兄妹
       </span> -->
-      <span @click="handleAdd('child')">
+      <span @click="handleAdd('child')" :class="motherOptions.length > 0 ? '' : 'disabled'">
         添加子女
       </span>
     </div>
@@ -429,9 +429,9 @@ export default {
       if (type === 'spouse' && this.spouseDisabled) {
         return
       }
-      // if (type === 'child' && this.childDisabled) {
-      //   return
-      // }
+      if (type === 'child' && this.motherOptions.length === 0) {
+        return
+      }
       const relation = [
         'current',
         'father',
