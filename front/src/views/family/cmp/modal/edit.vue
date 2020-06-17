@@ -193,7 +193,6 @@ export default {
         !obj.surname ||
         !obj.fame ||
         !obj.sex ||
-        !obj.address ||
         !obj.be_alive
       ) {
         flag = false
@@ -212,10 +211,6 @@ export default {
       }
       if (!obj.sex) {
         this.$message.error('性别不能为空')
-        return
-      }
-      if (!obj.address) {
-        this.$message.error('地址不能为空')
         return
       }
       if (!obj.be_alive) {
