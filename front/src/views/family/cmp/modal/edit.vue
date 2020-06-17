@@ -172,7 +172,8 @@ export default {
     },
     confirm() {
       if (this.validate()) {
-        const params = this.tableData[0]
+        let params = this.tableData[0]
+        params.update_id = this.$store.getters.getToken.user_id
         Family.familyUpdateUser(params).then(res => {
           if (res.code === '000000') {
             this.reset()
