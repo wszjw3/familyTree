@@ -112,6 +112,11 @@
               />
             </template> 
           </el-table-column>
+          <el-table-column label="家庭地址">
+            <template slot-scope="scope">
+                <el-input class="full-width" v-model="scope.row.address"></el-input>
+            </template> 
+          </el-table-column>
           <el-table-column label="死亡日期">
             <template slot-scope="scope">
               <el-date-picker
