@@ -192,7 +192,6 @@ export default {
       let flag = true
       if (
         !obj.surname ||
-        !obj.fame ||
         !obj.sex ||
         !obj.be_alive
       ) {
@@ -206,10 +205,10 @@ export default {
         this.$message.error('姓不能为空')
         return
       }
-      if (!obj.fame) {
-        this.$message.error('名不能为空')
-        return
-      }
+      // if (!obj.fame) {
+      //   this.$message.error('名不能为空')
+      //   return
+      // }
       if (!obj.sex) {
         this.$message.error('性别不能为空')
         return

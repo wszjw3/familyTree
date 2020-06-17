@@ -512,6 +512,25 @@ export default {
       if (row.relation === 'child' && row.mother_id === '') {
         flag = false
       }
+
+      if(row.relation == 'child' && this.userInfo.brith_time && row.brith_time) {
+        if (new Date(this.userInfo.brith_time).getTime() > new Date(row.brith_time).getTime()){
+          flag = false
+        }
+      }
+
+      if(row.brith_time && row.marry_time) {
+        if (new Date(row.brith_time).getTime() > new Date(row.marry_time).getTime()){
+          flag = false
+        }
+      }
+
+      if(row.death_time && row.marry_time) {
+        if (new Date(row.marry_time).getTime() > new Date(row.death_time).getTime()){
+          flag = false
+        }
+      }
+
       !flag && this.handleTip(row)
 
       return flag
@@ -525,6 +544,13 @@ export default {
       //   this.$message.error('名不能为空')
       //   return
       // }
+
+      if(obj.relation == 'child' && this.userInfo.brith_time && obj.brith_time) {
+        if (new Date(this.userInfo.brith_time).getTime() > new Date(obj.brith_time).getTime()){
+          this.$message.error('出生日期不能大于父亲')
+          return
+        }
+      }
       
       if(obj.brith_time && obj.marry_time) {
         if (new Date(obj.brith_time).getTime() > new Date(obj.marry_time).getTime()){
