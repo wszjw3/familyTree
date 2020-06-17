@@ -125,6 +125,17 @@
       </el-table-column>
       <el-table-column
         align="center"
+        prop="address"
+        label="出生地址"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.address" :disabled="scope.row.saved"></el-input>
+        </template>
+
+      </el-table-column>
+      <el-table-column
+        align="center"
         prop="death_time"
         label="死亡日期"
         min-width="150"
@@ -439,7 +450,8 @@ export default {
         brith_time: '',
         death_time: '',
         address: this.userInfo.address,
-        marry_time: ''
+        marry_time: '',
+        saved: false
       }
       if (type === 'spouse') {
         obj.sex = this.userInfo.sex === '1' ? '2' : '1'
