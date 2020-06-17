@@ -112,7 +112,7 @@
               />
             </template> 
           </el-table-column>
-          <el-table-column label="家庭地址">
+          <el-table-column label="出生地址">
             <template slot-scope="scope">
                 <el-input class="full-width" v-model="scope.row.address"></el-input>
             </template> 
@@ -341,7 +341,7 @@ export default {
 
 <style lang="less" scoped>
 .family-create-view {
-  width: 1163px;
+  // width: 1163px;
   .container {
     margin: 0 auto;
     padding: 20px 36px;
