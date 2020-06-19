@@ -1,6 +1,6 @@
 <template>
   <div ref="tree">
-    <h6 class="center">{{this.$router.currentRoute.query.family_name}}</h6>
+    <h2 class="center">{{this.$router.currentRoute.query.family_name}}</h2>
     <p class="center">
       创建人：{{this.$router.currentRoute.query.manage_name}}
 		</p>

@@ -599,6 +599,9 @@ export default {
             params.mother = row
             break
           case 'spouse':
+            if(!row.fame) {
+              row.fame = '氏'
+            }
             params.wife.push(row)
             break
           case 'brother':
