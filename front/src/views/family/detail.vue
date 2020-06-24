@@ -38,11 +38,13 @@
 							ref="tree"
 							style="overflow: auto"
 							:data="treeData"
+							:manageId="manageId"
 							@onView="handleViewNode"
 							@onEdit="handleEditNode"
 							@onAdd="handleAddNode"
 							@onClaim="handleClaim"
 							@success="handleAddSuccess"
+							@onDelete="handledeleteNode"
 						></family-tree>
 					</div>
 				</div>
@@ -199,6 +201,7 @@ export default {
 				people: 0,
 			},
 			familyId: '',
+			manageId: ''
 		}
 	},
 	computed: {
@@ -300,6 +303,7 @@ export default {
 					return
 				}
 				this.familyId = res.data[0].family_id
+				this.manageId = res.data[0].manage_id
 				this.$emit('loaded', res.data)
 				if (!this.$router.currentRoute.query.familyId) {
 					this.getFamilyInfo(res.data[0].family_id)
@@ -407,6 +411,15 @@ export default {
 		handleAddNode(prop, nextCharacterName) {
 			this.show.addModal = true
 			this.getCurrentUser(prop, nextCharacterName)
+		},
+		handledeleteNode(ele, userId) {
+			Family.deleteTreeUser({user_id: ele.user_id, login_id: userId}).then((res) => {
+				if (res.code === '000000') {
+					this.$router.go(0)
+				} else {
+					this.$message.error(res.message)
+				}
+			})
 		},
 		handleClaim(prop, userType) {
 			if (!userType) {

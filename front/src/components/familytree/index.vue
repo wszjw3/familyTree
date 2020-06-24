@@ -87,6 +87,9 @@
                     <div class="action-item" @click="handleAdd(ele, idx)">
                       {{ ele.sex === '1' ? '添加' : '' }}
                     </div>
+                    <div class="action-item" @click="handleDelete(ele, idx)">
+                      {{ idTheaf(ele, idx) ? '删除' : '' }}
+                    </div>
                   </div>
                   <div
                     v-if="ele.claim === '0'"
@@ -115,6 +118,9 @@ export default {
       default() {
         return []
       }
+    },
+    manageId: {
+      type: String
     }
   },
   data() {
@@ -125,6 +131,9 @@ export default {
   computed: {
     userType() {
       return this.$store.getters.getToken.user_type
+    },
+    userId() {
+      return this.$store.getters.getToken.user_id
     },
     treeData() {
       if (this.data.length === 0) {
@@ -287,6 +296,31 @@ export default {
     },
     handleClaim(ele) {
       this.$emit('onClaim', ele, this.userType)
+    },
+    handleDelete(ele) {
+      this.$emit('onDelete', ele, this.userId)
+    },
+    idTheaf() {
+      console.log('manageId', this.manageId)
+      return this.userId === this.manageId
+      // let istheaf = true
+      // this.treeData.forEach(item => {
+      //   if(item.children) {
+      //     item.children.forEach(childs => {
+      //       childs.forEach(child => {
+      //         if (child.husband && child.husband == ele.user_id) {
+      //           istheaf = false
+      //         }
+      //         child.current.forEach(key => {
+      //           if(key.mother_id && key.mother_id == ele.user_id) {
+      //             istheaf = false
+      //           }
+      //         })
+      //       })
+      //     })
+      //   }
+      // } )
+      // return istheaf
     }
   }
 }
@@ -448,5 +482,9 @@ export default {
 }
 .border-green {
   border:1px solid rgba(34,187,35,1);
+}
+
+.line {
+  border-color: red;
 }
 </style>

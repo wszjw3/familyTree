@@ -11,6 +11,16 @@
           <el-input v-model="scope.row.fame"></el-input>
         </template>
       </el-table-column>
+      <el-table-column align="center" prop="old_character" min-width="90" label="字">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.old_character"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="family_name" min-width="90" label="谱名">
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.family_name"></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="character_name"
@@ -173,7 +183,7 @@ export default {
     confirm() {
       if (this.validate()) {
         let params = this.tableData[0]
-        params.update_id = this.$store.getters.getToken.user_id
+        params.login_id = this.$store.getters.getToken.user_id
         Family.familyUpdateUser(params).then(res => {
           if (res.code === '000000') {
             this.reset()

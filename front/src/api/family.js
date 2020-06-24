@@ -152,5 +152,8 @@ export default {
   },
   addUserImg(params) {
     return http.post(URL + '/tree/addUserImg', params)
+  },
+  deleteTreeUser(params) {
+    return http.post(URL + '/tree/deleteTreeUser', params)
   }
 }

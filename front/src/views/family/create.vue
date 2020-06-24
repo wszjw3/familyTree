@@ -52,6 +52,16 @@
               <el-input v-model="scope.row.fame"></el-input>
             </template> 
           </el-table-column>
+          <el-table-column label="字" width="100">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.old_character"></el-input>
+            </template> 
+          </el-table-column>
+          <el-table-column label="谱名" width="100">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.family_name"></el-input>
+            </template> 
+          </el-table-column>
           <el-table-column label="字辈" width="100">
             <template slot-scope="scope">
               <el-input
@@ -194,6 +204,7 @@ export default {
           fame: '',
           sex: '1',
           // be_alive: '',
+          old_character: '',
           brith_time: '',
           death_time: '',
           address: '',
@@ -208,6 +219,7 @@ export default {
           fame: '',
           sex: '2',
           // be_alive: '',
+          old_character: '',
           brith_time: '',
           death_time: '',
           address: '',
@@ -222,6 +234,7 @@ export default {
           fame: '',
           sex: '',
           // be_alive: '',
+          old_character: '',
           brith_time: '',
           death_time: '',
           address: '',

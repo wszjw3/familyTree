@@ -27,6 +27,22 @@
           <el-input v-model="scope.row.fame" :disabled="scope.row.saved"></el-input>
         </template>
       </el-table-column>
+      <el-table-column align="center" prop="old_character" min-width="90" label="字">
+        <template slot="header">
+          字
+        </template>
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.old_character" :disabled="scope.row.saved"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="family_name" min-width="90" label="谱名">
+        <template slot="header">
+          谱名
+        </template>
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.family_name" :disabled="scope.row.saved"></el-input>
+        </template>
+      </el-table-column>
       <el-table-column
         align="center"
         prop="character_name"
@@ -443,6 +459,7 @@ export default {
       let obj = {
         surname: type === 'spouse' || type === 'mother' ? '' : this.surName,
         fame: '',
+        old_character: '',
         character_name: '',
         family_name: '',
         sex: '',
