@@ -39,6 +39,7 @@
 							style="overflow: auto"
 							:data="treeData"
 							:manageId="manageId"
+							:familyName="familytreeInfo[0].name"
 							@onView="handleViewNode"
 							@onEdit="handleEditNode"
 							@onAdd="handleAddNode"
@@ -308,6 +309,40 @@ export default {
 				if (!this.$router.currentRoute.query.familyId) {
 					this.getFamilyInfo(res.data[0].family_id)
 				}
+
+				const rootId = parseInt(Math.random() * 100000000000000000)
+
+				res.data.unshift({
+					"character": "",
+					"family_id": res.data[0].family_id,
+					"manage_id": res.data[0].manage_id,
+					"collection": [
+						{
+							"landlord": {
+								"user_id": rootId,
+								"user_name": "",
+								"sex": "1",
+								"be_alive": "1",
+								"claim": "0",
+								"mother_id": "",
+								"isroot": true
+							},
+							"wife": [
+								{
+									"user_id": rootId + 1,
+									"user_name": this.familytreeInfo[0].name,
+									"sex": "",
+									"be_alive": "",
+									"claim": "",
+									"isroot": true
+								}
+							]
+						}
+					]
+				})
+				res.data[1].collection.forEach(col => {
+					col.landlord.mother_id = rootId + 1
+				})
 				let result = []
 				res.data.forEach((item) => {
 					let obj = {}

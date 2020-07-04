@@ -1,9 +1,7 @@
 <template>
   <div id="tree" class="tree">
     <div v-for="(item, idx) in treeData" :key="idx" class="tree-item">
-      <div class="level">
-        {{ item.level }}
-      </div>
+      <div class="level">{{ item.level }}</div>
       <div
         class="wrapper"
         :class="(idx === 0 || item.test.length === 1 )? 'justify-center' : 'justify-between'"
@@ -16,6 +14,7 @@
           <div
             v-for="(t1, t1dx) in t"
             :key="t1dx"
+            class="flex-space-bewteen"
             style="display: flex; justify-content: space-between;"
           >
             <div
@@ -26,80 +25,79 @@
               "
               :class="['tree-node']"
               :id="key.id"
+              :style="{
+                marginRight: !key.nextHasChild ? '' : key.childCount * 150 + 'px'
+              }"
+              :data-child="key.childCount + '-' + (key.nextHasChild ? 'you': 'wu')"
             >
               <div
-                v-for="(ele, edx) in key.current"
-                :key="edx"
-                class="leaf"
-                :class="[
-                  ele.sex === '2' &&
-                  idx !== treeData.length - 1 &&
-                  findChildWidthId(key.id)
-                    ? 'tree-after'
-                    : '',
-                  (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
-                    ? 'tree-before'
-                    : '',
-                  ele.isWife &&
-                  kdx + 1 < t1.length &&
-                  t1[kdx + 1].current.length === 2
-                    ? 'mr-sm'
-                    : '',
-                  ele.be_alive === '2' ? 'bg-grey' : 'border-green'
-                ]"
+                v-if="idx === 0"
+                class="leaf tree-after bg0grey border-green"
+                style="width: auto; padding: 0 5px"
               >
-                <img
-                  v-if="ele.sex === '2'"
-                  src="@/assets/imgs/girl.png"
-                />
-                <img
-                  v-if="ele.sex === '1'"
-                  src="@/assets/imgs/man.png"
-                />
-                <img
-                  v-if="ele.claim === '1'"
-                  style="margin-left: 5px"
-                  src="@/assets/imgs/claim.png"
-                />
-                {{ ele.user_name }}
+                {{familyName}}
+              </div>
+              <template v-else>
                 <div
-                  class="action-wrapper"
-                  :style="{
-                    marginTop:
-                      key.current.length === 1 &&
-                      idx !== 0 &&
-                      ele.be_alive !== '2'
-                        ? '-1px'
-                        : ''
-                  }"
+                  v-for="(ele, edx) in key.current"
+                  :key="edx"
+                  class="leaf"
+                  :class="[
+                    ele.sex === '2' &&
+                    idx !== treeData.length - 1 &&
+                    key.childCount > 0
+                      ? 'tree-after'
+                      : '',
+                    (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
+                      ? 'tree-before'
+                      : '',
+                    ele.isWife &&
+                    kdx + 1 < t1.length &&
+                    t1[kdx + 1].current.length === 2
+                      ? 'mr-sm'
+                      : '',
+                    ele.be_alive === '2' ? 'bg-grey' : 'border-green'
+                  ]"
                 >
+                  <img v-if="ele.sex === '2'" src="@/assets/imgs/girl.png" />
+                  <img v-if="ele.sex === '1'" src="@/assets/imgs/man.png" />
+                  <img
+                    v-if="ele.claim === '1'"
+                    style="margin-left: 5px"
+                    src="@/assets/imgs/claim.png"
+                  />
+                  {{ ele.user_name }}
                   <div
-                    v-if="
-                      userType === '2' || userType === '3' || userType === '4'
-                    "
+                    class="action-wrapper"
+                    :style="{
+                      marginTop:
+                        key.current.length === 1 &&
+                        idx !== 0 &&
+                        ele.be_alive !== '2'
+                          ? '-1px'
+                          : ''
+                    }"
                   >
-                    <div class="action-item" @click="handleViewDetail(ele)">
-                      详情
+                    <div
+                      v-if="
+                        userType === '2' || userType === '3' || userType === '4'
+                      "
+                    >
+                      <div class="action-item" @click="handleViewDetail(ele)">详情</div>
+                      <div class="action-item" @click="handleEdit(ele)">编辑</div>
+                      <div
+                        class="action-item"
+                        @click="handleAdd(ele, idx)"
+                      >{{ ele.sex === '1' ? '添加' : '' }}</div>
+                      <div
+                        class="action-item"
+                        @click="handleDelete(ele, idx)"
+                      >{{ idTheaf(ele, idx) ? '删除' : '' }}</div>
                     </div>
-                    <div class="action-item" @click="handleEdit(ele)">
-                      编辑
-                    </div>
-                    <div class="action-item" @click="handleAdd(ele, idx)">
-                      {{ ele.sex === '1' ? '添加' : '' }}
-                    </div>
-                    <div class="action-item" @click="handleDelete(ele, idx)">
-                      {{ idTheaf(ele, idx) ? '删除' : '' }}
-                    </div>
-                  </div>
-                  <div
-                    v-if="ele.claim === '0'"
-                    class="claim"
-                    @click="handleClaim(ele)"
-                  >
-                    认领
+                    <div v-if="ele.claim === '0'" class="claim" @click="handleClaim(ele)">认领</div>
                   </div>
                 </div>
-              </div>
+              </template>
             </div>
           </div>
         </div>
@@ -120,6 +118,9 @@ export default {
       }
     },
     manageId: {
+      type: String
+    },
+    familyName:{
       type: String
     }
   },
@@ -190,6 +191,16 @@ export default {
         })
         res.push(item)
       })
+      res.forEach(item => {
+        item.test.forEach(t => {
+          t.forEach(t1 => {
+            t1.forEach((key, kdx) => {
+              this.setChildCount(res, key, kdx, t1)
+            })
+          })
+        })
+      })
+      console.log('res', res)
       return res
     }
   },
@@ -224,8 +235,7 @@ export default {
           clearInterval(fn)
         }
       }, 300)
-          console.log(this.treeData)
-
+      console.log(this.treeData)
     },
 
     handleDrawConnectLine() {
@@ -251,32 +261,52 @@ export default {
             const toX = to.offsetLeft + to.offsetWidth / 2
             // const toY = toRect.top + toRect.height + 30
             let div = document.createElement('div')
-            div.className = 'line'
             div.style.position = 'absolute'
             div.style.left = fromX > toX ? toX + 'px' : fromX + 'px'
             div.style.top = fromY + 'px'
             div.style.width =
               fromX > toX ? fromX - toX + 'px' : toX - fromX + 'px'
             div.style.height = '1px'
-            div.style.borderTop = '1px dashed #000'
+            div.style.borderTopWidth = '1px'
+            div.style.borderTopStyle = 'dashed'
+            div.style.borderTopColor = '#000'
             document.getElementById('tree').appendChild(div)
           }
         }
       })
     },
-    findChildWidthId(id) {
-      let flag = false
-      this.treeData.forEach(item => {
-        item.children.forEach(key => {
-          key.forEach(ele => {
-            if (ele.parent === id) {
-              flag = true
-            }
+    setChildCount (res, key, kdx, t1) {
+      key.nextHasChild = true
+      let count = 0
+      res.forEach(item => {
+        item.test.forEach(t => {
+          t.forEach(tc => {
+            tc.forEach(node => {
+              if (node.parent === key.id) {
+                count++
+              }
+            })
           })
         })
       })
-      return flag
+      key.childCount = count
+      if (count === 0 && kdx !== 0) {
+        t1[kdx -1].nextHasChild = false
+      }
     },
+    // findChildWidthId(id) {
+    //   let flag = false
+    //   this.treeData.forEach(item => {
+    //     item.children.forEach(key => {
+    //       key.forEach(ele => {
+    //         if (ele.parent === id) {
+    //           flag = true
+    //         }
+    //       })
+    //     })
+    //   })
+    //   return flag
+    // },
     handleViewDetail(ele) {
       this.$emit('onView', ele)
     },
@@ -330,6 +360,9 @@ export default {
 * {
   box-sizing: border-box;
 }
+.flex-space-bewteen {
+  margin: 0 50px;
+}
 .tree {
   width: 100%;
   position: relative;
@@ -341,11 +374,11 @@ export default {
 
     .level {
       min-width: 30px;
-      width:30px;
-      height:30px;
+      width: 30px;
+      height: 30px;
       margin-right: 30px;
-      line-height:30px;
-      background:#57d092;
+      line-height: 30px;
+      background: #57d092;
       border-radius: 50%;
       color: #fff;
       font-size: 14px;
@@ -359,9 +392,9 @@ export default {
     }
 
     .tree-node {
-      background:rgba(255,255,255,1);
-      box-shadow:-2px 4px 10px 0px rgba(51, 36, 36, 0.08);
-      border-radius:4px;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: -2px 4px 10px 0px rgba(51, 36, 36, 0.08);
+      border-radius: 4px;
       padding: 3px 2px;
       white-space: nowrap;
     }
@@ -407,13 +440,13 @@ export default {
         top: 40px;
         left: 0;
         width: 100%;
-        background:#57d092;
-        box-shadow:-2px 4px 10px 0px rgba(0,0,0,0.08);
-        border-radius:4px;
+        background: #57d092;
+        box-shadow: -2px 4px 10px 0px rgba(0, 0, 0, 0.08);
+        border-radius: 4px;
         color: #fff;
 
         .action-item {
-          cursor: pointer
+          cursor: pointer;
         }
       }
     }
@@ -427,7 +460,7 @@ export default {
   .tree-after {
     position: relative;
     &:after {
-      content: '';
+      content: "";
       height: 30px;
       width: 1px;
       position: absolute;
@@ -439,7 +472,7 @@ export default {
   .tree-before {
     position: relative;
     &:before {
-      content: '';
+      content: "";
       height: 30px;
       width: 1px;
       position: absolute;
@@ -473,18 +506,97 @@ export default {
   .solid {
     border-bottom: 1px solid #000;
   }
-}
-.mr-sm {
-  margin-right: 10px;
-}
-.bg-grey {
-  background:rgba(239,243,245,1);
-}
-.border-green {
-  border:1px solid rgba(34,187,35,1);
-}
 
-.line {
-  border-color: red;
+  .mr-sm {
+    margin-right: 10px;
+  }
+  .bg-grey {
+    background: rgba(239, 243, 245, 1);
+  }
+  .border-green {
+    border: 1px solid rgba(34, 187, 35, 1);
+  }
+
+  .color-black {
+    border-color: #027be3;
+    &:before {
+      border-color: #027be3;
+    }
+    &:after {
+      border-color: #027be3;
+    }
+  }
+  .color-primary {
+    border-color: #027be3;
+    &:before {
+      border-color: #027be3;
+    }
+    &:after {
+      border-color: #027be3;
+    }
+  }
+  .color-secondary {
+    border-color: #26a69a;
+    &:before {
+      border-color: #26a69a;
+    }
+    &:after {
+      border-color: #26a69a;
+    }
+  }
+  .color-accent {
+    border-color: #9c27b0;
+    &:before {
+      border-color: #9c27b0;
+    }
+    &:after {
+      border-color: #9c27b0;
+    }
+  }
+  .color-positive {
+    border-color: #21ba45;
+    &:before {
+      border-color: #21ba45;
+    }
+    &:after {
+      border-color: #21ba45;
+    }
+  }
+  .color-negative {
+    border-color: #c10015;
+    &:before {
+      border-color: #c10015;
+    }
+    &:after {
+      border-color: #c10015;
+    }
+  }
+  .color-info {
+    border-color: #31ccec;
+    &:before {
+      border-color: #31ccec;
+    }
+    &:after {
+      border-color: #31ccec;
+    }
+  }
+  .color-warning {
+    border-color: #f2c037;
+    &:before {
+      border-color: #f2c037;
+    }
+    &:after {
+      border-color: #f2c037;
+    }
+  }
+  .color-dark {
+    border-color: #1d1d1d;
+    &:before {
+      border-color: #1d1d1d;
+    }
+    &:after {
+      border-color: #1d1d1d;
+    }
+  }
 }
 </style>
