@@ -45,7 +45,7 @@
                   :class="[
                     ele.sex === '2' &&
                     idx !== treeData.length - 1 &&
-                    key.childCount > 0
+                    findChildWidthId(key.id)
                       ? 'tree-after'
                       : '',
                     (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
@@ -307,21 +307,19 @@ export default {
     findBeforeChildCount(kdx, t1) {
       return t1[kdx].childCount === 0 && kdx - 1 >= 0 ? this.findBeforeChildCount(kdx - 1, t1) : t1[kdx].childCount
     },
-    // findChildWidthId(id, res) {
-    //   let count = 0
-    //   res.forEach(item => {
-    //     item.test.forEach(t => {
-    //       t.forEach(tc => {
-    //         tc.forEach(node => {
-    //           if (node.parent === key.id) {
-    //             count++
-    //           }
-    //         })
-    //       })
-    //     })
-    //   })
-    //   return count
-    // },
+    findChildWidthId(id) {
+      let flag = false
+      this.treeData.forEach(item => {
+        item.children.forEach(key => {
+          key.forEach(ele => {
+            if (ele.parent === id) {
+              flag = true
+            }
+          })
+        })
+      })
+      return flag
+    },
     handleViewDetail(ele) {
       this.$emit('onView', ele)
     },
