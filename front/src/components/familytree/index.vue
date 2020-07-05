@@ -192,10 +192,10 @@ export default {
         res.push(item)
       })
       res.forEach(item => {
-        item.test.forEach(t => {
-          t.forEach(t1 => {
+        item.test.forEach((t, tidx) => {
+          t.forEach((t1, t1idx) => {
             t1.forEach((key, kdx) => {
-              this.setChildCount(res, key, kdx, t1)
+              this.setChildCount(res, key, kdx, t1, t1idx, t, tidx, item.test)
             })
           })
         })
@@ -275,7 +275,7 @@ export default {
         }
       })
     },
-    setChildCount (res, key, kdx, t1) {
+    setChildCount (res, key, kdx, t1, t1idx, t, tidx, test) {
       key.nextHasChild = true
       let count = 0
       res.forEach(item => {
@@ -293,19 +293,34 @@ export default {
       if (count === 0 && kdx !== 0) {
         t1[kdx -1].nextHasChild = false
       }
+      // if (kdx === t1.length - 1 && tidx !== test.length - 1) {
+      //   const node = test[tidx + 1][0][0]
+      //   const num = this.findChildWidthId(key.id, res)
+      //   if (num > 0) {
+      //     key.nextHasChild 
+      //   }
+      // }
+      if (kdx === t1.length -1 && kdx !== 0) {
+        key.childCount = this.findBeforeChildCount(kdx - 1, t1)
+      }
     },
-    // findChildWidthId(id) {
-    //   let flag = false
-    //   this.treeData.forEach(item => {
-    //     item.children.forEach(key => {
-    //       key.forEach(ele => {
-    //         if (ele.parent === id) {
-    //           flag = true
-    //         }
+    findBeforeChildCount(kdx, t1) {
+      return t1[kdx].childCount === 0 && kdx - 1 >= 0 ? this.findBeforeChildCount(kdx - 1, t1) : t1[kdx].childCount
+    },
+    // findChildWidthId(id, res) {
+    //   let count = 0
+    //   res.forEach(item => {
+    //     item.test.forEach(t => {
+    //       t.forEach(tc => {
+    //         tc.forEach(node => {
+    //           if (node.parent === key.id) {
+    //             count++
+    //           }
+    //         })
     //       })
     //     })
     //   })
-    //   return flag
+    //   return count
     // },
     handleViewDetail(ele) {
       this.$emit('onView', ele)
