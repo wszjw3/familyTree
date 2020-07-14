@@ -51,31 +51,40 @@ export default {
         if (!this.$router.currentRoute.query.familyId) {
           this.getFamilyInfo(res.data[0].family_id)
         }
+        res.data.forEach(item => {
+					item.collection.forEach(col => {
+						if (col.wife && col.wife.length > 0) {
+							col.wife = col.wife.sort((a, b) => {
+								return parseInt(b.boy_count) - parseInt(a.boy_count)
+							})	
+						}
+					})
+				})
         const rootId = parseInt(Math.random() * 100000000000000000)
 
 				res.data.unshift({
-					"character": "",
-					"family_id": res.data[0].family_id,
-					"manage_id": res.data[0].manage_id,
-					"collection": [
+					'character': '',
+					'family_id': res.data[0].family_id,
+					'manage_id': res.data[0].manage_id,
+					'collection': [
 						{
-							"landlord": {
-								"user_id": rootId,
-								"user_name": "",
-								"sex": "1",
-								"be_alive": "1",
-								"claim": "0",
-								"mother_id": "",
-								"isroot": true
+							'landlord': {
+								'user_id': rootId,
+								'user_name': '',
+								'sex': '1',
+								'be_alive': '1',
+								'claim': '0',
+								'mother_id': '',
+								'isroot': true
 							},
-							"wife": [
+							'wife': [
 								{
-									"user_id": rootId + 1,
-									"user_name": this.$router.currentRoute.query.family_name,
-									"sex": "",
-									"be_alive": "",
-									"claim": "",
-									"isroot": true
+									'user_id': rootId + 1,
+									'user_name': this.$router.currentRoute.query.family_name,
+									'sex': '',
+									'be_alive': '',
+									'claim': '',
+									'isroot': true
 								}
 							]
 						}

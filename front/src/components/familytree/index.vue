@@ -1,103 +1,118 @@
 <template>
   <div id="tree" class="tree">
-    <div v-for="(item, idx) in treeData" :key="idx" class="tree-item">
-      <div class="level">{{ item.level }}</div>
+    <div
+      v-for="(item, idx) in treeData"
+      :key="idx"
+      class="tree-item"
+      :style="{
+        width: maxWidth + 'px'
+      }"
+    >
+      <div v-if="idx !== 0" class="level">{{ item.level }}</div>
       <div
         class="wrapper"
-        :class="(idx === 0 || item.test.length === 1 )? 'justify-center' : 'justify-between'"
+        :class="idx === 0 ? 'justify-center' : 'justify-between'"
       >
         <div
-          v-for="(t, tdx) in item.test"
+          v-for="(t, tdx) in item.arr"
           :key="tdx"
           style="display: flex; justify-content: space-between;"
         >
           <div
-            v-for="(t1, t1dx) in t"
-            :key="t1dx"
-            class="flex-space-bewteen"
-            style="display: flex; justify-content: space-between;"
+            v-for="(t0, t0dx) in t"
+            :key="t0dx"
           >
+
             <div
-              v-for="(key, kdx) in t1"
-              :key="kdx"
-              :data-node="
-                key.id + '-' + (key.parent !== undefined ? key.parent : '')
-              "
-              :class="['tree-node']"
-              :id="key.id"
-              :style="{
-                marginRight: !key.nextHasChild ? '' : key.childCount * 150 + 'px'
-              }"
-              :data-child="key.childCount + '-' + (key.nextHasChild ? 'you': 'wu')"
+              v-for="(t1, t1dx) in t0"
+              :key="t1dx"
+              class="mx-md"
+              style="display: flex; justify-content: space-between;"
             >
               <div
-                v-if="idx === 0"
-                class="leaf tree-after bg0grey border-green"
-                style="width: auto; padding: 0 5px"
+                v-for="(key, kdx) in t1"
+                :key="kdx"
+                :data-node="
+                  key.id + '-' + (key.parent !== undefined ? key.parent : '')
+                "
+                :class="['tree-node']"
+                :id="key.id"
+                :style="{
+                  marginRight: key.childCount * 100 + 'px'
+                }"
+                :data-child="key.childCount"
+                :data-t1dx="kdx + '-' + t1.length"
+                :data-next="key.nextHasChild ? 'you' : 'wu'"
               >
-                {{familyName}}
-              </div>
-              <template v-else>
                 <div
-                  v-for="(ele, edx) in key.current"
-                  :key="edx"
-                  class="leaf"
-                  :class="[
-                    ele.sex === '2' &&
-                    idx !== treeData.length - 1 &&
-                    findChildWidthId(key.id)
-                      ? 'tree-after'
-                      : '',
-                    (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
-                      ? 'tree-before'
-                      : '',
-                    ele.isWife &&
-                    kdx + 1 < t1.length &&
-                    t1[kdx + 1].current.length === 2
-                      ? 'mr-sm'
-                      : '',
-                    ele.be_alive === '2' ? 'bg-grey' : 'border-green'
-                  ]"
+                  v-if="idx === 0"
+                  class="leaf tree-after bg-grey border-green"
+                  style="width: auto; padding: 0 5px"
                 >
-                  <img v-if="ele.sex === '2'" src="@/assets/imgs/girl.png" />
-                  <img v-if="ele.sex === '1'" src="@/assets/imgs/man.png" />
-                  <img
-                    v-if="ele.claim === '1'"
-                    style="margin-left: 5px"
-                    src="@/assets/imgs/claim.png"
-                  />
-                  {{ ele.user_name }}
-                  <div
-                    class="action-wrapper"
-                    :style="{
-                      marginTop:
-                        key.current.length === 1 &&
-                        idx !== 0 &&
-                        ele.be_alive !== '2'
-                          ? '-1px'
-                          : ''
-                    }"
-                  >
-                    <div
-                      v-if="
-                        userType === '2' || userType === '3' || userType === '4'
-                      "
-                    >
-                      <div class="action-item" @click="handleViewDetail(ele)">详情</div>
-                      <div class="action-item" @click="handleEdit(ele)">编辑</div>
-                      <div
-                        class="action-item"
-                        @click="handleAdd(ele, idx)"
-                      >{{ ele.sex === '1' ? '添加' : '' }}</div>
-                      <div
-                        class="action-item"
-                        @click="handleDelete(ele, idx)"
-                      >{{ idTheaf(ele, idx) ? '删除' : '' }}</div>
-                    </div>
-                    <div v-if="ele.claim === '0'" class="claim" @click="handleClaim(ele)">认领</div>
-                  </div>
+                  {{familyName}}
                 </div>
-              </template>
+                <template v-else>
+                  <div
+                    v-for="(ele, edx) in key.current"
+                    :key="edx"
+                    class="leaf"
+                    :class="[
+                      ele.sex === '2' &&
+                      idx !== treeData.length - 1 &&
+                      findChildWidthId(key.id)
+                        ? 'tree-after'
+                        : '',
+                      (ele.sex === '1' && idx !== 0) || (!ele.isWife && idx !== 0)
+                        ? 'tree-before'
+                        : '',
+                      ele.isWife &&
+                      kdx + 1 < t1.length &&
+                      t1[kdx + 1].current.length === 2
+                        ? 'mr-sm'
+                        : '',
+                      ele.be_alive === '2' ? 'bg-grey' : 'border-green'
+                    ]"
+                  >
+                    <img v-if="ele.sex === '2'" src="@/assets/imgs/girl.png" />
+                    <img v-if="ele.sex === '1'" src="@/assets/imgs/man.png" />
+                    <img
+                      v-if="ele.claim === '1'"
+                      style="margin-left: 5px"
+                      src="@/assets/imgs/claim.png"
+                    />
+                    {{ ele.user_name }}
+                    <div
+                      class="action-wrapper"
+                      :style="{
+                        marginTop:
+                          key.current.length === 1 &&
+                          idx !== 0 &&
+                          ele.be_alive !== '2'
+                            ? '-1px'
+                            : ''
+                      }"
+                    >
+                      <div
+                        v-if="
+                          userType === '2' || userType === '3' || userType === '4'
+                        "
+                      >
+                        <div class="action-item" @click="handleViewDetail(ele)">详情</div>
+                        <div class="action-item" @click="handleEdit(ele)">编辑</div>
+                        <div
+                          class="action-item"
+                          @click="handleAdd(ele, idx)"
+                        >{{ ele.sex === '1' ? '添加' : '' }}</div>
+                        <div
+                          class="action-item"
+                          @click="handleDelete(ele, idx)"
+                        >{{ idTheaf(ele, idx) ? '删除' : '' }}</div>
+                      </div>
+                      <div v-if="ele.claim === '0'" class="claim" @click="handleClaim(ele)">认领</div>
+                    </div>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
         </div>
@@ -126,7 +141,8 @@ export default {
   },
   data() {
     return {
-      hoverNode: {}
+      hoverNode: {},
+      maxWidth: 0
     }
   },
   computed: {
@@ -200,17 +216,54 @@ export default {
           })
         })
       })
-      console.log('res', res)
+
+      res.forEach((item, idx) => {
+        if (idx === 0) {
+          item.arr = [item.test]
+        } else {
+
+          let parent = []
+          item.test.forEach(t1 => {
+            const parentId = t1[0][0].parent
+            parent.push(parentId)
+          })
+          parent = Array.from(new Set(parent))
+          let arr = []
+          parent.forEach(p => {
+            let arr1 = []
+            item.test.forEach(t1 => {
+              const parentId = t1[0][0].parent
+              p === parentId && arr1.push(t1)
+            })
+            arr.push(arr1)
+          })
+          item.arr = arr
+        }
+      })
+      console.log(res)
       return res
     }
   },
   mounted() {
     NodeList.prototype.forEach = Array.prototype.forEach
+    
     this.$nextTick(() => {
-      window.onresize = () => {
+      setTimeout(() => {
+        const wrapper = document.querySelectorAll('.tree-item')
+        let maxWidth = document.querySelector('.tree').getBoundingClientRect().width
+        wrapper.forEach(v => {
+            console.log(v.scrollWidth)
+          if (parseInt(v.scrollWidth) > maxWidth) {
+            maxWidth = parseInt(v.scrollWidth)
+          }
+        })
+        this.maxWidth = maxWidth
+
+        window.onresize = () => {
+          this.interval()
+        }
         this.interval()
-      }
-      this.interval()
+      }, 200)
     })
   },
   destroyed() {
@@ -235,7 +288,6 @@ export default {
           clearInterval(fn)
         }
       }, 300)
-      console.log(this.treeData)
     },
 
     handleDrawConnectLine() {
@@ -270,6 +322,7 @@ export default {
             div.style.borderTopWidth = '1px'
             div.style.borderTopStyle = 'dashed'
             div.style.borderTopColor = '#000'
+            div.dataset['connect'] = fromId + '-' + toId
             document.getElementById('tree').appendChild(div)
           }
         }
@@ -277,35 +330,38 @@ export default {
     },
     setChildCount (res, key, kdx, t1, t1idx, t, tidx, test) {
       key.nextHasChild = true
-      let count = 0
-      res.forEach(item => {
-        item.test.forEach(t => {
-          t.forEach(tc => {
-            tc.forEach(node => {
-              if (node.parent === key.id) {
-                count++
-              }
-            })
-          })
-        })
-      })
-      key.childCount = count
-      if (count === 0 && kdx !== 0) {
-        t1[kdx -1].nextHasChild = false
+      key.childCount = 0
+      if (key.current.length === 1 && key.current[0].boy_count) {
+        key.childCount = parseInt(key.current[0].boy_count)
       }
-      // if (kdx === t1.length - 1 && tidx !== test.length - 1) {
-      //   const node = test[tidx + 1][0][0]
-      //   const num = this.findChildWidthId(key.id, res)
-      //   if (num > 0) {
-      //     key.nextHasChild 
-      //   }
+      if (key.current.length === 2 && key.current[1].boy_count) {
+        key.childCount = parseInt(key.current[1].boy_count)
+      }
+      if (key.childCount === 0 && kdx !== 0) {
+        t1[kdx - 1].nextHasChild = false
+      }
+      // if (key.childCount === 0 && kdx === 0 && tidx === 1) {
+      //   test[tidx - 1][0][0].nextHasChild = false
       // }
-      if (kdx === t1.length -1 && kdx !== 0) {
-        key.childCount = this.findBeforeChildCount(kdx - 1, t1)
-      }
-    },
-    findBeforeChildCount(kdx, t1) {
-      return t1[kdx].childCount === 0 && kdx - 1 >= 0 ? this.findBeforeChildCount(kdx - 1, t1) : t1[kdx].childCount
+
+
+      // key.nextHasChild = true
+      // // let count = 0
+      // // res.forEach(item => {
+      // //   item.test.forEach(t => {
+      // //     t.forEach(tc => {
+      // //       tc.forEach(node => {
+      // //         if (node.parent === key.id) {
+      // //           count++
+      // //         }
+      // //       })
+      // //     })
+      // //   })
+      // // })
+      // // key.childCount = count
+      // if (key.childCount === 0 && kdx !== 0) {
+      //   t1[kdx -1].nextHasChild = false
+      // }
     },
     findChildWidthId(id) {
       let flag = false
@@ -373,8 +429,8 @@ export default {
 * {
   box-sizing: border-box;
 }
-.flex-space-bewteen {
-  margin: 0 50px;
+.mx-md {
+  margin: 0 20px;
 }
 .tree {
   width: 100%;
@@ -509,6 +565,9 @@ export default {
   }
   .justify-center {
     justify-content: center;
+  }
+  .justify-around {
+    justify-content: space-around;
   }
   .justify-between {
     justify-content: space-between;
