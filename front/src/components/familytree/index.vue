@@ -156,6 +156,7 @@ export default {
       if (this.data.length === 0) {
         return []
       }
+      
       let res = []
       this.data.forEach(item => {
         let parent = []
@@ -435,7 +436,8 @@ export default {
 .tree {
   width: 100%;
   position: relative;
-  padding-bottom: 100px;
+  padding-bottom: 170px;
+
   .tree-item {
     display: flex;
     padding: 30px 10px;

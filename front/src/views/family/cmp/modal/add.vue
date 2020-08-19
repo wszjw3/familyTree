@@ -201,7 +201,7 @@
     <div class="operation">
       <span
         @click="handleAdd('father')"
-        :class="userInfo.mother_id || hasFather || hasMother || userInfo.isWife ? 'disabled' : ''"
+        :class="(userInfo.mother_id && userInfo.mother_id !== rootId) || hasFather || hasMother || userInfo.isWife ? 'disabled' : ''"
       >
         添加父母
       </span>
@@ -244,6 +244,9 @@ export default {
       default() {
         return {}
       }
+    },
+    rootId: {
+      type: Number
     },
     surName: {
       type: String,
@@ -431,11 +434,11 @@ export default {
       this.reset()
     },
     handleAdd(type) {
-      if (type === 'father' && (this.userInfo.mother_id || this.hasMother || this.hasFather)) {
+      if (type === 'father' && ((this.userInfo.mother_id && this.userInfo.mother_id !== this.rootId) || this.hasMother || this.hasFather)) {
         return
       }
       if (
-        type === 'mother' && (this.userInfo.mother_id || this.hasMother)
+        type === 'mother' && ((this.userInfo.mother_id && this.userInfo.mother_id !== this.rootId) || this.hasMother)
       ) {
         return
       }
@@ -689,7 +692,7 @@ export default {
     arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
       if (row.relation === 'father' && columnIndex === 9 && !row.saved) {
         return {
-          rowspan: 2,
+          rowspan: 1,
           colspan: 1
         }
       }

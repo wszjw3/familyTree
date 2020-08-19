@@ -57,11 +57,14 @@
             v-model="search.area"
             placeholder="地区"
           />
+          <p>
+            按名
+          </p>
           <el-input
             v-model="search.text"
-            placeholder="请输入姓名"
+            placeholder="请输入名"
             @keydown.enter="handleQuery"
-            style="width: 379px; margin-top: 20px"
+            style="width: 379px;"
           >
             <i
               slot="suffix"
@@ -248,7 +251,7 @@ export default {
 
     .search-container {
       width:454px;
-      height:440px;
+      height:470px;
       padding-left: 20px;
       background:rgba(255,255,255,1);
       z-index: 2;

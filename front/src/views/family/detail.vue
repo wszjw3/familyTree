@@ -38,6 +38,7 @@
 							ref="tree"
 							style="overflow: auto"
 							:data="treeData"
+							:rootId="rootId"
 							:manageId="manageId"
 							:familyName="familytreeInfo[0].name"
 							@onView="handleViewNode"
@@ -92,6 +93,7 @@
 		<add-modal
 			v-model="show.addModal"
 			:userInfo="currentUser"
+			:rootId="rootId"
 			:surName="title.charAt(1, 1)"
 			@success="reload()"
 		/>
@@ -142,6 +144,7 @@ export default {
 		return {
 			sexImg,
 			treeData: [],
+			rootId: 0,
 			treeInfo: {},
 			familytreeInfo: [
 				{
@@ -321,7 +324,7 @@ export default {
 				})
 
 				const rootId = parseInt(Math.random() * 100000000000000000)
-
+				this.rootId = rootId
 				res.data.unshift({
 					'character': '',
 					'family_id': res.data[0].family_id,
