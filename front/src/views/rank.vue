@@ -15,6 +15,7 @@
         v-for="(item, idx) in familyData"
         :key="idx"
         class="table-item"
+        @click="handleClick(item)"
       >
         <div :class="['rank', idx < 3 ? 'bg-orange' : '']">
           {{item.idx}}
@@ -35,6 +36,7 @@
         v-for="(item, idx) in manageData"
         :key="idx"
         class="table-item"
+        @click="handleClick(item)"
       >
         <div :class="['rank', idx <=3 ? 'bg-orange' : '']">
           {{item.idx}}
@@ -91,6 +93,15 @@ export default {
         }
       })
     },
+    handleClick (item) {
+      if(item && item.family_id) {
+        this.$router.push({
+          path: '/family/detail',
+          query: {familyId: item.family_id}
+        })
+        this.$emit('jump')
+      }
+    }
   },
 }
 </script>

@@ -10,7 +10,7 @@
       <template v-if="statistics.isShow">
         当前家谱树枝繁叶茂，已收录
         <span class="num">{{statistics.family_number}}</span>
-        人，近3个月 死亡
+        人，近3个月 去世
         <span class="num">{{statistics.death_number}}</span>
         人，新增
         <span class="num">{{statistics.beath_number}}</span>

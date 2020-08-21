@@ -72,6 +72,7 @@
       >
         <template slot-scope="scope">
           <el-date-picker
+            :disabled="scope.row.sex == '1'"
             v-model="scope.row.marry_time"
             type="date"
             editable
@@ -97,7 +98,7 @@
       <el-table-column
         align="center"
         prop="death_time"
-        label="死亡日期"
+        label="去世日期"
         min-width="150"
       >
         <template slot-scope="scope">
@@ -113,6 +114,17 @@
           >
           </el-date-picker>
         </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="death_address"
+        label="去世地址"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.death_address"></el-input>
+        </template>
+
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">

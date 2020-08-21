@@ -15,6 +15,7 @@
           <span v-if="info.brith_time">生于{{ info.brith_time }}</span>
           <span v-if="info.death_time">死于{{ info.death_time }}</span>
           <p v-if="info.address">出生地址：{{ info.address }}</p>
+          <p v-if="info.death_address">去世地址：{{ info.death_address }}</p>
         </div>
       </div>
       <div class="mt-md">

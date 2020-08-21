@@ -126,7 +126,7 @@
       >
         <template slot-scope="scope">
           <el-date-picker
-           :disabled="scope.row.saved"
+           :disabled="scope.row.saved || scope.row.sex == '1'"
             v-model="scope.row.marry_time"
             type="date"
             editable
@@ -153,7 +153,7 @@
       <el-table-column
         align="center"
         prop="death_time"
-        label="死亡日期"
+        label="去世日期"
         min-width="150"
       >
         <template slot-scope="scope">
@@ -170,6 +170,17 @@
           >
           </el-date-picker>
         </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="death_address"
+        label="去世地址"
+        min-width="150"
+      >
+        <template slot-scope="scope">
+          <el-input v-model="scope.row.death_address" :disabled="scope.row.saved"></el-input>
+        </template>
+
       </el-table-column>
       <el-table-column v-if="motherOptions.length > 0" align="center" prop="marry_time" width="110">
         <template slot-scope="scope" v-if="scope.row.relation === 'child'">
@@ -469,6 +480,7 @@ export default {
         be_alive: '',
         brith_time: '',
         death_time: '',
+        death_address: '',
         address: this.userInfo.address,
         marry_time: '',
         saved: false
@@ -581,7 +593,7 @@ export default {
 
       if(obj.death_time && obj.marry_time) {
         if (new Date(obj.marry_time).getTime() > new Date(obj.death_time).getTime()){
-          this.$message.error('死亡日期不能先于出生日期')
+          this.$message.error('去世日期不能先于出生日期')
           return
         }
       }

@@ -107,6 +107,7 @@
           <el-table-column label="结婚时间">
             <template slot-scope="scope">
               <el-date-picker
+                :disabled="scope.row.sex == '1'"
                 style="width: 90%"
                 v-model="scope.row.marry_time"
                 type="date"
@@ -127,7 +128,7 @@
                 <el-input class="full-width" v-model="scope.row.address"></el-input>
             </template> 
           </el-table-column>
-          <el-table-column label="死亡日期">
+          <el-table-column label="去世日期">
             <template slot-scope="scope">
               <el-date-picker
                 style="width: 90%"
@@ -138,6 +139,11 @@
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
               />
+            </template> 
+          </el-table-column>
+          <el-table-column label="去世地址">
+            <template slot-scope="scope">
+                <el-input class="full-width" v-model="scope.row.death_address"></el-input>
             </template> 
           </el-table-column>
         </el-table>
@@ -207,6 +213,7 @@ export default {
           old_character: '',
           brith_time: '',
           death_time: '',
+          death_address: '',
           address: '',
           marry_time: '',
           family_name: '',
@@ -222,6 +229,7 @@ export default {
           old_character: '',
           brith_time: '',
           death_time: '',
+          death_address: '',
           address: '',
           marry_time: '',
           family_name: '',
@@ -237,6 +245,7 @@ export default {
           old_character: '',
           brith_time: '',
           death_time: '',
+          death_address: '',
           address: '',
           marry_time: '',
           family_name: '',
